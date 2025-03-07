@@ -1,7 +1,8 @@
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection
 from mpldts.geometry.station import Station
-from math import atan2, degrees
+from mpldts.geometry.drift_cell import DriftCell
+from math import atan2, degrees, sqrt
 
 
 class DTPatch:
@@ -111,9 +112,28 @@ class DTPatch:
 
     def _create_frame(self, obj, rotation_point=None, type=None):
         """
-        Create a rectangular frame for a given object.
+        Create a rectangular frame for a given object based on the view type.
 
-        :param obj: The object to create the frame (from mpldt.geometry).
+        :param obj: The object to create the frame (from mpldts.geometry).
+        :type obj: Station, SuperLayer, Layer, or Cell
+        :param rotation_point: The point to rotate the frame around (used for global coordinates in phi view).
+        :type rotation_point: tuple, optional
+        :param type: The type of the object (station, superlayer, or cell).
+        :type type: str, optional
+        :return: A Rectangle patch representing the frame.
+        """
+        if self.view == "phi":
+            return self._create_frame_phi(obj, rotation_point, type)
+        elif self.view == "eta":
+            return self._create_frame_eta(obj, type)
+        else:
+            raise ValueError(f"Unknown view type: {self.view}")
+
+    def _create_frame_phi(self, obj, rotation_point=None, type=None):
+        """
+        Create a rectangular frame for a given object in the phi view.
+
+        :param obj: The object to create the frame (from mpldts.geometry).
         :type obj: Station, SuperLayer, Layer, or Cell
         :param rotation_point: The point to rotate the frame around (used for global coordinates in phi view).
         :type rotation_point: tuple, optional
@@ -128,24 +148,39 @@ class DTPatch:
             x_min, y_min, z_min = obj.global_position_at_min
             x, y, z = obj.global_center
 
-        if self.view == "eta":
-            if type != "cell" and obj.number != 2:
-                width = length
-                x_min = z_min
-            if not self.local:
-                raise NotImplementedError("Global eta view not implemented yet")
-
-        elif self.view == "phi":
-            if type == "super_layer" and obj.number == 2:
-                width = length
-                x_min = z_min if self.local else x - (length / 2)
+        if type == "super_layer" and obj.number == 2:
+            width = length
+            x_min = z_min if self.local else x - (length / 2)
 
         frame = Rectangle((x_min, y_min), width, height)
 
-        if not self.local and self.view == "phi":
+        if not self.local:
             frame.rotation_point = (
                 (rotation_point[0], rotation_point[1]) if rotation_point else (x, y)
             )
             frame.set_angle(self.angle)
 
+        return frame
+
+    def _create_frame_eta(self, obj, type=None):
+        """
+        Create a rectangular frame for a given object in the eta view.
+
+        :param obj: The object to create the frame (from mpldts.geometry).
+        :type obj: Station, SuperLayer, Layer, or Cell
+        :param type: The type of the object (station, superlayer, or cell).
+        :type type: str, optional
+        :return: A Rectangle patch representing the frame.
+        """
+        width, height, length = obj.bounds
+        if self.local:
+            x_min, y_min, z_min = obj.local_position_at_min
+        else:
+            x_min, y_min, z_min = obj.global_position_at_min
+            x_min = z_min
+            # y_min = sqrt(y_min ** 2 + x_min ** 2)
+        if type != "cell" and obj.number != 2:
+            width = length
+            x_min = z_min
+        frame = Rectangle((x_min, y_min), width, height)
         return frame

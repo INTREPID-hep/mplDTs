@@ -13,7 +13,7 @@ class SuperLayer(DTFrame):
     parent : Station
         Parent station of the super layer.
 
-    Others inherit from ``mpldt.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, rawId, parent=None):

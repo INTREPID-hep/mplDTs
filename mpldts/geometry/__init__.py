@@ -1,1 +1,2 @@
-from mpldts.geometry._geometry import DTGeometry, DTFrame, DTGEOMETRY
+from mpldts.geometry._geometry import DTGeometry, DTGEOMETRY
+from mpldts.geometry.dt_frame import DTFrame

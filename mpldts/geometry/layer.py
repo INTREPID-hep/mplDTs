@@ -13,7 +13,7 @@ class Layer(DTFrame):
     parent : Station
         Parent station of the super layer.
 
-    Others inherit from ``mpldt.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, rawId, parent=None):
@@ -144,30 +144,8 @@ class Layer(DTFrame):
         Ensemble a DT layer.
         """
 
-        _firs_wire_x_local = float(
-            DTGEOMETRY.get(".//WirePositions//FirstWire_ref_to_chamber", rawId=self.id)
-        )
-        _firs_wire_x_global = float(
-            DTGEOMETRY.get(".//WirePositions//FirstWire", rawId=self.id)
-        )
-
-        x_local, y_local, z_local = self.local_center
-        x_global, y_global, z_global = self.global_center
-
-        for i, n_cell in enumerate(range(self._first_cell_id, self._last_cell_id + 1)):
+        for n_cell in range(self._first_cell_id, self._last_cell_id + 1):
             cell = DriftCell(number=n_cell, parent=self)
-            # positioned correctly
-            cell.local_center = (
-                _firs_wire_x_local + i * cell.width,
-                y_local,
-                z_local,
-            )
-            cell.global_center = (
-                (x_global - _firs_wire_x_global) - i * cell.width,
-                y_global,
-                z_global,
-            )
-
             self._add_cell(cell)
 
 

@@ -26,7 +26,7 @@ class DriftCell(DTFrame):
     parent : Layer
         Parent layer of the drift cell.
 
-    Others inherit from ``dtpr.geometry.DTFrame``... (e.g. local_center, global_center, direction, etc.)
+    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. local_center, global_center, direction, etc.)
     Bounds variables (width, height, length) are fixed values: 4.2 cm, 1.3 cm, 235 cm.
     """
 
@@ -50,8 +50,8 @@ class DriftCell(DTFrame):
         self.parent = parent
         self.id = number
         self.number = number
-        self.local_center = (0, 0, 0)
-        self.global_center = (0, 0, 0)
+        self.local_center = self._compute_position("local")
+        self.global_center = self._compute_position("global")
         self.direction = parent.direction if parent else (0, 0, 0)
         self._driftTime = 0
 
@@ -93,3 +93,26 @@ class DriftCell(DTFrame):
         :rtype: tuple
         """
         return x, y, z
+
+    def _compute_position(self, position_type="local"):
+        """
+        Compute the position of the drift cell.
+
+        :param position_type: Type of position to compute ("local" or "global").
+        :type position_type: str
+        :return: Position of the drift cell.
+        :rtype: tuple
+        """
+        if self.parent:
+            center = self.parent.local_center if position_type == "local" else self.parent.global_center
+            x, y, z = center
+
+            tag = "FirstWire_ref_to_chamber" if position_type == "local" else "FirstWire"
+            first_wire_x = float(DTGEOMETRY.get(f".//WirePositions//{tag}", rawId=self.parent.id))
+
+            cell_index = self.number - self.parent._first_cell_id
+            x_cell = first_wire_x + cell_index * self._width if position_type == "local" else (x - first_wire_x) - cell_index * self._width
+        else:
+            x_cell, y, z = 0, 0, 0
+
+        return x_cell, y, z

@@ -20,7 +20,7 @@ class Station(DTFrame):
     super_layers : list
         List of super layers in the station.
 
-    Others inherit from ``mpldt.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, wheel, sector, station, dt_info=None):
