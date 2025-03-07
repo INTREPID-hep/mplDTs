@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "mplDTs"
+version = "0.1.0"
+description = "Set of tools to produce CMS DTs matplotlib patches"
+authors = ["Daniel Estrada <estradadaniel@uniovi.es>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+pandas = ">=2.2"
+matplotlib = ">=3.9.3"
+mplhep = ">=0.3"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+
+[tool.poetry.group.doc]
+optional = true
+
+[tool.poetry.group.doc.dependencies]
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autobuild = "*"
+
+[[tool.poetry.packages]]
+include = "mpldts"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
