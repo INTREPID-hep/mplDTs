@@ -1,11 +1,11 @@
-import xml.etree.ElementTree as ET
 import os
 import re
+import xml.etree.ElementTree as ET
 
 
 class DTGeometry:
     """
-    A class to represent the CMS DT Geometry from an XML file.
+    A class to easy access to the CMS DT Geometry from an XML file.
 
     Attributes
     ----------
@@ -54,9 +54,7 @@ class DTGeometry:
         element = self.root.find(query)
         if element is not None:
             if attribute in ["GlobalPosition", "LocalPosition", "NormalVector"]:
-                x, y, z = self._transform_to_pos(
-                    str_pos_tuple=element.find(attribute).text
-                )
+                x, y, z = self._transform_to_pos(str_pos_tuple=element.find(attribute).text)
                 return x, y, z
             elif attribute == "Bounds":
                 width, height, length = element.find(attribute).attrib.values()
@@ -83,19 +81,16 @@ class DTGeometry:
         :rtype: tuple
         """
         cords = re.findall(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", str_pos_tuple)
-        x, y, z = (
-            float(cord) for cord in cords
-        )  # Bear in mind that the CMS local and global coordinates are different and depend of chamber and superlayer
+        x, y, z = (float(cord) for cord in cords)
         return (x, y, z)
 
+
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(
-    os.path.join(os.path.dirname(__file__), "../utils/templates/DTGeometry.xml")
-)
+DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry.xml"))
 
 # Example usage
 if __name__ == "__main__":
-    dt_geometry = DTGeometry(os.path.abspath("../utils/templates/DTGeometry.xml"))
+    dt_geometry = DTGeometry(os.path.abspath("./DTGeometry.xml"))
 
     # Retrieve and print global and local positions, and bounds for specific chambers
     global_pos_1 = dt_geometry.get("GlobalPosition", wh=-2, sec=1, st=1)

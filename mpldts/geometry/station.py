@@ -1,6 +1,9 @@
-from mpldts.geometry import DTGEOMETRY, DTFrame
+from mpldts.geometry._geometry import DTGEOMETRY
+from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.super_layer import SuperLayer
 from pandas import DataFrame
+from copy import deepcopy
+import warnings
 
 
 class Station(DTFrame):
@@ -9,18 +12,18 @@ class Station(DTFrame):
 
     Attributes
     ----------
-    wheel : int
-        Geometrical position within CMS.
-    sector : int
-        Geometrical position within CMS.
-    station : int
-        Geometrical position within CMS.
-    name : str
-        Name of the station. returns "Wheel {wheel}, Sector {sector}, Station {station}".
-    super_layers : list
-        List of super layers in the station.
+        wheel : int
+            Geometrical position within CMS.
+        sector : int
+            Geometrical position within CMS.
+        station : int
+            Geometrical position within CMS.
+        name : str
+            Name of the station. returns "Wheel {wheel}, Sector {sector}, Station {station}".
+        super_layers : list
+            List of super layers in the station.
 
-    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+        Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, wheel, sector, station, dt_info=None):
@@ -33,14 +36,10 @@ class Station(DTFrame):
         :type sector: int
         :param station: Station type.
         :type station: int
-        :param dt_info: Drift time information for the station. Default is None.
-        :type dt_info: dict, list, or pandas.DataFrame
+        :param dt_info: Drift time information for the station. Default is None. Ensure to provide 'sl', 'l', and 'w' identifiers for each drift cell.
+        :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
-        super().__init__(
-            rawId=DTGEOMETRY.get("rawId", wh=wheel, sec=sector, st=station)
-        )
-        self.number = None
-
+        super().__init__(rawId=DTGEOMETRY.get("rawId", wh=wheel, sec=sector, st=station))
         # == Chamber related parameters
         self.wheel = wheel
         self.sector = sector
@@ -50,9 +49,9 @@ class Station(DTFrame):
         self._super_layers = []
         self._build_station()
 
-        # == Set the drift times
+        # == Set the drift cell attributes
         if dt_info is not None:
-            self.set_cell_times(dt_info)
+            self.set_cell_attrs(dt_info)
 
     # == Getters
 
@@ -94,7 +93,7 @@ class Station(DTFrame):
         :return: Name of the station in format "Wheel {wheel}, Sector {sector}, Station {station}".
         :rtype: str
         """
-        return f"Wheel {self.wheel}, Sector {self.sector}, Station {self.station}"
+        return f"Wheel {self._wheel}, Sector {self._sector}, Station {self._station}"
 
     @property
     def super_layers(self):
@@ -115,9 +114,7 @@ class Station(DTFrame):
         :return: Super layer with the specified number.
         :rtype: SuperLayer
         """
-        return next(
-            (sl for sl in self.super_layers if sl.number == super_layer_number), None
-        )
+        return next((sl for sl in self._super_layers if sl.number == super_layer_number), None)
 
     # == Setters
 
@@ -168,85 +165,80 @@ class Station(DTFrame):
         :param super_layer: Super layer to be added.
         :type super_layer: SuperLayer
         """
-        self.super_layers.append(super_layer)
-
-    def _correct_cords(self, x, y, z):
-        """
-        Correct the coordinates of the station. Bear in mind that the station reference
-        frame is rotated pi/2 with respect to the CMS frame along x direction:
-
-        CMS -> x: right, y: up, z: forward, Station -> x: right, y: forward, z: down
-
-        That is, a rotation matrix of -90 degrees around the x-axis.
-
-        .. math::
-
-            R_x(-\\pi/2) = \\begin{bmatrix} 
-                                1 & 0 & 0 \\\\
-                                0 & 0 & 1 \\\\
-                                0 & -1 & 0
-                            \\end{bmatrix}
-
-        :param x: x coordinate.
-        :type x: float
-        :param y: y coordinate.
-        :type y: float
-        :param z: z coordinate.
-        :type z: float
-        :return: Transformed coordinates.
-        :rtype: tuple
-        """
-        return x, z, -1 * y
+        self._super_layers.append(super_layer)
 
     def _build_station(self):
         """
         Build up the station. It creates the super layers contained in the station.
         """
         for SL in DTGEOMETRY.get(rawId=self.id).iter("SuperLayer"):
-            new_super_layer = SuperLayer(rawId=SL.get("rawId"), parent=self)
-            self._add_super_layer(new_super_layer)
+            self._add_super_layer(SuperLayer(rawId=SL.get("rawId"), parent=self))
 
-    def set_cell_times(self, dt_info):
+    def set_cell_attrs(self, dt_info):
         """
-        Set the drift times for the cells in the station.
+        Set the attributes for the drift cells in the station.
 
-        :param dt_info: Drift time information for the station. Can be a dictionary, a list of dictionaries,
-                or a pandas DataFrame containing the drift time information identified by super layer,
-                layer, and wire. e.g. [{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]
+        :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
+                or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
+                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list, or pandas.DataFrame
         """
-        info_iter = (
-            DataFrame(dt_info) if isinstance(dt_info, (dict, list)) else dt_info
-        ).itertuples(index=False)
-        for info in info_iter:
-            sl, l, w, time = info.sl, info.l, info.w, info.time
-            try:
-                self.super_layer(sl).layer(l).cell(w).driftTime = time
-            except:
-                pass
+        if isinstance(dt_info, dict):
+            info = [deepcopy(dt_info)]
+        elif isinstance(dt_info, DataFrame):
+            info = dt_info.to_dict(orient="records")
+        elif isinstance(dt_info, list):
+            info = deepcopy(dt_info)
+        else:
+            raise TypeError(
+                "The drift time information must be a dictionary, a list of dictionaries, or a pandas DataFrame."
+            )
+
+        for info_item in info:
+            sl = info_item.pop("sl", None)
+            l = info_item.pop("l", None)
+            w = info_item.pop("w", None)
+            if not all([sl, l, w]):
+                raise ValueError(
+                    "The drift cell information must contain the super layer, layer, and wire identifiers."
+                )
+            super_layer = self.super_layer(sl)
+
+            if super_layer is None:
+                warnings.warn(f"Super layer {sl} does not exist in station {self.name}.")
+                continue
+
+            cell = self.super_layer(sl).layer(l).cell(w)
+
+            for key, value in info_item.items():
+                setattr(cell, key, value)
 
 
 if __name__ == "__main__":
-    local = False
-    st = Station(wheel=-2, sector=1, station=4)
-    print("Local: ", local)
-    print("Station center:", st.local_center if local else st.global_center)
-    print("Station direction:", st.direction)
+    # This is to check that nothing fails
+    st = Station(
+        wheel=-2,
+        sector=1,
+        station=2,
+        dt_info=[
+            {"sl": 1, "l": 1, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 2, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 3, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 4, "w": 2, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 1, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 2, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 3, "w": 1, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 4, "w": 2, "time": 10, "size": 2, "other": 34},
+        ],
+    )
+    print(st)
     for sl in st.super_layers:
-        print(
-            f">Super Layer {sl.number} center:",
-            sl.local_center if local else sl.global_center,
-        )
+        print("\t", sl)
         for l in sl.layers:
-            print(
-                f"->Layer {l.number} center:",
-                l.local_center if local else l.global_center,
-            )
-            print(
-                f"---First Cell center:",
-                l.cells[0].local_center if local else l.cells[0].global_center,
-            )
-            print(
-                f"---Last Cell center:",
-                l.cells[-1].local_center if local else l.cells[-1].global_center,
-            )
+            print(2 * "\t", l)
+            print(3 * "\t", l.cell(l._first_cell_id))
+            print(3 * "\t", l.cell(len(l.cells) - 1))
+    print(
+        "\t",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
+    )

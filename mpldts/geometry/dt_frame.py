@@ -1,9 +1,43 @@
 from mpldts.geometry._geometry import DTGEOMETRY
+import warnings
 
-class DTFrame(object):
+
+class DTFrame:
     """
-    A parent class representing any possible DT frame object, such as a DT cell, a Layer, a SuperLayer, or the whole DT.
-    This class is designed to manage common attributes, getters, setters, etc.
+    A parent class representing any possible DT object, such as a DT cell, a Layer, a SuperLayer, or
+    the whole DT chamber. This class is designed to manage common attributes, getters, setters, and
+    other functionalities for DT geometrical objects.
+
+    Attributes
+    ----------
+        id : int
+            Identifier of the DT geometrical object.
+        parent : DTFrame
+            Parent of the DT geometrical object.
+        number : int
+            Number identifier of the DT geometrical object.
+        width : float
+            Width of the DT geometrical object.
+        height : float
+            Height of the DT geometrical object.
+        length : float
+            Length of the DT geometrical object.
+        bounds : tuple
+            Space dimensions of the DT geometrical object (width, height, length).
+        local_center : tuple
+            Local center coordinates (x, y, z) of the DT geometrical object.
+        global_center : tuple
+            Global center coordinates (x, y, z) of the DT geometrical object.
+        direction : tuple
+            Direction vector of the DT geometrical object. It is the normal vector to the object's surface and scencially point to the IP of CMS.
+        local_cords_at_min : tuple
+            Local coordinates at the minimum position (lower left corner) of the DT geometrical object.
+        global_cords_at_min : tuple
+            Global coordinates at the minimum position (lower left corner) of the DT geometrical object (not implemented).
+
+    .. note::
+        - This class can be subclassed to create specific types of DT geometrical objects, such as DT cells, Layers, or SuperLayers.
+        - The `global_cords_at_min` property is not implemented and will raise a warning if accessed.
     """
 
     def __init__(self, rawId=None):
@@ -20,6 +54,36 @@ class DTFrame(object):
             self.direction = DTGEOMETRY.get("NormalVector", rawId=rawId)
             self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
 
+    def __str__(self):
+        """
+        Provide a string representation of the principal DTFrame object properties.
+
+        :return: String representation of the object.
+        :rtype: str
+        """
+        return (
+            f"id: {self.id} "
+            f"number: {self.number} "
+            f"local_center: {self.local_center} "
+            f"global_center: {self.global_center} "
+            f"direction: {self.direction} "
+            f"bounds: {self.bounds}"
+        )
+
+    @property
+    def parent(self):
+        """
+        Parent of the Object.
+
+        :return: Parent of the object.
+        :rtype: object
+        """
+        try:
+            return self._parent
+        except AttributeError:
+            warnings.warn(f"This {self.__class__.__name__} instance does not have a Parent.")
+            return None
+
     @property
     def id(self):
         """
@@ -28,17 +92,27 @@ class DTFrame(object):
         :return: Identifier of the object.
         :rtype: int
         """
-        return self._id
+        try:
+            return self._id
+        except AttributeError:
+            warnings.warn(f"This {self.__class__.__name__} instance does not have an ID assigned.")
+            return None
 
     @property
     def number(self):
         """
-        Number of the Object.
+        Number identifier of the Object.
 
         :return: Number of the Object.
         :rtype: int
         """
-        return self._number
+        try:
+            return self._number
+        except AttributeError:
+            warnings.warn(
+                f"This {self.__class__.__name__} instance does not have a Number assigned."
+            )
+            return None
 
     @property
     def width(self):
@@ -91,6 +165,25 @@ class DTFrame(object):
         return self._x_local, self._y_local, self._z_local
 
     @property
+    def direction(self):
+        """
+        Direction of the Object.
+
+        :return: Direction of the object.
+        :rtype: tuple
+        """
+        try:
+            return self._direction
+        except AttributeError:
+            if self.parent:
+                return self.parent.direction
+            else:
+                warnings.warn(
+                    f"This {self.__class__.__name__} instance does not have a Direction assigned."
+                )
+                return None
+
+    @property
     def global_center(self):
         """
         Global center coordinates of the Object.
@@ -101,33 +194,44 @@ class DTFrame(object):
         return self._x_global, self._y_global, self._z_global
 
     @property
-    def local_position_at_min(self):
+    def local_cords_at_min(self):
         """
-        Local position at the minimum coordinates of the Object. It means the lower left corner of the object.
+        Local cords at the minimum coordinates of the Object. It means the lower left corner of the object.
 
-        :return: Local position at minimum coordinates (x, y, z).
+        :return: Local cords at minimum coordinates (x, y, z).
         :rtype: tuple
         """
-        x = self._x_local - self.width / 2
-        y = self._y_local - self.height / 2
-        z = self._z_local - self.length / 2
+        x = self._x_local - self._width / 2
+        y = self._y_local - self._length / 2  # y is the length acording to station ref frame
+        z = self._z_local - self._height / 2  # z is the height acording to station ref frame
         return x, y, z
 
     @property
-    def global_position_at_min(self):
+    def global_cords_at_min(self):
         """
-        Global position at the minimum coordinates of the Object. It means the lower left corner of the object.
+        Global cords at the minimum coordinates of the Object. It means the lower left corner of the object.
 
-        :return: Global position at minimum coordinates (x, y, z).
+        .. warning::
+            This property is not implemented yet.
+
+        :return: Global cords at minimum coordinates (x, y, z).
         :rtype: tuple
         """
-        x = self._x_global - self.width / 2
-        y = self._y_global - self.height / 2
-        z = self._z_global - self.length / 2
-        return x, y, z
+        warnings.warn("Global coordinates at the minimum position is not implemented yet.")
+        return None
+
+    @parent.setter
+    def parent(self, parent):
+        """
+        Set the parent of the Object.
+
+        :param parent: Parent of the Object.
+        :type parent: object
+        """
+        self._parent = parent
 
     @id.setter
-    def id(self, id):
+    def id(self, id: int):
         """
         Set the identifier of the Object.
 
@@ -137,7 +241,7 @@ class DTFrame(object):
         self._id = id
 
     @number.setter
-    def number(self, number):
+    def number(self, number: int):
         """
         Set the number of the Object.
 
@@ -147,7 +251,7 @@ class DTFrame(object):
         self._number = number
 
     @bounds.setter
-    def bounds(self, bounds):
+    def bounds(self, bounds: tuple):
         """
         Set the space dimensions of the Object.
 
@@ -157,36 +261,31 @@ class DTFrame(object):
         self._width, self._height, self._length = bounds
 
     @local_center.setter
-    def local_center(self, position):
+    def local_center(self, cords: tuple):
         """
         Set the local center coordinates of the Object.
 
-        :param position: Local center coordinates (x, y, z).
-        :type position: tuple
+        :param cords: Local center coordinates (x, y, z).
+        :type cords: tuple
         """
-        self._x_local, self._y_local, self._z_local = self._correct_cords(*position)
+        self._x_local, self._y_local, self._z_local = cords
+
+    @direction.setter
+    def direction(self, direction: tuple):
+        """
+        Set the direction of the Object.
+
+        :param direction: Direction of the Object.
+        :type direction: tuple
+        """
+        self._direction = direction
 
     @global_center.setter
-    def global_center(self, position):
+    def global_center(self, cords: tuple):
         """
         Set the global center coordinates of the Object.
 
-        :param position: Global center coordinates (x, y, z).
-        :type position: tuple
+        :param cords: Global center coordinates (x, y, z).
+        :type cords: tuple
         """
-        self._x_global, self._y_global, self._z_global = position
-
-    def _correct_cords(self, x, y, z):
-        """
-        Correct the coordinates to the CMS coordinate system. This method should be implemented by subclasses.
-
-        :param x: The x coordinate.
-        :type x: float
-        :param y: The y coordinate.
-        :type y: float
-        :param z: The z coordinate.
-        :type z: float
-        :return: The corrected coordinates.
-        :rtype: tuple
-        """
-        raise NotImplementedError("Subclasses should implement this method")
+        self._x_global, self._y_global, self._z_global = cords

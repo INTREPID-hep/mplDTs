@@ -1,5 +1,6 @@
+from mpldts.geometry._geometry import DTGEOMETRY
+from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.drift_cell import DriftCell
-from mpldts.geometry import DTGEOMETRY, DTFrame
 
 
 class Layer(DTFrame):
@@ -8,12 +9,12 @@ class Layer(DTFrame):
 
     Attributes
     ----------
-    cells : list
-        List of drift cells in the layer.
-    parent : Station
-        Parent station of the super layer.
+        cells : list
+            List of drift cells in the layer.
+        parent : SuperLayer
+            Parent super layer of the layer.
 
-    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+        Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, rawId, parent=None):
@@ -22,14 +23,16 @@ class Layer(DTFrame):
 
         :param rawId: Raw identifier of the layer.
         :type rawId: int
-        :param parent: Parent station of the super layer. Default is None.
-        :type parent: Station, optional
+        :param parent: Parent super layer of the layer. Default is None.
+        :type parent: SuperLayer, optional
         """
+        self.parent = parent
         self.number = int(DTGEOMETRY.get("layerNumber", rawId=rawId))
         super().__init__(rawId=rawId)
-        self.parent = parent
         self._DriftCells = []
 
+        # these attributes are used inside DriftCell class to compute the position of the cell
+        # and in cell() method to check if the cell_id is valid
         self._first_cell_id = int(DTGEOMETRY.get(".//Channels//first", rawId=rawId))
         self._last_cell_id = int(DTGEOMETRY.get(".//Channels//last", rawId=rawId))
 
@@ -58,21 +61,19 @@ class Layer(DTFrame):
             raise ValueError("Layer number must be between 1 and 4")
         DTFrame.number.fset(self, number)
 
-    def cell(self, cell_id):
+    def cell(self, cell_number):
         """
-        Get a layer cell by its id.
+        Get a layer cell by its number. If the cell_number is invalid, a ValueError is raised, or if the cell is not found, None is returned.
 
-        :param cell_id: Identifier of the cell.
-        :type cell_id: int
-        :return: Drift cell with the specified id.
+        :param cell_number: Identifier of the cell.
+        :type cell_number: int
+        :return: Drift cell with the specified number.
         :rtype: DriftCell
-        :raises ValueError: If the cell_id is invalid.
+        :raises ValueError: If the cell_number is invalid.
         """
-        if cell_id < self._first_cell_id or cell_id > self._last_cell_id:
-            raise ValueError(f"Invalid cell id: {cell_id}")
-        return self.cells[
-            cell_id - self._first_cell_id
-        ]  # to match the cell id with the list index
+        if cell_number < self._first_cell_id or cell_number > self._last_cell_id:
+            raise ValueError(f"Invalid cell number: {cell_number}")
+        return next((c for c in self._DriftCells if c.id == cell_number), None)
 
     def _add_cell(self, cell):
         """
@@ -81,63 +82,7 @@ class Layer(DTFrame):
         :param cell: Drift cell to be added.
         :type cell: DriftCell
         """
-        self.cells.append(cell)
-
-    def _correct_cords(self, x, y, z):
-        """
-        Correct the coordinates of the super layer. Bear in mind that the station reference
-        frame is rotated pi/2 with respect to the CMS frame depending on the super layer number:
-
-        if SL == 1 or 3:
-            CMS -> x: right, y: up, z: forward, SuperLayer -> x: right, y: forward, z: down
-            That is, a rotation matrix of -90 degrees around the x-axis.
-
-            .. math::
-                
-                Rx(-\\pi/2) = \\begin{bmatrix} 
-                                    1 & 0 & 0 \\\\
-                                    0 & 0 & 1 \\\\
-                                    0 & -1 & 0
-                                \\end{bmatrix}
-
-        if SL == 2:
-            CMS -> x: right, y: up, z: forward, SuperLayer -> x: backward, y: right, z: down
-        
-            That is, a rotation matrix of 90 degrees around the z-axis. then a rotation of -90 
-            degrees around the x-axis.
-
-            .. math::
-
-                R_x(-\\pi/2) R_z(\\pi/2) = 
-                    \\begin{bmatrix} 
-                        1 & 0 & 0 \\\\
-                        0 & 0 & 1 \\\\
-                        0 & -1 & 0
-                    \\end{bmatrix} \\cdot
-                    \\begin{bmatrix} 
-                        0 & -1 & 0 \\\\
-                        1 & 0 & 0 \\\\
-                        0 & 0 & 1
-                    \\end{bmatrix}
-                    = \\begin{bmatrix} 
-                        0 & -1 & 0 \\\\
-                        0 & 0 & 1 \\\\
-                        -1 & 0 & 0
-                    \\end{bmatrix}
-
-        :param x: x-coordinate.
-        :type x: float
-        :param y: y-coordinate.
-        :type y: float
-        :param z: z-coordinate.
-        :type z: float
-        :return: Corrected coordinates (x, y, z).
-        :rtype: tuple
-        """
-        if self.number == 1 or self.number == 3:
-            return x, z, -1 * y
-        else:
-            return -1 * y, z, -1 * x
+        self._DriftCells.append(cell)
 
     def _build_layer(self):
         """
@@ -150,5 +95,8 @@ class Layer(DTFrame):
 
 
 if __name__ == "__main__":
+    # This is to check that nothing fails
     layer = Layer(589603840)
-    print(layer.cells)
+    print(layer)
+    for cell in layer.cells:
+        print("\t", cell)
