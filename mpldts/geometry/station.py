@@ -16,10 +16,8 @@ class Station(DTFrame):
             Geometrical position within CMS.
         sector : int
             Geometrical position within CMS.
-        station : int
-            Geometrical position within CMS.
         name : str
-            Name of the station. returns "Wheel {wheel}, Sector {sector}, Station {station}".
+            Name of the station. returns "Wheel {wheel}, Sector {sector}, Station {number}".
         super_layers : list
             List of super layers in the station.
 
@@ -43,7 +41,7 @@ class Station(DTFrame):
         # == Chamber related parameters
         self.wheel = wheel
         self.sector = sector
-        self.station = station
+        self.number = station
 
         # == Build the station
         self._super_layers = []
@@ -76,24 +74,14 @@ class Station(DTFrame):
         return self._sector
 
     @property
-    def station(self):
-        """
-        Station type.
-
-        :return: Station position.
-        :rtype: int
-        """
-        return self._station
-
-    @property
     def name(self):
         """
         Name of the station.
 
-        :return: Name of the station in format "Wheel {wheel}, Sector {sector}, Station {station}".
+        :return: Name of the station in format "Wheel {wheel}, Sector {sector}, Station {number}".
         :rtype: str
         """
-        return f"Wheel {self._wheel}, Sector {self._sector}, Station {self._station}"
+        return f"Wheel {self._wheel}, Sector {self._sector}, Station {self.number}"
 
     @property
     def super_layers(self):
@@ -145,8 +133,8 @@ class Station(DTFrame):
         else:
             self._sector = value
 
-    @station.setter
-    def station(self, value):
+    @DTFrame.number.setter
+    def number(self, value):
         """
         Set the station type.
 
@@ -156,7 +144,7 @@ class Station(DTFrame):
         """
         if value < 1 or value > 4:
             raise ValueError("Station value must be between 1 and 4")
-        self._station = value
+        self._number = value
 
     def _add_super_layer(self, super_layer):
         """

@@ -26,7 +26,7 @@ The recommended way of development is under a virtual environment.
 You can check and fix your code formatting through the usage of `Black`:
 
 ``` shell
-black --check -l 100 mpldts
+black --check --diff --color -l 100 mpldts
 ```
 
 ### Documentation Writing

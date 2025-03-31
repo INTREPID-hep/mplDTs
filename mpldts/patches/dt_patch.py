@@ -99,8 +99,13 @@ class DTPatch:
         axes.add_collection(self.bounds_collection)
         axes.add_collection(self.cells_collection)
 
+        self.inversion_factors = {
+            "phi": (-1, -1) if self.station.number % 2 == 0 else (1, -1),
+            "eta": (1, -1) if self.station.number % 2 == 0 else (-1, -1),
+        }
+
         if self.inverted:
-            self.invertStation()
+            self.invert_station()
 
         if not self.local:
             self.move_to_global()
@@ -155,7 +160,7 @@ class DTPatch:
             width = length
 
         if (
-            self.view == "eta" and not isinstance(obj, DriftCell) and obj.number != 2
+            self.view == "eta" and not isinstance(obj, DriftCell) and (obj.number != 2 or isinstance(obj, Station))
         ):  # if SL1 or SL3
             x_min, y_min, z_min = change_frame(
                 (x_min, y_min, z_min), from_frame="Station", to_frame="SL2"
@@ -193,40 +198,47 @@ class DTPatch:
         Move the collections to the global CMS frame. This method can be called by the user but ensure
         that the PatchCollections are not inverted, as this method will invert them to adjust to the global frame.
         """
+
         base_bounds_transform = self.bounds_collection.get_transform()
         base_cells_transform = self.cells_collection.get_transform()
         transformation = Affine2D()
 
         x, y, z = self.station.global_center
-        if self.view == "phi":
-            if not self.inverted:
-                transformation = transformation.scale(1, -1)
 
+        if not self.inverted:
+            transformation = transformation.scale(*self.inversion_factors[self.view])
+
+        if self.view == "phi":
             nx, ny, _ = self.station.direction
             angle = degrees(atan2(ny, nx)) + 90  # ang_incline = ang_normal_refx + 90
             transformation = transformation.translate(x, y).rotate_deg_around(x, y, angle)
 
         elif self.view == "eta":
-            if not self.inverted:
-                transformation = transformation.scale(-1, -1)
             r = sqrt(x**2 + y**2)
             transformation = transformation.translate(z, r)
 
         self.bounds_collection.set_transform(transformation + base_bounds_transform)
         self.cells_collection.set_transform(transformation + base_cells_transform)
 
-    def invertStation(self):
+
+    def invert_station(self):
         """
-        Invert the station view. If the current view is "phi", it will invert along the x-axis.
-        If the current view is "eta", it will invert along the y-axis and x-axis (DT Chamber local frame axes).
-        This method will not produce any change if the local attribute is set to False, this is
-        intrinsic to matplotlib's Transform class (? -- to check).
+        Invert the station view. The inversion depends on the current view and the station number:
+
+        - For the "phi" view, the station is inverted along the x-axis.
+        - For the "eta" view, the station is inverted along both the x-axis and y-axis 
+        (in the DT Chamber local frame).
+
+        The station number determines the inversion factors:
+        - If the station number is even, the inversion factors are reversed.
         """
+        if not self.local:
+            return
         self.inverted = not self.inverted
         base_bounds_transform = self.bounds_collection.get_transform()
         base_cells_transform = self.cells_collection.get_transform()
 
-        adjustment = Affine2D().scale(1, -1) if self.view == "phi" else Affine2D().scale(-1, -1)
+        adjustment = Affine2D().scale(*self.inversion_factors[self.view])
 
         self.bounds_collection.set_transform(adjustment + base_bounds_transform)
         self.cells_collection.set_transform(adjustment + base_cells_transform)

@@ -23,7 +23,7 @@ axins = zoomed_inset_axes(ax, 3, loc='upper left', bbox_to_anchor=(1.05, 1.1), b
 
 for wh in range(-2, 3):
     for st in range(1, 5):
-        station = Station(wheel=wh, sector=3, station=st)
+        station = Station(wheel=wh, sector=2, station=st)
         _ = DTPatch(
             station,
             axes=ax,
@@ -37,7 +37,7 @@ cells_kwargs["linewidth"] = 0.5 * 72 / dpi
 
 for wh in range(1, 3):
     for st in range(1, 3):
-        station = Station(wheel=wh, sector=3, station=st)
+        station = Station(wheel=wh, sector=2, station=st)
         _ = DTPatch(
             station,
             axes=axins,

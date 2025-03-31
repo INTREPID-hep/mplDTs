@@ -1,15 +1,11 @@
-.. DT Pattern Recognition documentation master file, created by
-   sphinx-quickstart on Thu Nov 28 01:21:14 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 mplDTs
 ======
-This package provides a set of base tools for implementing pattern recognition plots using matplotlib
-patches methodology, and taking into account the geometrical features of the CMS DT system.
+
+This package provides a set of base tools to produce CMS DT chambers plots using matplotlib patches, 
+and taking into account the geometrical features of the CMS DT system.
 
 Installation
-------------
+============
 
 First, download the source files or clone the repository:
 
