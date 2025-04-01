@@ -2,12 +2,9 @@ DriftCell
 =========
 
 .. autoclass:: mpldts.geometry.drift_cell.DriftCell
+    :show-inheritance:
+    :member-order: bysource
     :members:
-    :special-members:
-    :private-members: _correct_cords
-    :exclude-members: __module__, __dict__, __weakref__
-
-
-.. rubric:: Example
-
-It works similarly to the Station class, see the example in the :doc:`./station` documentation.
+    :special-members: __init__
+    :private-members: _compute_position
+    :inherited-members:

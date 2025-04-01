@@ -1,5 +1,6 @@
+from mpldts.geometry._geometry import DTGEOMETRY
+from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.layer import Layer
-from mpldts.geometry import DTGEOMETRY, DTFrame
 
 
 class SuperLayer(DTFrame):
@@ -8,12 +9,12 @@ class SuperLayer(DTFrame):
 
     Attributes
     ----------
-    layers : list
-        List of layers in the super layer.
-    parent : Station
-        Parent station of the super layer.
+        layers : list
+            List of layers in the super layer.
+        parent : Station
+            Parent station of the super layer.
 
-    Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
+        Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
     def __init__(self, rawId, parent=None):
@@ -25,9 +26,9 @@ class SuperLayer(DTFrame):
         :param parent: Parent station of the super layer. Default is None.
         :type parent: Station, optional
         """
+        self.parent = parent
         self.number = int(DTGEOMETRY.get("superLayerNumber", rawId=rawId))
         super().__init__(rawId=rawId)
-        self.parent = parent
         self._layers = []
 
         self._build_super_layer()
@@ -64,7 +65,7 @@ class SuperLayer(DTFrame):
         :return: Layer with the specified number.
         :rtype: Layer
         """
-        return next((l for l in self.layers if l.number == layer_number), None)
+        return next((l for l in self._layers if l.number == layer_number), None)
 
     def _add_layer(self, layer):
         """
@@ -73,63 +74,7 @@ class SuperLayer(DTFrame):
         :param layer: Layer to be added.
         :type layer: Layer
         """
-        self.layers.append(layer)
-
-    def _correct_cords(self, x, y, z):
-        """
-        Correct the coordinates of the super layer. Bear in mind that the reference
-        frame is rotated pi/2 with respect to the CMS frame depending on the super layer number:
-
-        if SL == 1 or 3:
-            CMS -> x: right, y: up, z: forward, SuperLayer -> x: right, y: forward, z: down
-            That is, a rotation matrix of -90 degrees around the x-axis.
-
-            .. math::
-
-                R_x(-\\pi/2) = \\begin{bmatrix} 
-                                    1 & 0 & 0 \\\\
-                                    0 & 0 & 1 \\\\
-                                    0 & -1 & 0
-                                \\end{bmatrix}
-
-        if SL == 2:
-            CMS -> x: right, y: up, z: forward, SuperLayer -> x: backward, y: right, z: down
-        
-            That is, a rotation matrix of 90 degrees around the z-axis, then a rotation of -90 
-            degrees around the x-axis.
-
-            .. math::
-
-                R_x(-\\pi/2) R_z(\\pi/2) = 
-                    \\begin{bmatrix} 
-                        1 & 0 & 0 \\\\
-                        0 & 0 & 1 \\\\
-                        0 & -1 & 0
-                    \\end{bmatrix} \\cdot
-                    \\begin{bmatrix} 
-                        0 & -1 & 0 \\\\
-                        1 & 0 & 0 \\\\
-                        0 & 0 & 1
-                    \\end{bmatrix}
-                    = \\begin{bmatrix} 
-                        0 & -1 & 0 \\\\
-                        0 & 0 & 1 \\\\
-                        -1 & 0 & 0
-                    \\end{bmatrix}
-
-        :param x: x-coordinate.
-        :type x: float
-        :param y: y-coordinate.
-        :type y: float
-        :param z: z-coordinate.
-        :type z: float
-        :return: Corrected coordinates (x, y, z).
-        :rtype: tuple
-        """
-        if self.number == 1 or self.number == 3:
-            return x, z, -1 * y
-        else:
-            return -1 * y, z, -1 * x
+        self._layers.append(layer)
 
     def _build_super_layer(self):
         """
@@ -141,5 +86,10 @@ class SuperLayer(DTFrame):
 
 # Example usage
 if __name__ == "__main__":
+    # This is to check that nothing fails
     super_layer = SuperLayer(rawId=589357056)
-    print(super_layer.number)
+    print(super_layer)
+    for layer in super_layer.layers:
+        print("\t", layer)
+        for cell in layer.cells:
+            print(2 * "\t", cell)

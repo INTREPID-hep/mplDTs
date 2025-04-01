@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mplDTs"
-version = "0.1.0"
+version = "1.0.0"
 description = "Set of tools to produce CMS DTs matplotlib patches"
 authors = ["Daniel Estrada <estradadaniel@uniovi.es>"]
 readme = "README.md"
@@ -23,7 +23,7 @@ optional = true
 [tool.poetry.group.doc.dependencies]
 sphinx = "*"
 sphinx-rtd-theme = "*"
-sphinx-autobuild = "*"
+sphinx-copybutton = "*"
 
 [[tool.poetry.packages]]
 include = "mpldts"
