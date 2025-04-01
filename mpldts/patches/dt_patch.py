@@ -99,11 +99,6 @@ class DTPatch:
         axes.add_collection(self.bounds_collection)
         axes.add_collection(self.cells_collection)
 
-        self.inversion_factors = {
-            "phi": (-1, -1) if self.station.number % 2 == 0 else (1, -1),
-            "eta": (1, -1) if self.station.number % 2 == 0 else (-1, -1),
-        }
-
         if self.inverted:
             self.invert_station()
 
@@ -206,7 +201,7 @@ class DTPatch:
         x, y, z = self.station.global_center
 
         if not self.inverted:
-            transformation = transformation.scale(*self.inversion_factors[self.view])
+            transformation = transformation.scale(*self._calculate_inversion_factors(self.view))
 
         if self.view == "phi":
             nx, ny, _ = self.station.direction
@@ -238,7 +233,26 @@ class DTPatch:
         base_bounds_transform = self.bounds_collection.get_transform()
         base_cells_transform = self.cells_collection.get_transform()
 
-        adjustment = Affine2D().scale(*self.inversion_factors[self.view])
+        adjustment = Affine2D().scale(*self._calculate_inversion_factors(self.view))
 
         self.bounds_collection.set_transform(adjustment + base_bounds_transform)
         self.cells_collection.set_transform(adjustment + base_cells_transform)
+
+    def _calculate_inversion_factors(self, view):
+        """
+        Calculate inversion factors based on the station's wheel and sector.
+
+        :param view: The view type, either "phi" or "eta".
+        :type view: str
+        :return: A tuple of inversion factors.
+        :rtype: tuple
+        """
+        if self.station.wheel < 0:
+            return (-1, -1) if view == "phi" else (1, -1)
+        elif self.station.wheel > 0:
+            return (1, -1) if view == "phi" else (-1, -1)
+        else:  # self.station.wheel == 0
+            if self.station.sector in [1, 4, 5, 8, 9, 12, 13]:
+                return (-1, -1) if view == "phi" else (1, -1)
+            else:
+                return (1, -1) if view == "phi" else (-1, -1)
