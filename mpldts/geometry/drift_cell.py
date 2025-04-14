@@ -28,15 +28,7 @@ class DriftCell(DTFrame):
 
         Others inherit from ``mpldts.geometry.DTFrame``... (e.g. local_center, direction, etc.)
         Bounds variables (width, height, length) are fixed values: 4.2 cm, 1.3 cm, 235 cm (aprox).
-
-    .. note::
-        - The `global_center` property is not implemented yet
     """
-
-    # class variables
-    _height = float(DTGEOMETRY.root.find(".//Topology//cellHeight").text)
-    _width = float(DTGEOMETRY.root.find(".//Topology//cellWidth").text)
-    _length = float(DTGEOMETRY.root.find(".//Topology//cellLength").text)
 
     def __init__(self, number=-1, parent=None):
         """
@@ -47,53 +39,23 @@ class DriftCell(DTFrame):
         :param parent: Parent layer of the drift cell (default is None).
         :type parent: Layer, optional
         """
-        # Since rawId is not provided, no XML geometrical info will be used to initialize
-        # the instance. Then, attributes are set manually...
+        # Parent rawId is used to get XML geometrical info to initialize
+        # the instance. If not parent, attributes are set manually...
         super().__init__()
         self.parent = parent
         self.id = number
         self.number = number
-        self.local_center = self._compute_position()
+        # self.local_center = self._compute_position()
 
-    # == Getters ==
+        if parent:
+            self.bounds = DTGEOMETRY.get("WiresSize", rawId=parent.id)
+            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=parent.id, w=number)
+            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=parent.id, w=number)
 
-    @DTFrame.global_center.getter
-    def global_center(self):
-        """
-        Global position of the drift cell.
-
-        .. warning::
-            This property is not implemented yet.
-
-        :return: Global position of the drift cell.
-        :rtype: tuple
-        """
-        Warning.warn("Global position is not implemented yet for Drift Cells.")
-        return None
-
-    # == Setters ==
-
-    def _compute_position(self):
-        """
-        Compute the position of the drift cell.
-
-        :return: Position of the drift cell.
-        :rtype: tuple
-        """
-        if self.parent:
-            center = self.parent.local_center
-            x, y, z = center
-
-            first_wire_x = float(
-                DTGEOMETRY.get(f".//WirePositions//FirstWire_ref_to_chamber", rawId=self.parent.id)
-            )
-
-            cell_index = self.number - self.parent._first_cell_id
-            x_cell = first_wire_x + cell_index * self._width
         else:
-            x_cell, y, z = 0, 0, 0
-
-        return x_cell, y, z
+            self.bounds = (4.2, 1.3, 235)
+            self.local_center = (0, 0, 0)
+            self.global_center = (0, 0, 0)
 
 
 if __name__ == "__main__":

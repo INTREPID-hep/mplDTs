@@ -215,7 +215,6 @@ class DTPatch:
         self.bounds_collection.set_transform(transformation + base_bounds_transform)
         self.cells_collection.set_transform(transformation + base_cells_transform)
 
-
     def invert_station(self):
         """
         Invert the station view. The inversion depends on the current view and the station number:

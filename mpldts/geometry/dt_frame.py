@@ -34,6 +34,10 @@ class DTFrame:
             Local coordinates at the minimum position (lower left corner) of the DT geometrical object.
         global_cords_at_min : tuple
             Global coordinates at the minimum position (lower left corner) of the DT geometrical object (not implemented).
+        theta : float
+            Angle theta of the DT geometrical object according to the global center coordinates.
+        eta : float
+            Pseudorapidity of the DT geometrical object according to the global center coordinates.
 
     .. note::
         - This class can be subclassed to create specific types of DT geometrical objects, such as DT cells, Layers, or SuperLayers.

@@ -16,14 +16,14 @@ fig, axs = plt.subplots(1, 2, figsize=(15, 7), sharey=True, dpi=dpi)
 axs = axs.flatten()
 
 # Define DT station
-station = Station(wheel=-1, sector=1, station=2)
+station = Station(wheel=-1, sector=1, station=1)
 
 # Create patches for phi-view and eta-view
 dt_patch_phi = DTPatch(
-    station, axes=axs[0], faceview="phi", local=True, cells_kwargs=cells_kwargs
+    station, axes=axs[0], faceview="phi", local=True, cells_kwargs=cells_kwargs,
 )
 dt_patch_z = DTPatch(
-    station, axes=axs[1], faceview="eta", local=True, cells_kwargs=cells_kwargs
+    station, axes=axs[1], faceview="eta", local=True, cells_kwargs=cells_kwargs,
 )
 
 # Set axis limits for phi-view
