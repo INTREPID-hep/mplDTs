@@ -1,4 +1,5 @@
 from mpldts.geometry._geometry import DTGEOMETRY
+from mpldts.geometry.transforms import compute_eta, compute_theta
 import warnings
 
 
@@ -34,6 +35,10 @@ class DTFrame:
             Local coordinates at the minimum position (lower left corner) of the DT geometrical object.
         global_cords_at_min : tuple
             Global coordinates at the minimum position (lower left corner) of the DT geometrical object (not implemented).
+        theta : float
+            Angle in the XY plane of the DT geometrical object.
+        eta : float
+            Pseudorapidity of the DT geometrical object.
 
     .. note::
         - This class can be subclassed to create specific types of DT geometrical objects, such as DT cells, Layers, or SuperLayers.
@@ -220,6 +225,26 @@ class DTFrame:
         warnings.warn("Global coordinates at the minimum position is not implemented yet.")
         return None
 
+    @property
+    def theta(self):
+        """
+        Angle theta of the Object according to the global center coordinates.
+
+        :return: Angle theta of the object in radians.
+        :rtype: float
+        """
+        return compute_theta(self._x_global, self._y_global, self._z_global)
+
+    @property
+    def eta(self):
+        """
+        Pseudorapidity of the Object acording to the gloal center coordinates.
+
+        :return: Pseudorapidity of the object.
+        :rtype: float
+        """
+        return compute_eta(self._x_global, self._y_global, self._z_global)
+
     @parent.setter
     def parent(self, parent):
         """
@@ -289,3 +314,4 @@ class DTFrame:
         :type cords: tuple
         """
         self._x_global, self._y_global, self._z_global = cords
+

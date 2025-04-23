@@ -33,8 +33,7 @@ class Layer(DTFrame):
 
         # these attributes are used inside DriftCell class to compute the position of the cell
         # and in cell() method to check if the cell_id is valid
-        self._first_cell_id = int(DTGEOMETRY.get(".//Channels//first", rawId=rawId))
-        self._last_cell_id = int(DTGEOMETRY.get(".//Channels//last", rawId=rawId))
+        self._first_cell_id, self._last_cell_id = DTGEOMETRY.get("WiresRange", rawId=rawId)
 
         self._build_layer()
 
@@ -96,7 +95,7 @@ class Layer(DTFrame):
 
 if __name__ == "__main__":
     # This is to check that nothing fails
-    layer = Layer(589603840)
+    layer = Layer(574923776)
     print(layer)
     for cell in layer.cells:
         print("\t", cell)

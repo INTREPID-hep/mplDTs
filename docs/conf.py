@@ -1,7 +1,7 @@
 project = 'mplDTs'
 copyright = '2025, Daniel Estrada, Universidad de Oviedo'
 author = 'Daniel Estrada'
-release = '1.0.0'
+release = '1.1.0'
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx.ext.todo", 'sphinx_copybutton']
 

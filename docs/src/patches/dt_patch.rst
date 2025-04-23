@@ -109,6 +109,9 @@ and the result is a more natural view of the chamber as illustrated in the figur
     :width: 800px
     :align: center
 
+inversion (1) or (2) will depend on DT chamber's orientation, that means, 
+if detector face is in :math:`+z` or :math:`-z` direction, detailed information can be found `here. <https://dt-sx5.web.cern.ch/dt-sx5/run/docs/050912DT_type_naming.pdf>`_
+
 The following example shows how to do this:
 
 .. literalinclude:: ../../../test/cms_dt_local_inversion.py
