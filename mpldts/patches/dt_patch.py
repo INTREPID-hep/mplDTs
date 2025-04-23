@@ -217,14 +217,8 @@ class DTPatch:
 
     def invert_station(self):
         """
-        Invert the station view. The inversion depends on the current view and the station number:
-
-        - For the "phi" view, the station is inverted along the x-axis.
-        - For the "eta" view, the station is inverted along both the x-axis and y-axis 
-        (in the DT Chamber local frame).
-
-        The station number determines the inversion factors:
-        - If the station number is even, the inversion factors are reversed.
+        Invert the station view. The inversion depends on the current view and the station's wheel and sector.
+        Details about DT chamber orientations can be found `here. <https://dt-sx5.web.cern.ch/dt-sx5/run/docs/050912DT_type_naming.pdf>`_
         """
         if not self.local:
             return

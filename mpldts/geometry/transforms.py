@@ -1,4 +1,4 @@
-from numpy import array, ndarray
+from numpy import array, ndarray, arctan2, sqrt, tan, log
 
 
 def change_frame(point, from_frame, to_frame):
@@ -47,3 +47,43 @@ def change_frame(point, from_frame, to_frame):
         point = array(point)
 
     return tuple(float(cord) for cord in matrices[(from_frame, to_frame)] @ point)
+
+def compute_theta(x, y, z):
+    """
+    Compute the angle theta from the x, y, z coordinates.
+
+    :param x: The x coordinate.
+    :type x: float
+    :param y: The y coordinate.
+    :type y: float
+    :param z: The z coordinate.
+    :type z: float
+    :return: The angle theta in radians.
+    :rtype: float
+    """
+    if x == 0 and y == 0:
+        return 0.0
+
+    if z == 0:
+        raise ValueError("z cannot be zero for computing theta.")
+
+    r = sqrt(x**2 + y**2)
+    return arctan2(r, z)
+
+def compute_eta(x, y, z):
+    """
+    Compute the pseudorapidity from the x, y, z coordinates.
+
+    :param x: The x coordinate.
+    :type x: float
+    :param y: The y coordinate.
+    :type y: float
+    :param z: The z coordinate.
+    :type z: float
+    :return: The angle eta in radians.
+    :rtype: float
+    """
+    theta = compute_theta(x, y, z)
+
+    eta = -1 * log(tan(theta / 2))
+    return eta
