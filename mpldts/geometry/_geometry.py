@@ -15,7 +15,7 @@ class DTGeometry:
 
     def __init__(self, xml_file):
         """
-        Initialize the DTGeometry object by parsing the XML file.
+        Initialize the DTGeometry obje ict by parsing the XML file.
 
         :param xml_file: Path to the XML file containing the DT Geometry.
         :type xml_file: str
@@ -51,25 +51,33 @@ class DTGeometry:
             query += f"//Wire"
             query += f"[@wireNumber='{kwargs['w']}']"
 
+        element = self.root.find(query)
         if attribute is None:
-            element = self.root.find(query)
             return element
 
-        element = self.root.find(query)
         if element is not None:
             if attribute in ["GlobalPosition", "LocalPosition", "NormalVector"]:
-                x, y, z = self._transform_to_pos(str_pos_tuple=element.find(attribute).text)
+                try:
+                    x, y, z = self._transform_to_pos(str_pos_tuple=element.find(attribute).text)
+                except AttributeError:
+                    x, y, z = self._transform_to_pos(str_pos_tuple=element.get(attribute))
                 return x, y, z
-            elif attribute in ["Bounds", "WiresSize"]:
+            elif attribute == "Bounds":
                 width, height, length = element.find(attribute).attrib.values()
                 return (float(width), float(height), float(length))
-            elif attribute == "WiresRange":
-                first, last = element.find(attribute).attrib.values()
-                return (int(first), int(last))
+            elif "wire" in attribute.lower():
+                element = element.find(".//Wires")
+                width, height, length, first, last = element.attrib.values()
+                if attribute == "WiresSize":
+                    return (float(width), float(height), float(length))
+                elif attribute == "WiresRange":
+                    return (int(first), int(last))
+                else:
+                    return element
             else:
                 sub_element = element.find(attribute)
                 if sub_element is not None:
-                    return sub_element.text
+                    return sub_element
                 else:
                     return element.get(attribute)
         else:
@@ -93,7 +101,7 @@ class DTGeometry:
 
 
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v2.xml"))
+DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v3.xml"))
 
 # Example usage
 if __name__ == "__main__":

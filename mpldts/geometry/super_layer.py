@@ -1,6 +1,7 @@
 from mpldts.geometry._geometry import DTGEOMETRY
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.layer import Layer
+from mpldts.geometry.transforms import TransformManager
 
 
 class SuperLayer(DTFrame):
@@ -17,7 +18,7 @@ class SuperLayer(DTFrame):
         Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
-    def __init__(self, rawId, parent=None):
+    def __init__(self, rawId=None, parent=None):
         """
         Constructor of the SuperLayer class.
 
@@ -26,11 +27,15 @@ class SuperLayer(DTFrame):
         :param parent: Parent station of the super layer. Default is None.
         :type parent: Station, optional
         """
+        self.id = rawId
         self.parent = parent
-        self.number = int(DTGEOMETRY.get("superLayerNumber", rawId=rawId))
-        super().__init__(rawId=rawId)
+        if rawId is not None:
+            self.number = int(DTGEOMETRY.get("superLayerNumber", rawId=rawId))
+            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
+            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
+            self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
+        self._setup_tranformer()
         self._layers = []
-
         self._build_super_layer()
 
     @property
@@ -83,6 +88,30 @@ class SuperLayer(DTFrame):
         for layer in DTGEOMETRY.get(rawId=self.id).iter("Layer"):
             self._add_layer(Layer(layer.get("rawId"), parent=self))
 
+    def _setup_tranformer(self):
+        """
+        Set up the transformer for the super layer. It defines the transformation from the local frame to the global frame.
+        """
+        from numpy import array
+
+        self.transformer = TransformManager("SuperLayer")  # intial frame is the SL frame
+        # Inherit transformation from the parent to the global frame
+        if self.parent is not None:
+            transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
+            self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
+
+        # Define the transformation from Super layer frame to Station frame
+        if self.number == 2:
+            StezSl = [0, 0, 1] # same as the z axis of the Station frame
+            SteySl = [1, 0, 0] # in SL2 y dir is x dir in Station frame
+            StexSl = [0, -1, 0] # in SL2 x dir is -y dir in Station frame
+            _RStSl = array([StexSl, SteySl, StezSl]).T # rotation matrix from SL to Station frame
+        else:
+            _RStSl =  None # no rotation needed, Sl1 and SL3 are aligned with the Station frame
+
+        _TStSl = [self._x_local, self._y_local, self._z_local] # translation 
+
+        self.transformer.add("SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl)
 
 # Example usage
 if __name__ == "__main__":

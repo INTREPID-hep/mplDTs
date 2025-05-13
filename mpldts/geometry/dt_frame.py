@@ -45,19 +45,14 @@ class DTFrame:
         - The `global_cords_at_min` property is not implemented and will raise a warning if accessed.
     """
 
-    def __init__(self, rawId=None):
+    def __init__(self):
         """
         Initialize the DTFrame object.
-
-        :param rawId: Raw identifier of the DT geometrical object. If not provided, no XML geometrical info will be used to initialize the instance.
-        :type rawId: int, optional
         """
-        if rawId:
-            self.id = rawId
-            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
-            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
-            self.direction = DTGEOMETRY.get("NormalVector", rawId=rawId)
-            self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
+        self.id = None
+        self.local_center = (0, 0, 0)
+        self.global_center = (0, 0, 0)
+        self.bounds = (1, 1, 1)
 
     def __str__(self):
         """
