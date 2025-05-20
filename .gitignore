@@ -1,9 +1,9 @@
 *pyc
 *__pycache__
-results*
 *env
 *.egg-info*
 *main.sh*
 *ROOT*
 *.vscode*
 *_build*
+test/*.svg

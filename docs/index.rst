@@ -1,5 +1,6 @@
 mplDTs
 ======
+Document version: |release|
 
 This package provides a set of base tools to produce CMS DT chambers plots using matplotlib patches, 
 and taking into account the geometrical features of the CMS DT system.
@@ -7,24 +8,26 @@ and taking into account the geometrical features of the CMS DT system.
 Installation
 ============
 
-First, download the source files or clone the repository:
+You can clone the repository, or install via pip:
 
-.. code-block:: bash
+1. **Cloning and installing the package**:
 
-   git clone https://github.com/DanielEstrada971102/mplDTs.git
-   cd mplDTs
+   .. code-block:: bash
 
-You can then install the package with pip by running:
+      git clone https://github.com/DanielEstrada971102/mplDTs.git
+      cd mplDTs
+      git checkout <tag version> # Opcional step: e.g. git checkout v1.0.0
+      pip install .
+      # To check if the package was installed successfully...
+      pip show mpldts
 
-.. code-block:: bash
+2. **Installing via pip**:
 
-   pip install .
+   .. code-block:: bash
 
-To check if the package was installed successfully, run:
-
-.. code-block:: bash
-
-   pip show mpldts
+      pip install git+https://github.com/DanielEstrada971102/mplDTs.git@<tag version> # e.g. v1.0.0
+      # To check if the package was installed successfully...
+      pip show mplDTs
 
 .. toctree::
    :maxdepth: 2

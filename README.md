@@ -7,26 +7,24 @@ If you are a developer please start with reading the [Contributor][contributing]
 
 ## Installation
 
-First, download the source files or clone the repository:
-
-You can install the package with pip by running:
+You can clone the repo and install or use directly pip:
 
 ```shell
 git clone https://github.com/DanielEstrada971102/mplDTs.git
 cd mplDTs
-```
-
-You can then install the package with pip by running:
-
-```shell
+git checkout <tag version> # Opcional step: e.g. git checkout v1.0.0
 pip install .
-```
+# To check if the package was installed successfully...
+pip show mpldts
 
-To check if the package was installed successfully, run:
+```
 
 ```shell
-pip show mpldts
+pip install git+https://github.com/DanielEstrada971102/mplDTs.git@<tag version> # e.g. v1.0.0
+# To check if the package was installed successfully...
+pip show mplDTs
 ```
+
 
 ## Usage
 
