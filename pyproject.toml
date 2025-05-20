@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mplDTs"
-version = "1.1.0"
+version = "2.0.0"
 description = "Set of tools to produce CMS DTs matplotlib patches"
 authors = ["Daniel Estrada <estradadaniel@uniovi.es>"]
 readme = "README.md"
@@ -10,6 +10,7 @@ python = ">=3.9"
 pandas = ">=2.2"
 matplotlib = ">=3.9.3"
 mplhep = ">=0.3"
+pytransform3d = ">=3.14.0"
 
 [tool.poetry.group.dev]
 optional = true

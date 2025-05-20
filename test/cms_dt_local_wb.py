@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 from mpldts.geometry import Station
-from mpldts.patches import DTPatch
+from mpldts.patches import DTStationPatch
 
 dpi = 100  # Plot resolution
 
 # Cell appearance configuration
 cells_kwargs = {
-    "linewidth": .4 * 72 / dpi,
+    "linewidth": 0.4 * 72 / dpi,
     "facecolor": "none",
     "edgecolor": "k",
 }
@@ -19,11 +19,19 @@ axs = axs.flatten()
 station = Station(wheel=-1, sector=1, station=1)
 
 # Create patches for phi-view and eta-view
-dt_patch_phi = DTPatch(
-    station, axes=axs[0], faceview="phi", local=True, cells_kwargs=cells_kwargs,
+dt_patch_phi = DTStationPatch(
+    station,
+    axes=axs[0],
+    faceview="phi",
+    local=True,
+    cells_kwargs=cells_kwargs,
 )
-dt_patch_z = DTPatch(
-    station, axes=axs[1], faceview="eta", local=True, cells_kwargs=cells_kwargs,
+dt_patch_z = DTStationPatch(
+    station,
+    axes=axs[1],
+    faceview="eta",
+    local=True,
+    cells_kwargs=cells_kwargs,
 )
 
 # Set axis limits for phi-view

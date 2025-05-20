@@ -1,4 +1,3 @@
-from mpldts.geometry._geometry import DTGEOMETRY
 from mpldts.geometry.transforms import compute_eta, compute_theta
 import warnings
 
@@ -36,7 +35,7 @@ class DTFrame:
         global_cords_at_min : tuple
             Global coordinates at the minimum position (lower left corner) of the DT geometrical object (not implemented).
         theta : float
-            Angle in the XY plane of the DT geometrical object.
+            Angle in the ZR plane of the DT geometrical object.
         eta : float
             Pseudorapidity of the DT geometrical object.
 
@@ -45,19 +44,14 @@ class DTFrame:
         - The `global_cords_at_min` property is not implemented and will raise a warning if accessed.
     """
 
-    def __init__(self, rawId=None):
+    def __init__(self):
         """
         Initialize the DTFrame object.
-
-        :param rawId: Raw identifier of the DT geometrical object. If not provided, no XML geometrical info will be used to initialize the instance.
-        :type rawId: int, optional
         """
-        if rawId:
-            self.id = rawId
-            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
-            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
-            self.direction = DTGEOMETRY.get("NormalVector", rawId=rawId)
-            self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
+        self.id = None
+        self.bounds = (1, 1, 1)
+        self.local_center = (0, 0, 0)
+        self.global_center = (0, 0, 0)
 
     def __str__(self):
         """
@@ -76,20 +70,6 @@ class DTFrame:
         )
 
     @property
-    def parent(self):
-        """
-        Parent of the Object.
-
-        :return: Parent of the object.
-        :rtype: object
-        """
-        try:
-            return self._parent
-        except AttributeError:
-            warnings.warn(f"This {self.__class__.__name__} instance does not have a Parent.")
-            return None
-
-    @property
     def id(self):
         """
         Identifier of the Object.
@@ -101,6 +81,20 @@ class DTFrame:
             return self._id
         except AttributeError:
             warnings.warn(f"This {self.__class__.__name__} instance does not have an ID assigned.")
+            return None
+
+    @property
+    def parent(self):
+        """
+        Parent of the Object.
+
+        :return: Parent of the object.
+        :rtype: object
+        """
+        try:
+            return self._parent
+        except AttributeError:
+            warnings.warn(f"This {self.__class__.__name__} instance does not have a Parent.")
             return None
 
     @property
@@ -245,16 +239,6 @@ class DTFrame:
         """
         return compute_eta(self._x_global, self._y_global, self._z_global)
 
-    @parent.setter
-    def parent(self, parent):
-        """
-        Set the parent of the Object.
-
-        :param parent: Parent of the Object.
-        :type parent: object
-        """
-        self._parent = parent
-
     @id.setter
     def id(self, id: int):
         """
@@ -264,6 +248,16 @@ class DTFrame:
         :type id: int
         """
         self._id = id
+
+    @parent.setter
+    def parent(self, parent):
+        """
+        Set the parent of the Object.
+
+        :param parent: Parent of the Object.
+        :type parent: object
+        """
+        self._parent = parent
 
     @number.setter
     def number(self, number: int):
@@ -314,4 +308,3 @@ class DTFrame:
         :type cords: tuple
         """
         self._x_global, self._y_global, self._z_global = cords
-

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from mpldts.geometry import Station
-from mpldts.patches import DTPatch
+from mpldts.patches import DTStationPatch
 
 dpi = 800
 
@@ -13,24 +13,26 @@ bounds_kwargs = {
     "alpha": 0.4,
 }
 cells_kwargs = {
-    "linewidth": .2 * 72 / dpi,
+    "linewidth": 0.2 * 72 / dpi,
     "facecolor": "none",
     "edgecolor": "k",
 }
 
 fig, ax = plt.subplots(1, 1, figsize=(14, 5))
-axins = zoomed_inset_axes(ax, 3, loc='upper left', bbox_to_anchor=(1.05, 1.1), bbox_transform=ax.transAxes)
+axins = zoomed_inset_axes(
+    ax, 3, loc="upper left", bbox_to_anchor=(1.05, 1.1), bbox_transform=ax.transAxes
+)
 
 for wh in range(-2, 3):
     for st in range(1, 5):
         station = Station(wheel=wh, sector=2, station=st)
-        _ = DTPatch(
+        _ = DTStationPatch(
             station,
             axes=ax,
             faceview="eta",
             local=False,
             bounds_kwargs=bounds_kwargs,
-            cells_kwargs=cells_kwargs
+            cells_kwargs=cells_kwargs,
         )
 
 cells_kwargs["linewidth"] = 0.5 * 72 / dpi
@@ -38,13 +40,13 @@ cells_kwargs["linewidth"] = 0.5 * 72 / dpi
 for wh in range(1, 3):
     for st in range(1, 3):
         station = Station(wheel=wh, sector=2, station=st)
-        _ = DTPatch(
+        _ = DTStationPatch(
             station,
             axes=axins,
             faceview="eta",
             local=False,
             bounds_kwargs=bounds_kwargs,
-            cells_kwargs=cells_kwargs
+            cells_kwargs=cells_kwargs,
         )
 
 ax.set_title("Global view of DT Stations on Sector 3")

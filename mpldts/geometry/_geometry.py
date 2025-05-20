@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 class DTGeometry:
     """
-    A class to easy access to the CMS DT Geometry from an XML file.
+    A class to easy access to the CMS DT Geometry from the XML file.
 
     Attributes
     ----------
@@ -31,9 +31,9 @@ class DTGeometry:
         :type attribute: str, optional
         :param kwargs: Additional criteria to filter the elements (e.g., rawId, wh, sec, st, sl, l).
         :type kwargs: dict
-        :return: The requested attribute values or element text.
-        :rtype: tuple or str
-        :raises ValueError: If the element is not found for the given query.
+        :return: The requested attribute values or element.
+        :rtype: tuple, str, or xml.etree.ElementTree.Element
+        :raises ValueError: If the element or attribute is not found for the given query.
         """
         query = "."
         if "rawId" in kwargs:
@@ -51,27 +51,40 @@ class DTGeometry:
             query += f"//Wire"
             query += f"[@wireNumber='{kwargs['w']}']"
 
+        element = self.root.find(query)
         if attribute is None:
-            element = self.root.find(query)
             return element
 
-        element = self.root.find(query)
         if element is not None:
             if attribute in ["GlobalPosition", "LocalPosition", "NormalVector"]:
-                x, y, z = self._transform_to_pos(str_pos_tuple=element.find(attribute).text)
+                try:
+                    x, y, z = self._transform_to_pos(str_pos_tuple=element.find(attribute).text)
+                except AttributeError:
+                    x, y, z = self._transform_to_pos(str_pos_tuple=element.get(attribute))
                 return x, y, z
-            elif attribute in ["Bounds", "WiresSize"]:
+            elif attribute == "Bounds":
                 width, height, length = element.find(attribute).attrib.values()
                 return (float(width), float(height), float(length))
-            elif attribute == "WiresRange":
-                first, last = element.find(attribute).attrib.values()
-                return (int(first), int(last))
+            elif "wire" in attribute.lower():
+                element = element.find(".//Wires")
+                width, height, length, first, last = element.attrib.values()
+                if attribute == "WiresSize":
+                    return (float(width), float(height), float(length))
+                elif attribute == "WiresRange":
+                    return (int(first), int(last))
+                else:
+                    return element
             else:
                 sub_element = element.find(attribute)
                 if sub_element is not None:
-                    return sub_element.text
+                    return sub_element
                 else:
-                    return element.get(attribute)
+                    try:
+                        return element.get(attribute)
+                    except AttributeError:
+                        raise ValueError(
+                            f"Attribute or element '{attribute}' not found for query: {query}"
+                        )
         else:
             raise ValueError(f"Element not found for query: {query}")
 
@@ -93,11 +106,11 @@ class DTGeometry:
 
 
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v2.xml"))
+DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v3.xml"))
 
 # Example usage
 if __name__ == "__main__":
-    dt_geometry = DTGeometry(os.path.abspath("./DTGeometry_v2.xml"))
+    dt_geometry = DTGeometry(os.path.abspath("./DTGeometry_v3.xml"))
 
     # Retrieve and print global and local positions, and bounds for specific chambers
     global_pos_1 = dt_geometry.get("GlobalPosition", wh=-2, sec=1, st=1)
@@ -109,9 +122,13 @@ if __name__ == "__main__":
     print(f"Local position for Wh:1, Sec:1, St:4: {local_pos_1}")
 
     # Iterate through all layers in a specific SuperLayer and print their attributes
-    for sl in dt_geometry.root.find(".//SuperLayer[@rawId='574922752']").iter("Layer"):
-        print(sl.attrib)
-
+    # 1. by using the root element
+    for layer in dt_geometry.root.find(".//SuperLayer[@rawId='574922752']").iter("Layer"):
+        print("Layer", layer.attrib)
+        break
+    # 2. by using the get method
+    for layer in dt_geometry.get(rawId="574922752").iter("Layer"):
+        print("Layer", layer.attrib)
+        break
     # Test retrieving attributes of a specific SuperLayer
-    print("TEST super layer")
-    print(dt_geometry.get(rawId=574922752).attrib)
+    print("Super_Layer", dt_geometry.get(rawId=574922752).attrib)

@@ -1,5 +1,6 @@
 from mpldts.geometry import Station
 from mpldts.geometry import DTGeometry
+
 # only to see gemoetrical cords of a sector in all wheels
 
 sc = 3
@@ -11,7 +12,7 @@ for wh in range(-2, 3):
         for sl in st.super_layers:
             print("\t", sl)
             for l in sl.layers:
-                print(2*"\t", l)
+                print(2 * "\t", l)
                 for cell in l.cells:
-                    print(3*"\t", l.cell(l._first_cell_id))
-                    print(3*"\t", l.cell(len(l.cells)-1))
+                    print(3 * "\t", l.cell(l._first_cell_id))
+                    print(3 * "\t", l.cell(len(l.cells) - 1))
