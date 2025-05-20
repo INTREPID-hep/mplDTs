@@ -3,16 +3,19 @@ from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.drift_cell import DriftCell
 from mpldts.geometry.transforms import TransformManager
 
+
 class Layer(DTFrame):
     """
     Class representing a Layer.
 
     Attributes
     ----------
-        cells : list
-            List of drift cells in the layer.
         parent : SuperLayer
             Parent super layer of the layer.
+        number : int
+            Number of the layer (1, 2, 3, or 4).
+        cells : list
+            List of drift cells in the layer.
 
         Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
@@ -37,7 +40,7 @@ class Layer(DTFrame):
             self._first_cell_id, self._last_cell_id = DTGEOMETRY.get("WiresRange", rawId=rawId)
         else:
             self._first_cell_id = 1
-            self._last_cell_id = 49
+            self._last_cell_id = 50
 
         self._setup_tranformer()
         self._DriftCells = []
@@ -96,12 +99,12 @@ class Layer(DTFrame):
         wire_bounds = DTGEOMETRY.get("WiresSize", rawId=self.id)
         for wire in DTGEOMETRY.get("Wires", rawId=self.id).iter("Wire"):
             num, local_pos_str, global_pos_str = wire.attrib.values()
-            
+
             cell = DriftCell(number=int(num))
-            
+
             local_pos = DTGeometry._transform_to_pos(local_pos_str)
             global_pos = DTGeometry._transform_to_pos(global_pos_str)
-            
+
             cell.local_center = local_pos
             cell.global_center = global_pos
             cell.bounds = wire_bounds
@@ -110,32 +113,39 @@ class Layer(DTFrame):
 
             self._add_cell(cell)
 
-
     def _setup_tranformer(self):
         """
         Set up the transformer for the layer. It defines the transformation from the local frame to the global frame.
         """
         from numpy import array
 
-        self.transformer = TransformManager("Layer") # intial frame is the layer frame
+        self.transformer = TransformManager("Layer")  # intial frame is the layer frame
 
         # Inherit transformation from the parent to the global frame
         if self.parent is not None:
             transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
-            self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
+            if transform_matrix is not None:
+                self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
             transform_matrix = self.parent.transformer.get_transformation("SuperLayer", "Station")
-            self.transformer.add("SuperLayer", "Station", transformation_matrix=transform_matrix)
+            if transform_matrix is not None:
+                self.transformer.add(
+                    "SuperLayer", "Station", transformation_matrix=transform_matrix
+                )
 
             # Define the transformation from the layer to the SL frame
             _parent_center = self.parent.local_center
-            _SlTL = array([self._x_local, self._y_local, self._z_local]) - array(_parent_center) # This translation leave te cords in the SL frame
+            _SlTL = array([self._x_local, self._y_local, self._z_local]) - array(
+                _parent_center
+            )  # This translation leave te cords in the SL frame
 
-            self.transformer.add("Layer", "SuperLayer", translation_vector=_SlTL) # add the transformation from layer to SL frame
+            self.transformer.add(
+                "Layer", "SuperLayer", translation_vector=_SlTL
+            )  # add the transformation from layer to SL frame
 
 
 if __name__ == "__main__":
     # This is to check that nothing fails
     layer = Layer(574923776)
     print(layer)
-    for cell in layer.cells:
-        print("\t", cell)
+    print("\t", layer.cell(layer._first_cell_id))
+    print("\t", layer.cell(len(layer.cells) - 1))

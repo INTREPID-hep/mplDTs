@@ -1,13 +1,49 @@
 import numpy as np
 import pytransform3d.transformations as pt
 import pytransform3d.rotations as pr
+import warnings
+
 
 class TransformManager:
     """
     Class to manage the transformation from one reference frame to another.
+
+    Attributes:
+    -----------
+    transform_chain : dict
+        Dictionary to store the transformation matrices between frames.
+
+    .. rubric:: Example
+
+    The following example shows how the transform manager of an object can be used to move a point between
+    frames.
+
+    .. literalinclude:: ../../../test/transform_validation.py
+        :language: python
+
+    .. rubric:: Output
+
+    .. code-block:: text
+
+        Transform manager:  TransformManager: CMS <-> Cell <-> Layer <-> Station <-> SuperLayer
+        Cell center in Cell frame:  (0, 0, 0)
+        Cell center in Layer frame:  [-100.8    0.     0. ]
+        Cell center in SuperLayer frame:  [-100.8     0.      1.95]
+        Cell center in Station frame:  [-102.4    0.    13.7]  -> check with config file:  (-102.4, 0.0, 13.7)
+        Cell center in CMS frame:  [ 263.53996    329.9044575 -287.25     ]  -> check with config file:  (263.54, 329.904, -287.25)
+
+
+    .. note::
+        This class is powered by the `pytransform3d <https://dfki-ric.github.io/pytransform3d/index.html>`_ library.
     """
 
     def __init__(self, initial_frame="A"):
+        """
+        Initialize the TransformManager with an initial reference frame name.
+
+        :param initial_frame: The initial reference frame (default is "A" = Identity).
+        :type initial_frame: str
+        """
         self.transform_chain = {
             (initial_frame, initial_frame): np.eye(4),
         }
@@ -15,28 +51,39 @@ class TransformManager:
         self.available_frames = {initial_frame}
 
     def __str__(self):
-        return f"TransformManager ({self.get_available_frames()})"
+        return f"TransformManager: {' <-> '.join(sorted(self.available_frames))}"
 
-    def get_available_frames(self):
-        return sorted(list(self.available_frames))
-
-    def add(self, from_frame, to_frame, transformation_matrix=None, rotation_matrix=None, translation_vector=None):
+    def add(
+        self,
+        from_frame,
+        to_frame,
+        transformation_matrix=None,
+        rotation_matrix=None,
+        translation_vector=None,
+    ):
         """
-        Add a transformation from one frame to another.
+        Add a transformation from one frame to another to the available transformations chain.
 
-        :param from_frame: The reference frame to move the point from.
+        :param from_frame: The name of the reference frame to move the point from.
         :type from_frame: str
-        :param to_frame: The reference frame to move the point to.
+        :param to_frame: The name of the reference frame to move the point to.
         :type to_frame: str
         :param transformation_matrix: The transformation matrix for the transformation.
-        :type transformation_matrix: ndarray
+        :type transformation_matrix: ndarray, optional
         :param rotation_matrix: The rotation matrix for the transformation.
-        :type rotation_matrix: ndarray
+        :type rotation_matrix: ndarray, optional
         :param translation_vector: The translation vector for the transformation.
-        :type translation_vector: ndarray
+        :type translation_vector: ndarray, optional
+        :raises ValueError: If both transformation_matrix and (rotation_matrix, translation_vector) are None.
+        :raises TypeError: If from_frame or to_frame are not strings.
+        :raises ValueError: If from_frame and to_frame are the same.
         """
-        if transformation_matrix is None and (rotation_matrix is None and translation_vector is None):
-            raise ValueError("Either a transformation_matrix must be provided, or both rotation_matrix and translation_vector must be provided.")
+        if transformation_matrix is None and (
+            rotation_matrix is None and translation_vector is None
+        ):
+            raise ValueError(
+                "Either a transformation_matrix must be provided, or both rotation_matrix and translation_vector must be provided."
+            )
 
         if not (isinstance(from_frame, str) and isinstance(to_frame, str)):
             raise TypeError("from_frame and to_frame must be strings.")
@@ -56,7 +103,7 @@ class TransformManager:
                 else:
                     rotation = rotation_matrix
             else:
-                rotation = np.eye(3) 
+                rotation = np.eye(3)
             if translation_vector is not None:
                 translation = translation_vector
             else:
@@ -70,6 +117,12 @@ class TransformManager:
     def remove(self, from_frame, to_frame):
         """
         Remove a defined transformation.
+
+        :param from_frame: The name of the reference frame to move the point from.
+        :type from_frame: str
+        :param to_frame: The name of the reference frame to move the point to.
+        :type to_frame: str
+        :raises ValueError: If the transformation to remove is the identity transformation.
         """
         key = (from_frame, to_frame)
         if key == (from_frame, from_frame):
@@ -81,8 +134,10 @@ class TransformManager:
         """
         Get the composed transformation matrix from the from_frame to the to_frame.
 
-        :param from_frame: The starting reference frame (str).
-        :param to_frame: The ending reference frame (str).
+        :param from_frame: The name of the starting reference frame.
+        :type from_frame: str
+        :param to_frame: The name of the ending reference frame.
+        :type to_frame: str
         :return: The 4x4 homogeneous transformation matrix or None if no path found.
         :rtype: ndarray or None
         """
@@ -100,7 +155,7 @@ class TransformManager:
                 return current_transform
             # Mark the current frame as visited
             visited.add(current_frame)
-            
+
             # Iterate through all transformations in the transform chain
             for (src, dst), transform in self.transform_chain.items():
                 # If the current frame is the source and the destination is not visited
@@ -117,6 +172,7 @@ class TransformManager:
                     stack.append((src, new_transform))
 
         # If no path is found, return None
+        warnings.warn(f"No transformation path found from {from_frame} to {to_frame}.")
         return None
 
     def transform(self, P, from_frame, to_frame):
@@ -124,12 +180,21 @@ class TransformManager:
         Transform a point from the from_frame to the to_frame.
 
         :param P: The point(s) to transform (array-like, shape (3,) or (n_points, 3)).
-        :param from_frame: The starting reference frame (str).
-        :param to_frame: The ending reference frame (str).
+        :type P: list, tuple, or ndarray
+        :param from_frame: The name of the starting reference frame (str).
+        :type from_frame: str
+        :param to_frame: The name of the ending reference frame (str).
+        :type to_frame: str
         :return: The transformed point(s) (ndarray, shape (3,) or (n_points, 3)).
+        :rtype: ndarray
+        :raises ValueError: If the transformation path is not found or if the frames are not defined.
+        :raises TypeError: If P is not a list, tuple, or ndarray.
+        :raises ValueError: If the transformation path is not found or if the frames are not defined.
         """
         if from_frame not in self.available_frames or to_frame not in self.available_frames:
-            raise ValueError(f"One or both of the frames '{from_frame}' or '{to_frame}' are not defined.")
+            raise ValueError(
+                f"One or both of the frames '{from_frame}' or '{to_frame}' are not defined."
+            )
 
         matrix = self.get_transformation(from_frame, to_frame)
         if matrix is None:
@@ -148,7 +213,7 @@ class TransformManager:
 
 def compute_theta(x, y, z):
     """
-    Compute the angle theta from the x, y, z coordinates.
+    Compute the angle :math:`\theta` (rZ plane) from the x, y, z coordinates.
 
     :param x: The x coordinate.
     :type x: float
@@ -158,6 +223,7 @@ def compute_theta(x, y, z):
     :type z: float
     :return: The angle theta in radians.
     :rtype: float
+    :raises ValueError: If the origin point (0, 0, 0) is provided.
     """
     if z == 0 and (x == 0 and y == 0):
         raise ValueError("origin point (0, 0, 0) has not a defined theta")
@@ -172,9 +238,10 @@ def compute_theta(x, y, z):
 
     return np.arctan2(r, z)
 
+
 def compute_eta(x, y, z):
     """
-    Compute the pseudorapidity from the x, y, z coordinates.
+    Compute the pseudo-rapidity (:math:`\eta`) from the x, y, z coordinates.
 
     :param x: The x coordinate.
     :type x: float
@@ -188,55 +255,8 @@ def compute_eta(x, y, z):
     theta = compute_theta(x, y, z)
 
     if theta == 0 or theta == np.pi:
-        return float('inf')
+        return float("inf")
 
     eta = -1 * np.log(np.tan(theta / 2))
 
     return eta
-
-def change_frame(point, from_frame, to_frame):
-    """
-    Util function to move a point from a DT reference frame to another."
-
-    :param point: The point to move.
-    :type point: tuple
-    :param from_frame: The reference frame to move the point from. It could be {'SL2', 'Station', 'CMS', 'CMS2'}.
-    :type from_frame: str
-    :param to_frame: The reference frame to move the point to. It could be {'SL2', 'Station', 'CMS', 'CMS2'}.
-    :type to_frame: str
-    :return: The point in the new reference frame.
-
-    .. note::
-        At the moment only the transformation between SL2 and Station and vice versa are implemented.
-    """
-    M1 = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])  # SL2 to Station: Rz(pi/2)
-    # M2 = array([ # Station to CMS: Rx(-pi/2)
-    #     [1, 0, 0],
-    #     [0, 0, 1],
-    #     [0, -1, 0]
-    # ])
-    # M3 = array([ # SL2 to CMS:
-    #     [0, 0, -1],
-    #     [-1, 0, 0],
-    #     [0, -1, 0]
-    # ])
-
-    matrices = {
-        ("SL2", "Station"): M1,
-        ("Station", "SL2"): M1.T,
-        # ("Station", "CMS"): M2,
-        # ("SL2", "CMS"): M3,
-        # ("CMS", "Station"): M2.T,
-        # ("CMS", "SL2"): M3.T,
-    }
-
-    if from_frame == to_frame:
-        return point
-
-    if (from_frame, to_frame) not in matrices:
-        raise ValueError(f"Transformation from {from_frame} to {to_frame} is not implemented yet.")
-
-    if not isinstance(point, np.ndarray):
-        point = np.array(point)
-
-    return tuple(float(cord) for cord in matrices[(from_frame, to_frame)] @ point)

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from mpldts.geometry import Station
-from mpldts.patches import DTPatch
+from mpldts.patches import DTStationPatch
 
 dpi = 800
 
@@ -13,40 +13,42 @@ bounds_kwargs = {
     "alpha": 0.4,
 }
 cells_kwargs = {
-    "linewidth": .2 * 72 / dpi,
+    "linewidth": 0.2 * 72 / dpi,
     "facecolor": "none",
     "edgecolor": "k",
 }
 
 fig, ax = plt.subplots(1, 1, figsize=(14, 7), dpi=dpi)
-axins = zoomed_inset_axes(ax, 4, loc='upper left', bbox_to_anchor=(1.1, 1.01), bbox_transform=ax.transAxes)
+axins = zoomed_inset_axes(
+    ax, 4, loc="upper left", bbox_to_anchor=(1.1, 1.01), bbox_transform=ax.transAxes
+)
 
 for sc in range(1, 15):
     for st in range(1, 5):
         if (sc == 13 or sc == 14) and st != 4:
-            continue # Sector 13 and 14 are only one MB4 station
+            continue  # Sector 13 and 14 are only one MB4 station
         station = Station(wheel=-2, sector=sc, station=st)
-        _ = DTPatch(
+        _ = DTStationPatch(
             station,
             axes=ax,
             faceview="phi",
             local=False,
             bounds_kwargs=bounds_kwargs,
-            cells_kwargs=cells_kwargs
+            cells_kwargs=cells_kwargs,
         )
 
-cells_kwargs["linewidth"] = .5 * 72 / dpi
+cells_kwargs["linewidth"] = 0.5 * 72 / dpi
 
-for sc in [1, 2, 12]: # Only 3 sectors for the zoomed in view
+for sc in [1, 2, 12]:  # Only 3 sectors for the zoomed in view
     for st in range(1, 3):
         station = Station(wheel=-2, sector=sc, station=st)
-        _ = DTPatch(
+        _ = DTStationPatch(
             station,
             axes=axins,
             faceview="phi",
             local=False,
             bounds_kwargs=bounds_kwargs,
-            cells_kwargs=cells_kwargs
+            cells_kwargs=cells_kwargs,
         )
 
 ax.set_title("Global view of DT Stations on Wheel -2")

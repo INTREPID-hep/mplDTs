@@ -1,12 +1,10 @@
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
-from matplotlib.transforms import Affine2D
 from mpldts.geometry import Station, DriftCell, SuperLayer
-from mpldts.geometry.transforms import change_frame
-from math import atan2, degrees, sqrt
+from mpldts.patches.dt_patch_base import DTRelatedPatch
 
 
-class DTPatch:
+class DTStationPatch(DTRelatedPatch):
     """
     A class to visualize a 2D representation of a DT Station data in matplotlib context.
 
@@ -71,14 +69,7 @@ class DTPatch:
         :type kwargs: dict, optional
         :return: None. Adds two collections, one for the bounds and another for each DT cell, to the provided matplotlib axes.
         """
-        self.station = station
-        self.axes = axes
-        self.view = faceview
-        self.local = local
         self.vmap = vmap
-        self.inverted = (
-            inverted if inverted and local else False
-        )  # if global required (local = False), no inversion needed
 
         self.bounds_collection = PatchCollection(
             [], **(bounds_kwargs or {"facecolor": "none", "edgecolor": "k"}), **(kwargs or {})
@@ -90,20 +81,20 @@ class DTPatch:
             [], **(cells_kwargs or {"facecolor": "none", "edgecolor": "k"}), **(kwargs or {})
         )
 
+        super().__init__(
+            station=station,
+            axes=axes,
+            collections=[self.bounds_collection, self.cells_collection],
+            faceview=faceview,
+            local=local,
+            inverted=inverted,
+        )
+
+    def _draw_collections(self):
         # draw Sl bounds
         self._draw_bounds()
         # draw cells
         self._draw_cells()
-
-        # add collections to axes
-        axes.add_collection(self.bounds_collection)
-        axes.add_collection(self.cells_collection)
-
-        if self.inverted:
-            self.invert_station()
-
-        if not self.local:
-            self.move_to_global()
 
     def _draw_bounds(self):
         """
@@ -149,17 +140,15 @@ class DTPatch:
         x_min, y_min, z_min = obj.local_cords_at_min
 
         if self.view == "phi" and isinstance(obj, SuperLayer) and obj.number == 2:  # if SL2
-            x_min, y_min, z_min = change_frame(
-                (x_min, y_min, z_min), from_frame="SL2", to_frame="Station"
-            )
+            x_min, y_min, z_min = y_min, -x_min, z_min
             width = length
 
         if (
-            self.view == "eta" and not isinstance(obj, DriftCell) and (obj.number != 2 or isinstance(obj, Station))
+            self.view == "eta"
+            and not isinstance(obj, DriftCell)
+            and (obj.number != 2 or isinstance(obj, Station))
         ):  # if SL1 or SL3
-            x_min, y_min, z_min = change_frame(
-                (x_min, y_min, z_min), from_frame="Station", to_frame="SL2"
-            )
+            x_min, y_min, z_min = -y_min, x_min, z_min
             x_min = x_min - length
             width = length
 
@@ -187,65 +176,3 @@ class DTPatch:
                     vars.append(var)
 
         self.cells_collection.set_array(vars)
-
-    def move_to_global(self):
-        """
-        Move the collections to the global CMS frame. This method can be called by the user but ensure
-        that the PatchCollections are not inverted, as this method will invert them to adjust to the global frame.
-        """
-
-        base_bounds_transform = self.bounds_collection.get_transform()
-        base_cells_transform = self.cells_collection.get_transform()
-        transformation = Affine2D()
-
-        x, y, z = self.station.global_center
-
-        if not self.inverted:
-            transformation = transformation.scale(*self._calculate_inversion_factors(self.view))
-
-        if self.view == "phi":
-            nx, ny, _ = self.station.direction
-            angle = degrees(atan2(ny, nx)) + 90  # ang_incline = ang_normal_refx + 90
-            transformation = transformation.translate(x, y).rotate_deg_around(x, y, angle)
-
-        elif self.view == "eta":
-            r = sqrt(x**2 + y**2)
-            transformation = transformation.translate(z, r)
-
-        self.bounds_collection.set_transform(transformation + base_bounds_transform)
-        self.cells_collection.set_transform(transformation + base_cells_transform)
-
-    def invert_station(self):
-        """
-        Invert the station view. The inversion depends on the current view and the station's wheel and sector.
-        Details about DT chamber orientations can be found `here. <https://dt-sx5.web.cern.ch/dt-sx5/run/docs/050912DT_type_naming.pdf>`_
-        """
-        if not self.local:
-            return
-        self.inverted = not self.inverted
-        base_bounds_transform = self.bounds_collection.get_transform()
-        base_cells_transform = self.cells_collection.get_transform()
-
-        adjustment = Affine2D().scale(*self._calculate_inversion_factors(self.view))
-
-        self.bounds_collection.set_transform(adjustment + base_bounds_transform)
-        self.cells_collection.set_transform(adjustment + base_cells_transform)
-
-    def _calculate_inversion_factors(self, view):
-        """
-        Calculate inversion factors based on the station's wheel and sector.
-
-        :param view: The view type, either "phi" or "eta".
-        :type view: str
-        :return: A tuple of inversion factors.
-        :rtype: tuple
-        """
-        if self.station.wheel < 0:
-            return (-1, -1) if view == "phi" else (1, -1)
-        elif self.station.wheel > 0:
-            return (1, -1) if view == "phi" else (-1, -1)
-        else:  # self.station.wheel == 0
-            if self.station.sector in [1, 4, 5, 8, 9, 12, 13]:
-                return (-1, -1) if view == "phi" else (1, -1)
-            else:
-                return (1, -1) if view == "phi" else (-1, -1)

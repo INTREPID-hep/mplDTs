@@ -17,8 +17,10 @@ class Station(DTFrame):
             Geometrical position within CMS.
         sector : int
             Geometrical position within CMS.
+        number : int
+            Station type (1: MB1, 2: MB2, 3: MB3, or 4: MB4).
         name : str
-            Name of the station. returns "Wheel {wheel}, Sector {sector}, Station {number}".
+            Name of the station. Returns "Wheel {wheel}, Sector {sector}, Station {number}".
         super_layers : list
             List of super layers in the station.
 
@@ -33,9 +35,11 @@ class Station(DTFrame):
         :type wheel: int
         :param sector: Sector position within CMS.
         :type sector: int
-        :param station: Station type.
+        :param station: Station type (1: MB1, 2: MB2, 3: MB3, or 4: MB4).
         :type station: int
-        :param dt_info: Information for the station at cell level. Default is None. Ensure to provide 'sl', 'l', and 'w' identifiers for each drift cell.
+        :param dt_info: Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
+                or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
+                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
         # == Chamber related parameters
@@ -174,21 +178,54 @@ class Station(DTFrame):
         """
         from pytransform3d.rotations import perpendicular_to_vectors
         from numpy import array
-        self.transformer = TransformManager("Station") # intial frame is the station frame
+
+        self.transformer = TransformManager("Station")  # intial frame is the station frame
 
         # negative wheel are facing towards the -z axis, positive wheel towards the +z axis, and 0 wheel is facing towards the +-z axis depending on the sector
-        face_orientation = -1 if self._wheel < 0 else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
+        face_orientation = (
+            -1
+            if self._wheel < 0
+            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
+        )
 
         # Define the transformation from Station frame to CMS global frame
 
         CMSezSt = self._direction
         CMSeySt = array([0, 0, 1]) * face_orientation
-        CMSexSt = perpendicular_to_vectors(CMSeySt, CMSezSt) # cross product to get the x axis of the local frame respect to the global frame
+        CMSexSt = perpendicular_to_vectors(
+            CMSeySt, CMSezSt
+        )  # cross product to get the x axis of the local frame respect to the global frame
 
-        _RCMSSt = array([CMSexSt, CMSeySt, CMSezSt]).T # rotation matrix from local to global frame
-        _TCMSSt = [self._x_global, self._y_global, self._z_global] # translation vector from the DT center to the CMS center (0,0,0)
+        _RCMSSt = array([CMSexSt, CMSeySt, CMSezSt]).T  # rotation matrix from local to global frame
+        _TCMSSt = [
+            self._x_global,
+            self._y_global,
+            self._z_global,
+        ]  # translation vector from the DT center to the CMS center (0,0,0)
 
-        self.transformer.add("Station", "CMS", rotation_matrix=_RCMSSt, translation_vector=_TCMSSt) # add the transformation from local to global frame
+        self.transformer.add(
+            "Station", "CMS", rotation_matrix=_RCMSSt, translation_vector=_TCMSSt
+        )  # add the transformation from local to global frame
+
+        # add a orientation transformation (Station 'Natural view' - NV phi/eta), useful for matplotlib ploting.
+        StNvezSt = array([0, 0, -1])
+        StNvPhieySt = array([0, -1, 0]) * face_orientation
+        StNvPhiexSt = perpendicular_to_vectors(StNvPhieySt, StNvezSt)
+
+        _RStNvPhiSt = array(
+            [StNvPhiexSt, StNvPhieySt, StNvezSt]
+        ).T  # rotation matrix from local to global frame
+
+        self.transformer.add("Station", "StationNvPhi", rotation_matrix=_RStNvPhiSt)
+
+        StNvEtaexSt = array([-1, 0, 0]) * face_orientation
+        StNvEtaeySt = perpendicular_to_vectors(StNvezSt, StNvEtaexSt)
+
+        _RStNvPhiSt = array(
+            [StNvEtaexSt, StNvEtaeySt, StNvezSt]
+        ).T  # rotation matrix from local to global frame
+
+        self.transformer.add("Station", "StationNvEta", rotation_matrix=_RStNvPhiSt)
 
     def set_cell_attrs(self, dt_info):
         """
@@ -236,25 +273,25 @@ if __name__ == "__main__":
         wheel=-2,
         sector=1,
         station=2,
-        # dt_info=[
-        #     {"sl": 1, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 1, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 1, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 1, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 3, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 3, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 3, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
-        #     {"sl": 3, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
-        # ],
+        dt_info=[
+            {"sl": 1, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 1, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
+            {"sl": 3, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
+        ],
     )
-    # print(st)
-    # for sl in st.super_layers:
-    #     print("\t", sl)
-    #     for l in sl.layers:
-    #         print(2 * "\t", l)
-    #         print(3 * "\t", l.cell(l._first_cell_id))
-    #         print(3 * "\t", l.cell(len(l.cells) - 1))
-    # print(
-    #     "\t",
-    #     f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
-    # )
+    print(st)
+    for sl in st.super_layers:
+        print("\t", sl)
+        for l in sl.layers:
+            print(2 * "\t", l)
+            print(3 * "\t", l.cell(l._first_cell_id))
+            print(3 * "\t", l.cell(len(l.cells) - 1))
+    print(
+        "\t",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
+    )

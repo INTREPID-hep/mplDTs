@@ -10,10 +10,12 @@ class SuperLayer(DTFrame):
 
     Attributes
     ----------
-        layers : list
-            List of layers in the super layer.
         parent : Station
             Parent station of the super layer.
+        number : int
+            Number of the super layer (1, 2, or 3).
+        layers : list
+            List of layers in the super layer.
 
         Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
@@ -98,20 +100,24 @@ class SuperLayer(DTFrame):
         # Inherit transformation from the parent to the global frame
         if self.parent is not None:
             transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
-            self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
+            if transform_matrix is not None:
+                self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
 
         # Define the transformation from Super layer frame to Station frame
         if self.number == 2:
-            StezSl = [0, 0, 1] # same as the z axis of the Station frame
-            SteySl = [1, 0, 0] # in SL2 y dir is x dir in Station frame
-            StexSl = [0, -1, 0] # in SL2 x dir is -y dir in Station frame
-            _RStSl = array([StexSl, SteySl, StezSl]).T # rotation matrix from SL to Station frame
+            StezSl = [0, 0, 1]  # same as the z axis of the Station frame
+            SteySl = [1, 0, 0]  # in SL2 y dir is x dir in Station frame
+            StexSl = [0, -1, 0]  # in SL2 x dir is -y dir in Station frame
+            _RStSl = array([StexSl, SteySl, StezSl]).T  # rotation matrix from SL to Station frame
         else:
-            _RStSl =  None # no rotation needed, Sl1 and SL3 are aligned with the Station frame
+            _RStSl = None  # no rotation needed, Sl1 and SL3 are aligned with the Station frame
 
-        _TStSl = [self._x_local, self._y_local, self._z_local] # translation 
+        _TStSl = [self._x_local, self._y_local, self._z_local]  # translation
 
-        self.transformer.add("SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl)
+        self.transformer.add(
+            "SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
+        )
+
 
 # Example usage
 if __name__ == "__main__":
@@ -120,5 +126,5 @@ if __name__ == "__main__":
     print(super_layer)
     for layer in super_layer.layers:
         print("\t", layer)
-        for cell in layer.cells:
-            print(2 * "\t", cell)
+        print(2 * "\t", layer.cell(layer._first_cell_id))
+        print(2 * "\t", layer.cell(len(layer.cells) - 1))

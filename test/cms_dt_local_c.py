@@ -1,18 +1,18 @@
 import matplotlib.pyplot as plt
 from mpldts.geometry import Station
-from mpldts.patches import DTPatch
+from mpldts.patches import DTStationPatch
 from matplotlib.colors import Normalize
 
 dpi = 100  # Plot resolution
 
 # Configure colormap and normalization for the plot
-cmap = plt.get_cmap('viridis').copy()
-cmap.set_under('none')  # Set color for values below the minimum
+cmap = plt.get_cmap("viridis").copy()
+cmap.set_under("none")  # Set color for values below the minimum
 norm = Normalize(vmin=0.1, vmax=20)  # Normalize data values to colormap range
 
 # Cell appearance configuration
 cells_kwargs = {
-    "linewidth": .4 * 72 / dpi,
+    "linewidth": 0.4 * 72 / dpi,
     "edgecolor": "k",
     "cmap": cmap,
     "norm": norm,
@@ -40,7 +40,7 @@ dt_info = [
     {"sl": 3, "l": 1, "w": 1, "var1": 6},
     {"sl": 3, "l": 2, "w": 1, "var1": 9},
     {"sl": 3, "l": 3, "w": 1, "var1": 12},
-    {"sl": 3, "l": 4, "w": 2, "var1": 17}
+    {"sl": 3, "l": 4, "w": 2, "var1": 17},
 ]
 
 # Create figure and subplots
@@ -51,13 +51,23 @@ axs = axs.flatten()
 station = Station(wheel=-1, sector=1, station=2, dt_info=dt_info)
 
 # Create patches for phi-view and eta-view
-dt_patch_phi = DTPatch(
-    station, axes=axs[0], faceview="phi", local=True, cells_kwargs=cells_kwargs,
-    vmap="var1", bounds_kwargs=bounds_kwargs
+dt_patch_phi = DTStationPatch(
+    station,
+    axes=axs[0],
+    faceview="phi",
+    local=True,
+    cells_kwargs=cells_kwargs,
+    vmap="var1",
+    bounds_kwargs=bounds_kwargs,
 )
-dt_patch_z = DTPatch(
-    station, axes=axs[1], faceview="eta", local=True, cells_kwargs=cells_kwargs,
-    vmap="var1", bounds_kwargs=bounds_kwargs
+dt_patch_z = DTStationPatch(
+    station,
+    axes=axs[1],
+    faceview="eta",
+    local=True,
+    cells_kwargs=cells_kwargs,
+    vmap="var1",
+    bounds_kwargs=bounds_kwargs,
 )
 
 # Add colorbar for the variable mapped to cell colors
