@@ -15,7 +15,7 @@ Here are some guidelines we'd like you to follow:
 
 ### <a name="question"></a> Got a Question or Problem?
 
-Open an issue with label https://github.com/DanielEstrada971102/mplDTs/labels/question
+Open an issue with label https://github.com/INTREPID-hep/mplDTs/labels/question
 
 ### <a name="issue"></a> Found an Issue or Bug?
 
@@ -43,7 +43,7 @@ Before you submit your issue search the archive, maybe your question was already
 If your issue appears to be a bug, and hasn't been reported, open a new issue.
 
 In the "[new issue][github-new-issue]" please add one of the following labels:
-https://github.com/DanielEstrada971102/mplDTs/labels/bug/https://github.com/DanielEstrada971102/mplDTs/labels/enhancement/https://github.com/DanielEstrada971102/mplDTs/labels/question/https://github.com/DanielEstrada971102/mplDTs/labels/documentation.
+https://github.com/INTREPID-hep/mplDTs/labels/bug/https://github.com/INTREPID-hep/mplDTs/labels/enhancement/https://github.com/INTREPID-hep/mplDTs/labels/question/https://github.com/INTREPID-hep/mplDTs/labels/documentation.
 
 ## <a name="submit-pr"></a> Pull Requests and Submission Guidelines
 Before you submit your work consider the following guidelines:
@@ -119,7 +119,7 @@ The branch you have created will be automatically deleted from the central repos
     git pull --ff origin main
     ```
 
-[github]: https://github.com/DanielEstrada971102/mplDTs
-[github-issues]: https://github.com/DanielEstrada971102/mplDTs/issues
-[github-new-issue]:https://github.com/DanielEstrada971102/mplDTs/issues/new
+[github]: https://github.com/INTREPID-hep/mplDTs
+[github-issues]: https://github.com/INTREPID-hep/mplDTs/issues
+[github-new-issue]:https://github.com/INTREPID-hep/mplDTs/issues/new
 [developers]:DEVELOPERS.md

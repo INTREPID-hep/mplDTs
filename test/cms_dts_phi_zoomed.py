@@ -27,7 +27,7 @@ for sc in range(1, 15):
     for st in range(1, 5):
         if (sc == 13 or sc == 14) and st != 4:
             continue  # Sector 13 and 14 are only one MB4 station
-        station = Station(wheel=-2, sector=sc, station=st)
+        station = Station(wheel=2, sector=sc, station=st)
         _ = DTStationPatch(
             station,
             axes=ax,

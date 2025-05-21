@@ -175,7 +175,7 @@ class TransformManager:
         warnings.warn(f"No transformation path found from {from_frame} to {to_frame}.")
         return None
 
-    def transform(self, P, from_frame, to_frame):
+    def transform(self, P, from_frame, to_frame, type="point"):
         """
         Transform a point from the from_frame to the to_frame.
 
@@ -203,10 +203,19 @@ class TransformManager:
         if not isinstance(P, (list, tuple, np.ndarray)):
             raise TypeError("P must be a list, tuple, or ndarray.")
 
-        if len(np.shape(P)) > 1:
-            points = pt.vectors_to_points(P)
-        else:
-            points = pt.vector_to_point(P)
+        if type == "point":
+            if len(np.shape(P)) > 1:
+                _convert = pt.vectors_to_points
+            else:
+                _convert = pt.vector_to_point
+        elif type == "vector":
+            if len(np.shape(P)) > 1:
+                _convert = pt.vectors_to_directions
+            else:
+                _convert = pt.vector_to_direction
+
+
+        points = _convert(P)
 
         return pt.transform(matrix, points)[..., :3]
 

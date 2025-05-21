@@ -56,6 +56,8 @@ class Station(DTFrame):
         # == Build the station
         self._super_layers = []
         self._build_station()
+        # Set up the transformation from the SL13 center to the station frame
+        self._setup_sl13center_transformer()
 
         # == Set the drift cell attributes
         if dt_info is not None:
@@ -102,6 +104,22 @@ class Station(DTFrame):
         :rtype: list
         """
         return self._super_layers
+
+    @property
+    def face_orientation_factor(self):
+        """
+        Get the face orientation factor of the station. It is -1 for negative wheels, 1 for positive
+        wheels, and it depends on the sector for wheel 0 (it is -1 for sectors 1, 4, 5, 8, 9, 12,
+        and 13, and 1 otherwise). Details in https://dt-sx5.web.cern.ch/dt-sx5/run/docs/050912DT_type_naming.pdf
+
+        :return: Face orientation factor.
+        :rtype: int
+        """
+        return (
+            -1
+            if self._wheel < 0
+            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
+        )
 
     def super_layer(self, super_layer_number):
         """
@@ -174,21 +192,19 @@ class Station(DTFrame):
 
     def _setup_tranformer(self):
         """
-        Set up the transformer for the station. It defines the transformation from the local frame to the global frame.
+        Set up the transformer for the station. It defines the transformation from the local frame
+        to the global frame and other useful transformations (e.g. for plotting).
         """
         from pytransform3d.rotations import perpendicular_to_vectors
-        from numpy import array
+        from numpy import array, arctan2, radians, sin, sqrt, pi
 
         self.transformer = TransformManager("Station")  # intial frame is the station frame
 
-        # negative wheel are facing towards the -z axis, positive wheel towards the +z axis, and 0 wheel is facing towards the +-z axis depending on the sector
-        face_orientation = (
-            -1
-            if self._wheel < 0
-            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
-        )
+        # negative wheel are facing towards the -z axis, positive wheel towards the +z axis, and
+        # 0 wheel is facing towards the +-z axis depending on the sector
+        face_orientation = self.face_orientation_factor
 
-        # Define the transformation from Station frame to CMS global frame
+        # --------- Define the transformation from Station frame to CMS global frame ----------
 
         CMSezSt = self._direction
         CMSeySt = array([0, 0, 1]) * face_orientation
@@ -207,7 +223,7 @@ class Station(DTFrame):
             "Station", "CMS", rotation_matrix=_RCMSSt, translation_vector=_TCMSSt
         )  # add the transformation from local to global frame
 
-        # add a orientation transformation (Station 'Natural view' - NV phi/eta), useful for matplotlib ploting.
+        # ----- add a orientation transformation (Station 'Natural view' - NV phi/eta), useful for matplotlib plotting ------
         StNvezSt = array([0, 0, -1])
         StNvPhieySt = array([0, -1, 0]) * face_orientation
         StNvPhiexSt = perpendicular_to_vectors(StNvPhieySt, StNvezSt)
@@ -226,6 +242,47 @@ class Station(DTFrame):
         ).T  # rotation matrix from local to global frame
 
         self.transformer.add("Station", "StationNvEta", rotation_matrix=_RStNvPhiSt)
+
+        # ----- Add transformation from the Station to the sector phi line (used for AM TPs) -----
+        # dphi is the angle between the sector center line and the line from the CMS center to the station center
+        StPhi = arctan2(self._y_global, self._x_global)
+        StR = sqrt(self._x_global**2 + self._y_global**2)
+        sector = self._sector
+
+        # factor required for MB4 in sector 4 and 10 which are divided (sectors 13 and 14)
+        mb4_sign_correction = 1
+        if self._sector in [13, 14]:
+            mb4_sign_correction = -1
+            if self._sector == 13:
+                sector = 4
+            elif self._sector == 14:
+                sector = 10
+
+        SectorPhi = (sector - 1) * pi / 6  # 30 degrees per sector
+
+        dphi = StPhi - SectorPhi * mb4_sign_correction
+
+        # distance from the station center to the sector phi line
+        dx = -1 * (StR * sin(dphi)) * face_orientation * mb4_sign_correction
+
+        self.transformer.add(
+            "Station", "SectorRef", translation_vector=(dx, 0, 0)
+        )  # add the transformation from the station frame to the sector phi frame (just a translation in x)
+
+    def _setup_sl13center_transformer(self):
+        """
+        Add to the parent transformer the transformation to move from the SL13 center frame
+        to the Station frame. The SL13 center frame is defined as the geometrical center of the super layers 1 and 3.
+        The transformation is added to the parent station's transformer with the name "SL13Center".
+        """
+        from numpy import array
+
+        sl1_center = array(self.super_layer(1).local_center)
+        sl3_center = array(self.super_layer(3).local_center)
+        sls_center = (sl1_center + sl3_center) / 2
+
+        # Translation vector to move the center of SL13 frame to the Station Frame
+        self.transformer.add("SL13Center", "Station", translation_vector=sls_center)
 
     def set_cell_attrs(self, dt_info):
         """
@@ -293,5 +350,5 @@ if __name__ == "__main__":
             print(3 * "\t", l.cell(len(l.cells) - 1))
     print(
         "\t",
-        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cell(10).__dict__.keys()}",
     )
