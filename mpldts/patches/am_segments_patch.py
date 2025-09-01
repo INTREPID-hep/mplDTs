@@ -3,6 +3,7 @@ from mpldts.geometry import AMDTSegments
 from mpldts.patches.dt_patch_base import DTRelatedPatch
 import warnings
 
+
 class DTSegmentsPatch(DTRelatedPatch):
     """
     A class to visualize a 2D representation of Segments of a DT chamber in matplotlib context.
@@ -60,8 +61,6 @@ class DTSegmentsPatch(DTRelatedPatch):
         :type segs_kwargs: dict, optional
         :return: None. Adds a collection with the line segments of a chamber to the provided matplotlib axes.
         """
-        if faceview == "eta":
-            warnings.warn("The 'eta' view is on development and may not work as expected.")
         self.vmap = vmap
         self.segments = segments
 
@@ -69,7 +68,7 @@ class DTSegmentsPatch(DTRelatedPatch):
             [], **(segs_kwargs or {"linewidth": 0.8, "color": "k"}), **kwargs
         )
 
-        self.parent = segments[0].parent # All segments should have the same parent
+        self.parent = segments[0].parent  # All segments should have the same parent
 
         super().__init__(
             station=self.parent,
@@ -110,11 +109,10 @@ class DTSegmentsPatch(DTRelatedPatch):
         x, y, z = seg.local_center
         dx, dy, dz = seg.local_direction
         if seg.sl == 2:
-            _, _, length = self.parent.bounds
             x, y = -y, x  # Invert x and y for eta view
             dx, dy = -dy, dx  # Invert direction for eta view
 
-        size = 40
+        size = 20 if seg.sl != 0 else 40  # Use a smaller size for segments not correlated
 
         x_start = x - dx * size * 0.5
         z_start = z - dz * size * 0.5
@@ -133,6 +131,7 @@ class DTSegmentsPatch(DTRelatedPatch):
         self.vmap = vmap
         vars = [getattr(seg, self.vmap, 0) for seg in self.segments]
         self.segments_collection.set_array(vars)
+
 
 class MultiDTSegmentsPatch:
     """

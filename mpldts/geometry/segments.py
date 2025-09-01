@@ -1,5 +1,6 @@
 import warnings
-from typing import List, Union
+from typing import Union
+
 
 class Segment:
     """
@@ -74,8 +75,8 @@ class Segment:
         :return: Direction of the object.
         :rtype: tuple
         """
-        return self._local_direction    
-    
+        return self._local_direction
+
     @property
     def global_direction(self):
         """
@@ -160,7 +161,7 @@ class Segments:
             List of Segment objects in the collection.
     """
 
-    def __init__(self, segments: Union[List[Segment], Segment] = None):
+    def __init__(self, segments: Union[list[Segment], Segment] = None):
         """
         Initialize the Segments collection.
         """
@@ -230,7 +231,9 @@ class Segments:
         if isinstance(attributes, str):
             attributes = [attributes]
 
-        if not all(all(hasattr(segment, attr) for attr in attributes) for segment in self._segments):
+        if not all(
+            all(hasattr(segment, attr) for attr in attributes) for segment in self._segments
+        ):
             raise AttributeError(f"Not all segments have the specified attributes: {attributes}.")
 
         grouped_segments = {}

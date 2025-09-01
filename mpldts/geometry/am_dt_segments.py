@@ -3,6 +3,7 @@ from mpldts.geometry.station import Station
 import numpy as np
 from pandas import DataFrame
 
+
 class AMDTSegment(Segment):
     """
     Represents a DT AM (Analytical Method) trigger primitive segment.
@@ -13,17 +14,32 @@ class AMDTSegment(Segment):
     - **Theta segments**: ...
 
     """
-    def __init__(self, number, parent=None, sl=None, position=None, angle=None):
+
+    def __init__(
+        self,
+        number,
+        parent=None,
+        sl=None,
+        position=None,
+        angle=None,
+        reference_frame=None,
+        **kwargs,
+    ):
         super().__init__()
         self.number = number
         self.sl = sl
+        self.reference_frame = reference_frame
+
+        # Set additional attributes from kwargs
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
         if parent is not None:
             if not isinstance(parent, Station):
                 raise TypeError("Parent must be an instance of Station.")
             self.parent = parent
-            if "TPsFrame" not in parent.transformer.available_frames:
-                self._update_transformer()  # Add the AM Tps transformation to the parent transformer
+        else:
+            raise ValueError("Parent station must be provided for the segment.")
 
         self.wh = getattr(self.parent, "wheel", None)
         self.sc = getattr(self.parent, "sector", None)
@@ -31,33 +47,58 @@ class AMDTSegment(Segment):
 
         self._compute_segment_properties(position, angle)
 
-    def _update_transformer(self):
-        """
-        Add to the parent transformer the transformation to move from the AM Trigger primitives frame
-        to the Station frame. The TPs frame is defined as the geometrical center of the super layers 1 and 3.
-        The transformation is added to the parent station's transformer with the name "TPsFrame".
-        """
-        sl1_center = np.array(self.parent.super_layer(1).local_center)
-        sl3_center = np.array(self.parent.super_layer(3).local_center)
-        sls_center = (sl1_center + sl3_center) / 2
-
-        # Translation vector to move the center of TPs frame to the Station Frame
-        self.parent.transformer.add("TPsFrame", "Station", translation_vector=sls_center)
-
     def _compute_segment_properties(self, position, angle):
-        _dx = -1* np.sin(np.radians(angle))  # Calculate the x component of the direction vector
+        _dx = -1 * np.sin(np.radians(angle))  # Calculate the x component of the direction vector
         _dz = np.cos(np.radians(angle))  # Calculate the z component of the direction vector
 
-        _center = (position, 0, 0) if self.sl!=2 else (0, -position, 0)
-        _local_center = self.parent.transformer.transform(_center, from_frame="TPsFrame", to_frame="Station")# local center in station coordinates
-        _global_center = self.parent.transformer.transform(_local_center, from_frame="Station", to_frame="CMS")  # global center in CMS coordinates
+        is_sl2 = self.sl == 2
+        _center = [0, -position, 0] if is_sl2 else [position, 0, 0]
+        _direction = (
+            np.array([0, -_dx, _dz]) if is_sl2 else np.array([_dx, 0, _dz])
+        )  # direction vector in local cords
 
-        _direction = np.array([_dx, 0, _dz]) if self.sl!=2 else np.array([0, -_dx,_dz]) # direction vector in local cords
-        _local_direction = self.parent.transformer.transform(_direction, from_frame="TPsFrame", to_frame="Station", type="vector")  # direction in station coordinates
-        _global_direction = self.parent.transformer.transform(_local_direction, from_frame="Station", to_frame="CMS", type="vector")  # direction in CMS coordinates
+        # check if user specified a reference frame
+        # if no reference frame is specified, we assume the provided position and angle are already in the station frame
+        rframe = getattr(self, "reference_frame", None) or "Station"
+        if rframe not in self.parent.transformer.available_frames:
+            raise ValueError(
+                f"The specified reference frame '{rframe}' is not available in the parent transformer."
+            )
+
+        if rframe != "Station":
+            # If the user specified a reference frame, transform the center and direction to the station frame
+            _local_center = self.parent.transformer.transform(
+                _center, from_frame=rframe, to_frame="Station"
+            )
+            _local_direction = self.parent.transformer.transform(
+                _direction, from_frame=rframe, to_frame="Station", type="vector"
+            )
+        else:
+            _local_center = _center
+            _local_direction = _direction
+
+        if (
+            self.sl != 0
+        ):  # If the segment belongs to SL1, SL2 or SL3, we transform from  vertical cord to SuperLayer frame to center it in SL
+            try:
+                _local_center[2] = self.parent.super_layer(self.sl).transformer.transform(
+                    (0, 0, 0), from_frame="SuperLayer", to_frame="Station"
+                )[2]
+            except AttributeError:
+                raise ValueError(
+                    f"Invalid SuperLayer number '{self.sl}' for the parent station{self.parent.name}. "
+                    f"It should be {[sl.number for sl in self.parent.super_layers]}."
+                )
+
+        _global_center = self.parent.transformer.transform(
+            _local_center, from_frame="Station", to_frame="CMS"
+        )  # global center in CMS coordinates
+        _global_direction = self.parent.transformer.transform(
+            _local_direction, from_frame="Station", to_frame="CMS", type="vector"
+        )  # direction in CMS coordinates
 
         # normalize the direction vectors
-        _local_direction = _local_direction /np.sqrt(np.sum(_local_direction**2))
+        _local_direction = _local_direction / np.sqrt(np.sum(_local_direction**2))
         _global_direction = _global_direction / np.sqrt(np.sum(_global_direction**2))
 
         # In this way to ensure that they are tuples of floats and not numpy types... (not very important XD)
@@ -78,7 +119,7 @@ class AMDTSegments(Segments):
 
     """
 
-    def __init__(self, segs_info=None):
+    def __init__(self, segs_info=None, reference_frame="SL13Center"):
         """
         Constructor of the Segments class.
 
@@ -91,9 +132,9 @@ class AMDTSegments(Segments):
         if segs_info is None:
             raise ValueError("The segments information must be provided.")
 
-        self._build_segments(segs_info)
+        self._build_segments(segs_info, reference_frame=reference_frame)
 
-    def _build_segments(self, segements_info=None):
+    def _build_segments(self, segements_info=None, reference_frame=None):
         """
         Build up the segments of the station. It creates the segments contained in the station and
         sets the attributes.
@@ -133,27 +174,35 @@ class AMDTSegments(Segments):
             if parent is None:
                 parent = Station(wheel=wh, sector=sec, station=st)
 
-            _seg = AMDTSegment(number, parent, sl, position, angle)
-
-            # Set additional attributes
-            for key, value in seg_info.items():
-                if key not in ["sl", "angle", "position", "index", "parent", "wh", "sc", "st"]:
-                    setattr(_seg, key, value)
+            # Create Segment and set additional attributes
+            _seg = AMDTSegment(
+                number,
+                parent,
+                sl,
+                position,
+                angle,
+                reference_frame=reference_frame,
+                **{
+                    k: v
+                    for k, v in seg_info.items()
+                    if k not in ["sl", "angle", "position", "index", "parent", "wh", "sc", "st"]
+                },
+            )
 
             self.add(_seg)
+
 
 if __name__ == "__main__":
     # Example usage
     parent = Station(wheel=2, sector=1, station=3)
     parent2 = Station(wheel=2, sector=1, station=4)
     segments_info = [
-        {"parent": parent, "sl":1, "angle": -10.2, "position": 0},
-        {"parent": parent, "sl":3, "angle": 20.0, "position": 0},
-        {"parent": parent, "sl":2, "angle": 0.1, "position": 10},
-        {"parent": parent2, "sl":1, "angle": -10.2, "position": 0},
+        {"parent": parent, "sl": 1, "angle": -10.2, "position": 0},
+        {"parent": parent, "sl": 3, "angle": 20.0, "position": 0},
+        {"parent": parent, "sl": 2, "angle": 0.1, "position": 10},
+        {"parent": parent2, "sl": 1, "angle": -10.2, "position": 0},
     ]
     segments = AMDTSegments(segments_info)
     for seg in segments:
         print(seg)
     print(segments.groupby(["wh", "sc", "st"]))
-

@@ -3,6 +3,8 @@ import re
 import xml.etree.ElementTree as ET
 from functools import cache
 
+
+
 class DTGeometry:
     """
     A class to easy access to the CMS DT Geometry from the XML file.
@@ -107,7 +109,7 @@ class DTGeometry:
 
 
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v3.xml"))
+DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "DTGeometry_v3.xml"))
 
 # Example usage
 if __name__ == "__main__":

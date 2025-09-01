@@ -10,7 +10,7 @@ The recommended way of development is under a virtual environment.
 
 1. Clone the repository
     ```shell
-    git clone https://github.com/DanielEstrada971102/mplDts.git && cd mplDts
+    git clone https://github.com/INTREPID-hep/mplDts.git && cd mplDts
     ```
 2. Install the `mplDts` project along with all its dependencies in a virtual environment with the commands
     ```shell

@@ -14,7 +14,7 @@ You can clone the repository, or install via pip:
 
    .. code-block:: bash
 
-      git clone https://github.com/DanielEstrada971102/mplDTs.git
+      git clone https://github.com/INTREPID-hep/mplDTs.git
       cd mplDTs
       git checkout <tag version> # Opcional step: e.g. git checkout v1.0.0
       pip install .
@@ -25,7 +25,7 @@ You can clone the repository, or install via pip:
 
    .. code-block:: bash
 
-      pip install git+https://github.com/DanielEstrada971102/mplDTs.git@<tag version> # e.g. v1.0.0
+      pip install git+https://github.com/INTREPID-hep/mplDTs.git@<tag version> # e.g. v1.0.0
       # To check if the package was installed successfully...
       pip show mplDTs
 

@@ -10,7 +10,7 @@ If you are a developer please start with reading the [Contributor][contributing]
 You can clone the repo and install or use directly pip:
 
 ```shell
-git clone https://github.com/DanielEstrada971102/mplDTs.git
+git clone https://github.com/INTREPID-hep/mplDTs.git
 cd mplDTs
 git checkout <tag version> # Opcional step: e.g. git checkout v1.0.0
 pip install .
@@ -20,7 +20,7 @@ pip show mpldts
 ```
 
 ```shell
-pip install git+https://github.com/DanielEstrada971102/mplDTs.git@<tag version> # e.g. v1.0.0
+pip install git+https://github.com/INTREPID-hep/mplDTs.git@<tag version> # e.g. v1.0.0
 # To check if the package was installed successfully...
 pip show mplDTs
 ```
@@ -28,7 +28,7 @@ pip show mplDTs
 
 ## Usage
 
-Visit de documentation on [mplDTs documentation](https://danielestrada971102.github.io/mplDTs/).
+Visit de documentation on [mplDTs documentation](https://intrepid-hep.github.io/mplDTs/).
 
 [contributing]: CONTRIBUTING.md
 [developers]: DEVELOPERS.md
