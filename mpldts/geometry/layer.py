@@ -42,7 +42,7 @@ class Layer(DTFrame):
             self._first_cell_id = 1
             self._last_cell_id = 50
 
-        self._setup_tranformer()
+        self._setup_transformer()
         self._DriftCells = []
         self._build_layer()
 
@@ -109,11 +109,11 @@ class Layer(DTFrame):
             cell.global_center = global_pos
             cell.bounds = wire_bounds
             cell.parent = self
-            cell._setup_tranformer()
+            cell._setup_transformer()
 
             self._add_cell(cell)
 
-    def _setup_tranformer(self):
+    def _setup_transformer(self):
         """
         Set up the transformer for the layer. It defines the transformation from the local frame to the global frame.
         """

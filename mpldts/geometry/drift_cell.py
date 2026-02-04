@@ -60,7 +60,7 @@ class DriftCell(DTFrame):
             self.local_center = (0, 0, 0)
             self.global_center = (0, 0, 0)
 
-    def _setup_tranformer(self):
+    def _setup_transformer(self):
         """
         Set up the transformer for the Drift Cell. It defines the transformation from the local frame to the global frame.
         """

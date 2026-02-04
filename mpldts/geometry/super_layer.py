@@ -36,7 +36,7 @@ class SuperLayer(DTFrame):
             self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
             self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
             self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
-        self._setup_tranformer()
+        self._setup_transformer()
         self._layers = []
         self._build_super_layer()
 
@@ -90,7 +90,7 @@ class SuperLayer(DTFrame):
         for layer in DTGEOMETRY.get(rawId=self.id).iter("Layer"):
             self._add_layer(Layer(layer.get("rawId"), parent=self))
 
-    def _setup_tranformer(self):
+    def _setup_transformer(self):
         """
         Set up the transformer for the super layer. It defines the transformation from the local frame to the global frame.
         """

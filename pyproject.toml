@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mplDTs"
-version = "2.0.0"
+version = "2.1.1-beta"
 description = "Set of tools to produce CMS DTs matplotlib patches"
 authors = ["Daniel Estrada <estradadaniel@uniovi.es>"]
 readme = "README.md"
