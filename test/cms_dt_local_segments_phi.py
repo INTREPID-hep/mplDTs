@@ -62,7 +62,7 @@ for i, (ax, ref_frame) in enumerate(zip(axs, ["Station", "SectorRef", "SL13Cente
     ax.legend(loc='upper left', fontsize=5)
 
 # Add title
-fig.suptitle(f"Segments in DT Station : {station.name} - phi-view (local)", fontsize=12)
+fig.suptitle(f"Segments in DT Station : {station.name}")
 # Create a single legend box positioned in the center left
 fig.tight_layout() 
 plt.show()

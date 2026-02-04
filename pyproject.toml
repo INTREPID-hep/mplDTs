@@ -1,44 +1,34 @@
-[project]
+[tool.poetry]
 name = "mplDTs"
-version = "2.1.0"
+version = "2.1.1-beta"
 description = "Set of tools to produce CMS DTs matplotlib patches"
-authors = [
-  { name = "Daniel Estrada", email = "destrada@cern.ch" }
-]
-maintainers = [
-  { name = "Daniel Estrada", email = "destrada@cern.ch" }
-]
+authors = ["Daniel Estrada <estradadaniel@uniovi.es>"]
 readme = "README.md"
-requires-python = ">=3.9"
 
-dependencies = [
-    "pandas>=2.2",
-    "matplotlib>=3.9.3",
-    "mplhep>=0.3",
-    "pytransform3d>=3.14.0"
-]
+[tool.poetry.dependencies]
+python = ">=3.9"
+pandas = ">=2.2"
+matplotlib = ">=3.9.3"
+mplhep = ">=0.3"
+pytransform3d = ">=3.14.0"
 
-[project.optional-dependencies]
-docs = [
-    "sphinx",
-    "sphinx-rtd-theme",
-    "sphinx-copybutton"
-]
-dev = [
-    "black"
-]
+[tool.poetry.group.dev]
+optional = true
 
-[project.urls]
-Documentation = "https://danielestrada971102.github.io/mplDTs/"
-Repository = "https://github.com/DanielEstrada971102/mplDTs"
+[tool.poetry.group.dev.dependencies]
+black = "*"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["mpldts*"]
+[tool.poetry.group.doc]
+optional = true
 
-[tool.setuptools.package-data]
-"mpldts.geometry" = ["*.xml"]
+[tool.poetry.group.doc.dependencies]
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-copybutton = "*"
+
+[[tool.poetry.packages]]
+include = "mpldts"
 
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

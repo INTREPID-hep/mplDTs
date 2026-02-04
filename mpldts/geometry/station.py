@@ -5,9 +5,7 @@ from mpldts.geometry.transforms import TransformManager
 from pandas import DataFrame
 from copy import deepcopy
 import warnings
-import threading
-import weakref
-from typing import Optional, Any
+
 
 class Station(DTFrame):
     """
@@ -352,27 +350,5 @@ if __name__ == "__main__":
             print(3 * "\t", l.cell(len(l.cells) - 1))
     print(
         "\t",
-        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cell(10).__dict__.keys()}",
     )
-
-
-class StationsCache:
-    def __init__(self):
-        self._cache = weakref.WeakValueDictionary()
-        self._lock = threading.Lock()
-
-    def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
-        key = (wh, sc, st)
-        with self._lock:
-            station = self._cache.get(key)
-            if station is None:
-                try:
-                    station = Station(wheel=wh, sector=sc, station=st, dt_info=dt_info)
-                    self._cache[key] = station
-                except ValueError:
-                    self._cache[key] = None
-                    return None
-            else:
-                if dt_info is not None and station is not None:
-                    station.set_cell_attrs(dt_info)
-            return station

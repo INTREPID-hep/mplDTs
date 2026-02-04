@@ -5,5 +5,5 @@
 *main.sh*
 *ROOT*
 *.vscode*
-*build*
+*_build*
 test/*.svg

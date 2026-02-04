@@ -1,7 +1,6 @@
 import os
 import re
 import xml.etree.ElementTree as ET
-from functools import cache
 
 
 
@@ -25,7 +24,6 @@ class DTGeometry:
         tree = ET.parse(xml_file)
         self.root = tree.getroot()
 
-    @cache
     def get(self, attribute=None, **kwargs):
         """
         Retrieve specific attributes or elements from the XML based on the provided criteria.
@@ -109,7 +107,7 @@ class DTGeometry:
 
 
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "DTGeometry_v3.xml"))
+DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "./DTGeometry_v3.xml"))
 
 # Example usage
 if __name__ == "__main__":
