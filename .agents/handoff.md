@@ -1,11 +1,12 @@
 # Handoff — start here if you are new
 
-**Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-022 legacy delegation.
-**Current state:** **M1 done; Phase 2 in progress on
-`feature/phase-2-runtime` (not merged).**
-**Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
-**Next action:** T-023 — immutable geometry and the per-event overlay (`BUG-02`).
+**Last updated:** 2026-11-07 (Europe/Madrid)
+**Previous session:** T-026 release prep (2.3.0, runtime docs) on
+`refactor/v2-integration`.
+**Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
+merged); Phase 3 planned on `feature/phase-3-assemblies`.**
+**Current checkpoint:** `CP-007` (M2) complete.
+**Next action:** `T-030` — `DetectorSpec` assemblies and custom stations.
 
 ---
 
@@ -13,7 +14,7 @@
 
 1. Read [`AGENT.md`](AGENT.md) — the contract and the HOLD gate.
 2. Read [`state.md`](state.md) — what is true now.
-3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-022 are `done`.
+3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-024 are `done`.
 4. Read [`PROGRESS.md`](PROGRESS.md) — checkpoints and the session log.
 5. Skim [`context.md`](context.md) §2–§5 — architecture, findings, target model.
 6. Open [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md)
@@ -36,13 +37,21 @@ Done: Phase 0 (tests, oracle, alias, benchmark, CI), Phase 1 (`specs.py`,
 `sources/cms_xml.py`, spec oracle over 250 chambers), T-020 (`Node` +
 `build_station`, exported from `mpldts.geometry`), T-021 (`FrameGraph` + `FrameView`,
 scoped aliases, legacy `add`/`remove`), T-022 (the legacy classes are views
-over the source, the tree and the graph; `BUG-01` gone, plotting bit-identical).
+over the source, the tree and the graph; `BUG-01` gone, plotting bit-identical),
+T-023 (`Station.overlay` and a cache that never writes on the shared station;
+`BUG-02` gone), T-024 (one build per chamber, lazy `DTGEOMETRY`, explicit
+XML attribute names; `BUG-03` gone).
 
-Remaining: T-023 immutability (`BUG-02`), T-024 performance + `DTGEOMETRY`
-shim + `BUG-03`, T-025 `test/` triage.
+T-025 closed the `test/` triage: the documented examples live in
+`docs/examples/` and run headless in `test/geometry/test_examples.py`.
+T-026 released 2.3.0 (one version string, new `docs/src/geometry/runtime.rst`)
+on `refactor/v2-integration`. Phase 3 is planned: `T-030` assemblies,
+`T-031` CMS preset + plotting orientation, `T-032` honeycomb, `T-033` yoke hook.
 
-Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
-until the maintainer approves it.**
+Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
+`refactor/v2-integration` (2.3.0) and Phase 3 works on
+`feature/phase-3-assemblies`. **Nothing merges into `main` until the maintainer
+approves it.**
 
 Commands:
 
@@ -54,14 +63,15 @@ PYTHONPATH=/home/destrada/mplDTs \
 
 Full oracle and the builder sweep: add `-m slow` (250 chambers, seconds).
 
-Do not start Phase 3 before M2 is green.
+Phase 3 does not start before the maintainer reviews M2; M2 has been green since 2026-11-06.
 
 ---
 
 ## 3. What not to touch yet
 
 - `mpldts/` legacy runtime classes — T-022 wired them to the source and
-  the graph; T-023 adds the per-event overlay, so do not give them state.
+  the graph; T-023 added `Station.overlay`, so per-event data goes there and
+  never on a cached station.
 - `mpldts/patches/` — plotting must keep working; changes need an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
 - `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and

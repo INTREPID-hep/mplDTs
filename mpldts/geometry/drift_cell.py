@@ -14,7 +14,6 @@
 
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameView
-from mpldts.geometry.sources.cms_xml import position
 
 
 class DriftCell(DTFrame):
@@ -58,7 +57,7 @@ class DriftCell(DTFrame):
             raise ValueError(f"cell {number} is not in layer {parent.number}")
         width, length, thickness = node.shape.aabb()
         self.bounds = (width, thickness, length)
-        self.local_center = position(parent._cell_local_text[number])
+        self.local_center = parent._cell_local[number]
         self.global_center = tuple(float(value) for value in node.world_pose.translation)
         self._node = node
         self.transformer = FrameView(parent.transformer.graph, node)

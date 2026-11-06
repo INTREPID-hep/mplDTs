@@ -14,7 +14,7 @@ SuperLayer
 .. literalinclude:: ../../../mpldts/geometry/super_layer.py
     :language: python
     :dedent:
-    :lines: 125-130
+    :lines: 99-106
 
 .. rubric:: Output
 

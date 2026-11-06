@@ -138,3 +138,40 @@ def test_an_unknown_chamber_raises_value_error():
 
     with pytest.raises(ValueError, match="is not in the CMS geometry"):
         Station(*missing)
+
+
+def test_cache_overlays_isolate_cell_attributes():
+    from mpldts.geometry import STATION_CACHE
+
+    STATION_CACHE.clear()
+    try:
+        first = STATION_CACHE.get(*CHAMBER, dt_info=[{"sl": 1, "l": 1, "w": 1, "time": 100}])
+        second = STATION_CACHE.get(*CHAMBER, dt_info=[{"sl": 1, "l": 1, "w": 1, "time": 200}])
+        base = STATION_CACHE.get(*CHAMBER)
+
+        assert first is not second
+        assert first is not base
+        assert first.super_layer(1).layer(1).cell(1).time == 100
+        assert second.super_layer(1).layer(1).cell(1).time == 200
+        assert not hasattr(base.super_layer(1).layer(1).cell(1), "time")
+        assert STATION_CACHE.get(*CHAMBER) is base
+    finally:
+        STATION_CACHE.clear()
+
+
+def test_an_overlay_shares_the_geometry_and_owns_the_attributes():
+    station = _station()
+    view = station.overlay([{"sl": 2, "l": 1, "w": 1, "energy": 4.2}])
+
+    assert view.transformer.graph is station.transformer.graph
+    assert view.transformer.node is station.transformer.node
+    for view_sl, super_layer in zip(view.super_layers, station.super_layers):
+        assert view_sl.transformer.node is super_layer.transformer.node
+        for view_layer, layer in zip(view_sl.layers, super_layer.layers):
+            assert [cell.local_center for cell in view_layer.cells] == [
+                cell.local_center for cell in layer.cells
+            ]
+
+    assert view.super_layer(2).layer(1).cell(1).energy == 4.2
+    assert not hasattr(station.super_layer(2).layer(1).cell(1), "energy")
+    assert view.transformer.get_transformation("StationNvPhi", "CMS") is not None

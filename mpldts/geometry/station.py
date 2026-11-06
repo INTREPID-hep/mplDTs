@@ -50,6 +50,80 @@ def _unit(vector):
     return vector / np.linalg.norm(vector)
 
 
+def _face_factor(wheel, sector):
+    """-1 for negative wheels, 1 for positive; wheel 0 depends on the sector."""
+    return (
+        -1 if wheel < 0 else 1 if wheel > 0 else -1 if sector in [1, 4, 5, 8, 9, 12, 13] else 1
+    )
+
+
+def _add_plotting_frames(graph, node, record, wheel, sector):
+    """Register the frames the plotting patches ask for: the natural views
+    StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
+    geometrical center of the super layers 1 and 3 (SL13Center)."""
+    station_frame = node.frame_id
+
+    def add(name, pose):
+        graph.add_virtual(station_frame + "/" + name, station_frame, pose)
+
+    face = _face_factor(wheel, sector)
+
+    # Station 'Natural view' (phi): a rotation, the station frame to the view frame
+    ez = np.array([0.0, 0.0, -1.0])
+    ey = np.array([0.0, -1.0, 0.0]) * face
+    ex = _unit(np.cross(ey, ez))
+    add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Station 'Natural view' (eta)
+    ex = np.array([-1.0, 0.0, 0.0]) * face
+    ey = _unit(np.cross(ez, ex))
+    add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
+    # divided into 13 and 14, hence the sign correction.
+    x, y, _ = record["global"]
+    correction = 1
+    if sector in [13, 14]:
+        correction = -1
+        sector = 4 if sector == 13 else 10
+    dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
+    dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
+    add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
+
+    # Geometrical center of the super layers 1 and 3
+    sl1 = next((sl for sl in record["super_layers"] if sl["number"] == 1), None)
+    sl3 = next((sl for sl in record["super_layers"] if sl["number"] == 3), None)
+    if sl1 is not None and sl3 is not None:
+        centre = (np.asarray(sl1["local"]) + np.asarray(sl3["local"])) / 2.0
+        add("SL13Center", Pose.translated(*centre))
+
+
+# ponytail: unbounded per-chamber cache (250 entries at most); add an LRU only
+# if a long-lived process plots every chamber and memory matters.
+_BUILT = {}
+
+
+def _built(wheel, sector, station):
+    """(record, node, graph) of a chamber, built once and shared by its views.
+
+    The node tree and the graph are immutable geometry (ADR-007); a Station is
+    a view over them. The first build of a chamber is 20-60 ms, a later view a
+    few milliseconds.
+    """
+    key = (wheel, sector, station)
+    built = _BUILT.get(key)
+    if built is not None:
+        return built
+    source = _source()
+    record = source.record(wheel, sector, station)
+    node = build_station(source.station(wheel, sector, station))
+    graph = FrameGraph()
+    graph.add_nodes(node)
+    _add_plotting_frames(graph, node, record, wheel, sector)
+    built = _BUILT[key] = (record, node, graph)
+    return built
+
+
 class Station(DTFrame):
     """
     Class representing a CMS Drift Tube Chamber.
@@ -90,10 +164,8 @@ class Station(DTFrame):
         self.sector = sector
         self.number = station
 
-        source = _source()
         try:
-            record = source.record(wheel, sector, station)
-            spec = source.station(wheel, sector, station)
+            record, node, graph = _built(wheel, sector, station)
         except KeyError:
             raise ValueError(
                 "chamber Wh:%d St:%d Se:%d is not in the CMS geometry" % (wheel, station, sector)
@@ -105,15 +177,14 @@ class Station(DTFrame):
         self.direction = record["direction"]
         self.bounds = record["bounds"]
 
-        # == Build the station: node tree, one graph, one view per object
-        self._node = build_station(spec)
-        self._graph = FrameGraph()
-        self._graph.add_nodes(self._node)
-        self.transformer = FrameView(self._graph, self._node)
+        # == The station is a view over the shared tree and graph
+        self._node = node
+        self._graph = graph
+        self.transformer = FrameView(graph, node)
 
         # rawId -> (node, record), for the legacy child constructors
         self._parts = {}
-        for sl_record, sl_node in zip(record["super_layers"], self._node.children):
+        for sl_record, sl_node in zip(record["super_layers"], node.children):
             self._parts[sl_record["raw_id"]] = (sl_node, sl_record)
             for layer_record, layer_node in zip(sl_record["layers"], sl_node.children):
                 self._parts[layer_record["raw_id"]] = (layer_node, layer_record)
@@ -122,7 +193,6 @@ class Station(DTFrame):
             SuperLayer(rawId=sl_record["raw_id"], parent=self)
             for sl_record in record["super_layers"]
         ]
-        self._add_plotting_frames()
 
         # == Set the drift cell attributes
         if dt_info is not None:
@@ -180,11 +250,7 @@ class Station(DTFrame):
         :return: Face orientation factor.
         :rtype: int
         """
-        return (
-            -1
-            if self._wheel < 0
-            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
-        )
+        return _face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """
@@ -248,51 +314,6 @@ class Station(DTFrame):
             raise ValueError("Station value must be between 1 and 4")
         self._number = value
 
-    # == Frames for the plotting patches
-
-    def _add_plotting_frames(self):
-        """
-        Register the frames the plotting patches ask for: the natural views
-        StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
-        geometrical center of the super layers 1 and 3 (SL13Center).
-        """
-        station_frame = self._node.frame_id
-
-        def add(name, pose):
-            self._graph.add_virtual(station_frame + "/" + name, station_frame, pose)
-
-        face = self.face_orientation_factor
-
-        # Station 'Natural view' (phi): a rotation, the station frame to the view frame
-        ez = np.array([0.0, 0.0, -1.0])
-        ey = np.array([0.0, -1.0, 0.0]) * face
-        ex = _unit(np.cross(ey, ez))
-        add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
-
-        # Station 'Natural view' (eta)
-        ex = np.array([-1.0, 0.0, 0.0]) * face
-        ey = _unit(np.cross(ez, ex))
-        add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
-
-        # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
-        # divided into 13 and 14, hence the sign correction.
-        x, y, _ = self.global_center
-        sector = self._sector
-        correction = 1
-        if sector in [13, 14]:
-            correction = -1
-            sector = 4 if sector == 13 else 10
-        dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
-        dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
-        add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
-
-        # Geometrical center of the super layers 1 and 3
-        sl1 = self.super_layer(1)
-        sl3 = self.super_layer(3)
-        if sl1 is not None and sl3 is not None:
-            centre = (np.asarray(sl1.local_center) + np.asarray(sl3.local_center)) / 2.0
-            add("SL13Center", Pose.translated(*centre))
-
     def set_cell_attrs(self, dt_info):
         """
         Set the attributes for the drift cells in the station.
@@ -301,6 +322,11 @@ class Station(DTFrame):
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
                 layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
         :type dt_info: dict, list, or pandas.DataFrame
+
+        .. note::
+            This writes on this station's own cells. On a station shared through
+            :class:`StationsCache` use :meth:`overlay` instead: the cache hands
+            the same instance to every caller.
         """
         if isinstance(dt_info, dict):
             info = [deepcopy(dt_info)]
@@ -331,6 +357,28 @@ class Station(DTFrame):
 
             for key, value in info_item.items():
                 setattr(cell, key, value)
+
+    def overlay(self, dt_info=None):
+        """
+        A per-event view of this station: the same geometry, its own cell attributes.
+
+        The node tree and the frame graph are shared with this station, so an
+        overlay costs a fraction of a full build; the super layers, layers and
+        cells are new objects, so setting an attribute on an overlay cell never
+        reaches the station or another overlay.
+
+        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
+        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
+        :return: The overlay station.
+        :rtype: Station
+        """
+        view = object.__new__(type(self))
+        view.__dict__.update(self.__dict__)
+        view.transformer = FrameView(self._graph, self._node)
+        view._super_layers = [SuperLayer(rawId=sl.id, parent=view) for sl in self._super_layers]
+        if dt_info is not None:
+            view.set_cell_attrs(dt_info)
+        return view
 
 
 if __name__ == "__main__":
@@ -380,20 +428,25 @@ class StationsCache:
         return cls._instance
 
     def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
+        """The cached station of a chamber, or a per-event overlay of it.
+
+        The cached station is never mutated: when `dt_info` is given the
+        result is :meth:`Station.overlay`, which shares the geometry and owns
+        its cell attributes.
+        """
         key = (wh, sc, st)
         with self._cache_lock:
             station = self._cache.get(key)
             if station is None:
                 try:
-                    station = Station(wheel=wh, sector=sc, station=st, dt_info=dt_info)
+                    station = Station(wheel=wh, sector=sc, station=st)
                     self._cache[key] = station
                 except ValueError:
                     self._cache[key] = None
                     return None
-            else:
-                if dt_info is not None and station is not None:
-                    station.set_cell_attrs(dt_info)
-            return station
+            if dt_info is None:
+                return station
+            return station.overlay(dt_info)
     
     def clear(self):
         """Clear the cache (useful for testing or memory management)."""

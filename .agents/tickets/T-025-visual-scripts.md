@@ -1,10 +1,10 @@
 # T-025 — Triage the visual scripts in `test/`
 
-- **Status:** proposed
+- **Status:** done
 - **Phase:** 2
 - **Epic:** E2 Runtime model
 - **Depends on:** T-022 (the runtime API changes first)
-- **Branch:** `feature/T-025-visual-scripts`
+- **Branch:** `feature/phase-2-runtime` (done on the phase branch)
 - **PR:** —
 - **Owner:** unassigned
 - **Labels:** tests, docs, cleanup
@@ -39,7 +39,7 @@ Everything else is deleted. No script stays in `test/`.
 | `cms_dts_phi_zoomed.py` | `dt_station_patch.rst:77` | move to `docs/examples/` |
 | `cms_dts_eta_zoomed.py` | `dt_station_patch.rst:90` | move to `docs/examples/` |
 | `cms_dt_local_inversion.py` | `dt_station_patch.rst:120` | move to `docs/examples/` |
-| `transform_validation.py` | `transforms.py` docstring | delete: asserted in `test/geometry/test_oracle.py` |
+| `transform_validation.py` | `transforms.py` docstring | move to `docs/examples/`: it is doc-included, so deleting it dangles the `TransformManager` example |
 | `cms_dt_global_segments_eta.py` | — | delete (duplicate demo) |
 | `cms_dt_global_segments_phi.py` | — | delete (duplicate demo) |
 | `cms_dt_local_segments_eta.py` | — | delete (duplicate demo) |
@@ -47,9 +47,9 @@ Everything else is deleted. No script stays in `test/`.
 | `cms_dts_segments_eta.py` | — | delete (duplicate demo) |
 | `cms_dts_segments_phi.py` | — | delete (duplicate demo) |
 | `cms_dts_etas.py` | — | delete (duplicate demo) |
-| `cms_dts_phi_zoomed.svg` | — | delete (generated output) |
+| `cms_dts_phi_zoomed.svg` | — | deleted (generated output; gitignored) |
 | `inpect_dts_geometry.py` | — | delete (debug tool; superseded by the oracle) |
-| `cms_dts_phi_zoomed_printer.py` | — | untracked experiment; delete after the maintainer confirms |
+| `cms_dts_phi_zoomed_printer.py` | — | **left untouched**: untracked experiment; delete only once the maintainer confirms |
 
 ## Scope
 
@@ -71,11 +71,14 @@ Everything else is deleted. No script stays in `test/`.
 
 ## Acceptance criteria
 
-- [ ] `test/` contains only the pytest suite (`test/geometry/`).
-- [ ] The five doc examples live in `docs/examples/` and the docs still build.
-- [ ] Each example runs headless and is exercised by one smoke test.
-- [ ] `grep -rn "test/" docs README.md` returns only pytest paths.
-- [ ] `pytest -q` is unchanged and green.
+- [x] `test/` holds the pytest suite (`test/geometry/`) and the benchmark
+      (`test/benchmarks/`); no demo scripts are left.
+- [x] Six examples live in `docs/examples/` (the five patch demos plus
+      `transform_validation.py`) and Sphinx still builds.
+- [x] Each example runs headless and is exercised by
+      `test/geometry/test_examples.py` (one case per example).
+- [x] `grep -rn "test/" docs README.md` returns only pytest paths.
+- [x] `pytest -q` green: 111 passed, 2 skipped, 2 deselected.
 
 ## Verification
 
@@ -97,3 +100,20 @@ grep -rn "test/" docs README.md
 
 - 2026-11-06: created after the maintainer asked for the visual scripts to be
   part of the plan; the pytest suite replaces them as the regression net.
+- 2026-11-06: implemented. Moved the five doc examples and
+  `transform_validation.py` to `docs/examples/`; deleted the other seven demos,
+  the debug script and the generated SVG; updated the five
+  `literalinclude` paths in `docs/src/patches/dt_station_patch.rst` and the one in
+  `mpldts/geometry/transforms.py`; added `test/geometry/test_examples.py`; removed
+  the `color=`/`edgecolor=` conflict in the phi zoom example, which warned on every
+  run. `test/__init__.py` stays: `test/` still holds `benchmarks/` and the package
+  name keeps the relative imports in `test/geometry/` working.
+
+## Verification ledger
+
+| Command | Result |
+|---|---|
+| `pytest -q` | 111 passed, 2 skipped, 2 deselected, 25-33 s |
+| `pytest -q test/geometry/test_examples.py` | 6 passed, 9-20 s (every example headless) |
+| `sphinx-build -b html docs` (Sphinx 9.1.1) | build succeeded; the five demos and the `TransformManager` example render into the HTML |
+| `grep -rn "test/" docs README.md` | only `test/geometry/...` paths |

@@ -4,7 +4,9 @@ project = f'mplDTs'
 thisyear = datetime.datetime.now().year
 copyright = '2024-%s, Daniel Estrada, Universidad de Oviedo' % thisyear
 author = 'Daniel Estrada'
-release = '2.0.0'
+from mpldts import __version__ as _mpldts_version
+
+release = _mpldts_version
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx.ext.todo", 'sphinx_copybutton']
 

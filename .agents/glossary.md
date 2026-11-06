@@ -155,8 +155,8 @@ ancestor.
 **pyg4ometry** — Python library for Geant4 geometry, materials, GDML, VTK and
 overlap checks. Optional and deferred (ADR-008).
 
-**`DTGEOMETRY`** — the current module-level XML singleton; to become a
-deprecated shim over `CMSXMLSource`.
+**`DTGEOMETRY`** — the legacy XML reader, parsed lazily on first use (T-024);
+the model never reads it.
 
 **`rawId`** — the CMS XML identifier of a node. Kept as metadata; never used as
 a frame id.

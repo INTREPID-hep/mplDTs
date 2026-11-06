@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-06 10:30 (Europe/Madrid)
-**Branch:** `feature/phase-2-runtime`
+**Last updated:** 2026-11-07 00:40 (Europe/Madrid)
+**Branch:** `refactor/v2-integration` (2.3.0)
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** M1 done — Phase 2 (runtime model) in progress: T-020, T-021 done
+**Current phase:** Phases 0-2 done — M2 released as 2.3.0; M3 (T-030) ready to start
 
 ---
 
@@ -23,8 +23,8 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022) |
-| pytest suite for geometry | **through Phase 2 (T-022)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy; 100 pass, 2 skip |
+| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024) |
+| pytest suite for geometry | **through Phase 2 (T-025)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples; 111 pass, 2 skip |
 
 The prototype verifies:
 
@@ -60,15 +60,18 @@ prototype has no wire fields either.
 | Id | Issue | Evidence |
 |---|---|---|
 | `BUG-01` | ~~SL2 transform off by `√2·|SL_local_x|`~~ **fixed in T-022** | was 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); the frame chain is the node poses now and the cell centres match the XML |
-| `BUG-02` | shared cache mutates cell data across events | `station.py:386-387`, `:288-325` |
-| `BUG-03` | attribute-order-dependent XML parsing | `_geometry.py:122`, `:126`, `layer.py:101` |
+| `BUG-02` | ~~shared cache mutates cell data across events~~ **fixed in T-023** | was `StationsCache.get` writing on shared cells; the cache returns `Station.overlay()` now and `test_cache_overlays_isolate_cell_attributes` pins it |
+| `BUG-03` | ~~attribute-order-dependent XML parsing~~ **fixed in T-024** | was `element.attrib.values()` in `_geometry.py`; `Bounds`/`Wires` read explicit names and `test_bounds_and_wires_do_not_depend_on_attribute_order` pins it |
 | `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
-| `BUG-06` | version metadata drift | `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta |
+| `BUG-06` | ~~version metadata drift~~ **fixed in T-026** | was `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta; both are 2.3.0 now and `docs/conf.py` reads the package version |
 
 `BUG-01` was fixed in Phase 2 (T-022): the strict xfail is gone and
-`test_sl2_cell_centres` pins the regression. `BUG-02` (shared cache) and
-`BUG-03` (attribute-order parsing) are the next two, in T-023 and T-024.
+`test_sl2_cell_centres` pins the regression. `BUG-02` (shared cache) was fixed
+in T-023: the cache never writes on the station it returns, and `overlay`
+gives every event its own cells. `BUG-03` (attribute-order parsing) was
+fixed in T-024: the shim reads explicit attribute names. `BUG-06` (version drift)
+was fixed in T-026: one version string, and the docs read it from the package.
 
 ---
 
@@ -80,8 +83,8 @@ prototype has no wire fields either.
 | Python | 3.12.3 |
 | Env used for runs | `/home/destrada/Geant4/DTG4Simulator/env` |
 | Installed `mpldts` | 2.2.0-beta in that env (`site-packages`); no XML indexes |
-| Source checkout | branch `enhancement-cacheObjects`, package `__version__` 2.2.0-beta; indexed XML |
-| `pyproject.toml` version | 2.1.0 (drift) |
+| Source checkout | branch `refactor/v2-integration`, package `__version__` 2.3.0; indexed XML |
+| `pyproject.toml` version | 2.3.0 (matches `__version__` since T-026) |
 | pyg4ometry | **not installed**; deferred |
 | pytest | 9.2.0 in the env; `test` extra in `pyproject.toml` |
 | Dependencies available | numpy, pandas, matplotlib, pytransform3d, mplhep |
@@ -107,7 +110,10 @@ you used in any measurement.
 The old 2.3–4.1 s/station, 10–17 min for all 250, and the 3.75 s/2.64 s
 profile are retired: they belong to the pre-index code.
 
-Target after Phase 2: **< 20 ms per station** (already met by the builder).
+After T-024 (same machine): import 0.96 s; a station is 6.1 / 2.1 / 3.0 ms
+(the first build of a chamber is 22-63 ms and is cached).
+
+Target after Phase 2: **< 20 ms per station** (met).
 
 ---
 
@@ -117,29 +123,37 @@ Target after Phase 2: **< 20 ms per station** (already met by the builder).
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
-- `pytest -q` on the checkout: 100 passed, 2 skipped, 2 deselected, 31 s.
+- `pytest -q` on the checkout: 111 passed, 2 skipped, 2 deselected, 25-33 s
+  (105 geometry tests plus the six documented examples run headless).
+- `sphinx-build -b html docs`: build succeeded with the examples in
+  `docs/examples/`; the five patch demos and the `TransformManager` example
+  render into the HTML.
 - Slow sweeps (`-m slow`): the builder oracle and the legacy runtime oracle,
-  all 250 chambers at `2e-3` cm, SL2 included, 152 s.
+  all 250 chambers at `2e-3` cm, SL2 included, 140 s.
 - `DTStationPatch` on three chambers x phi/eta x local/inverted/global: the
   rectangles are bit-identical to the pre-T-022 code, and so are the values
   the .tg generator reads.
-- Station build: 1009 ms -> 64 ms per station (five chambers, old vs new).
+- Station build: 1009 ms (old) -> 64 ms (T-022) -> 2-6 ms (T-024, shared build);
+  the first build of a chamber is 22-63 ms.
+- `import mpldts.geometry`: 2.83 -> 0.96 s (`DTGEOMETRY` parsed on first
+  use, never at import).
+- Overlay: 7 ms plus 5 ms for 704 cell attributes, against 32 ms for a full
+  `Station` on a warm source.
 - `smoke_tg.py` on the checkout: 621 placements, SL2 rotation present.
-- `bench_station.py`: 0.65 / 0.46 / 0.57 s for the three stations.
+- `bench_station.py`: 6.1 / 2.1 / 3.0 ms for the three stations (was 0.65 / 0.46 / 0.57 s).
 
 ---
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0 and M1 are
-done; Phase 2 is in progress on `feature/phase-2-runtime`:
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0, M1 and M2 are
+done on `refactor/v2-integration` (2.3.0, `main` untouched):
 
-1. `T-023` — immutable geometry + per-event overlay (`BUG-02`).
-2. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
-3. `T-025` — triage the visual scripts in `test/`.
+1. the maintainer reviews `refactor/v2-integration`;
+2. Phase 3 starts on `feature/phase-3-assemblies` with `T-030` (assemblies and
+   custom 1-SL/5-SL stations); T-031...T-033 are planned behind it.
 
-Do not start Phase 3 before M2 is green. Do not merge the branch into
-`main` until the maintainer approves it.
+Nothing merges into `main` until the maintainer approves it.
 
 ---
 

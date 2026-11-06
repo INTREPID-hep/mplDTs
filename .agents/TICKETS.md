@@ -3,7 +3,7 @@
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-06
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 2 implementing — T-020, T-021 done 2026-11-06
+**State:** Phase 2 implementing — T-020...T-024 done 2026-11-06
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -43,11 +43,15 @@ Status legend:
 
 **M2 — Runtime parity.** Gate: public-API oracle green, `< 20 ms/station`,
 no XML in the model, `test/` triaged. T-020 (topology + `build_station`),
-T-021 (`FrameGraph`/`FrameView`) and T-022 (legacy delegation, `BUG-01`) are
-done; T-023...T-025 remain.
+T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
+**M3 — Assemblies, custom stations, physical extras.** Gate: custom 1-SL/5-SL
+stations build and plot; a two-station assembly builds, transforms and plots;
+CMS plots unchanged; honeycomb data is pinned to a reference chamber; the yoke
+hook is data-only. M2 is done (`CP-007`, release 2.3.0 on
+`refactor/v2-integration`); T-030...T-033 are refined and ready.
 
-**Current checkpoint:** `CP-006 — M1 specs + source` complete; CP-007 (M2)
-in progress.
+**Current checkpoint:** `CP-007 — M2 runtime parity` complete; CP-008 (M3)
+not started.
 
 ---
 
@@ -66,7 +70,14 @@ in progress.
 | T-020 | Runtime topology + `build_station` | 2 | done | T-010, T-011 | [T-020](tickets/T-020-runtime-topology.md) |
 | T-021 | `FrameGraph` + `FrameView` | 2 | done | T-020 | [T-021](tickets/T-021-frame-graph.md) |
 | T-022 | Legacy constructors delegate; `BUG-01` fixed | 2 | done | T-020, T-021 | [T-022](tickets/T-022-legacy-delegation.md) |
-| T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
+| T-023 | Immutable cache + per-event overlay; `BUG-02` fixed | 2 | done | T-022 | [T-023](tickets/T-023-immutable-overlay.md) |
+| T-024 | Performance pass + lazy `DTGEOMETRY` shim; `BUG-03` fixed | 2 | done | T-022, T-023 | [T-024](tickets/T-024-performance-shim.md) |
+| T-025 | Triage the visual scripts in `test/` | 2 | done | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
+| T-026 | Release 2.3: version metadata + runtime docs | 2 | done | T-022...T-025 | [T-026](tickets/T-026-release-2.3.md) |
+| T-030 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations | 3 | proposed | T-020, T-021, T-022, T-026 | [T-030](tickets/T-030-assemblies.md) |
+| T-031 | CMS preset remainder + orientation-based phi/eta plotting | 3 | proposed | T-030 | [T-031](tickets/T-031-cms-preset-plotting.md) |
+| T-032 | Honeycomb as a station attachment | 3 | proposed | T-030 | [T-032](tickets/T-032-honeycomb.md) |
+| T-033 | Yoke `StructureSpec` data hook | 3 | proposed | T-030 | [T-033](tickets/T-033-yoke-hook.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
@@ -114,12 +125,6 @@ and the maintainer approves.
 | ID | Phase | Summary |
 |---|---|---|
 
-| T-023 | 2 | Immutable cache + per-event overlay |
-| T-024 | 2 | Performance pass + `DTGEOMETRY` shim + remove XML imports |
-| T-030 | 3 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations |
-| T-031 | 3 | CMS preset remainder (virtual frames, MB4) + plotting orientation |
-| T-032 | 3 | Honeycomb as station attachment (`SolidSpec`) |
-| T-033 | 3 | Yoke `StructureSpec` data hook (no CSG, no export) |
 | T-040 | 4 | Annotation base + `Segment` refactor |
 | T-041 | 4 | `Track` + `Jet`/`Cone` + collections |
 | T-042 | 4 | Event plotting adapters + event JSON |
