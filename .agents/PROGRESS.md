@@ -131,6 +131,7 @@ No history was rewritten.
 | 2026-11-07 | `pytest -q -m slow` (250 chambers, after T-030) | 2 passed, 136 deselected, 77 s |
 | 2026-11-07 | `sphinx-build -b html docs` (after T-030) | build succeeded, no warnings; the runtime page carries `build_detector` and `Station.from_spec` |
 | 2026-11-07 | `_is_turned` vs `super_layer.number == 2` on 3 chambers | same super layer in all of them |
+| 2026-11-07 | GitHub Actions `tests` on `feature/phase-3-assemblies` (T-030) | success (run 42314584878) |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.

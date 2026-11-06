@@ -67,6 +67,7 @@ PYTHONPATH=/home/destrada/mplDTs pytest -q -m slow             # 2 passed (250 c
 ```
 
 The docs build (Sphinx 9.1.1) is warning-free with the new section.
+CI run 42314584878 (`tests`) succeeded on `feature/phase-3-assemblies`.
 
 ## Risks / notes
 
