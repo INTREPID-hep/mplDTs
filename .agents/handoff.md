@@ -1,10 +1,11 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** Phase 0 implementation (tests, alias, benchmark, CI).
-**Current state:** **M0 done on `feature/phase-0-safety-net` (not merged).**
-**Current checkpoint:** `CP-005` (M0) in progress.
-**Next action:** Phase 2 (T-020) — the runtime model replaces the XML queries.
+**Previous session:** T-020 runtime topology.
+**Current state:** **M1 done; Phase 2 in progress on
+`feature/phase-2-runtime` (not merged).**
+**Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
+**Next action:** T-021 — `FrameGraph`/`FrameView` with the legacy aliases.
 
 ---
 
@@ -12,7 +13,7 @@
 
 1. Read [`AGENT.md`](AGENT.md) — the contract and the HOLD gate.
 2. Read [`state.md`](state.md) — what is true now.
-3. Read [`TICKETS.md`](TICKETS.md) — the board; all tickets are `proposed`.
+3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020 is `done`.
 4. Read [`PROGRESS.md`](PROGRESS.md) — checkpoints and the session log.
 5. Skim [`context.md`](context.md) §2–§5 — architecture, findings, target model.
 6. Open [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md)
@@ -29,14 +30,17 @@ Expected: all checks `0.000e+00`; 193 placements; box/tube alignments.
 
 ---
 
-## 2. Where Phase 0 stands
+## 2. Where Phase 2 stands
 
-Done (2026-11-06): T-001 pytest scaffolding, T-003 oracle harness + node
-snapshot (T-002 folded in), T-005 `SuperLayer` alias + `.tg` smoke,
-T-006 benchmark, T-007 CI workflow file.
+Done: Phase 0 (tests, oracle, alias, benchmark, CI), Phase 1 (`specs.py`,
+`sources/cms_xml.py`, spec oracle over 250 chambers), T-020 (`Node` +
+`build_station`, exported from `mpldts.geometry`).
 
-Open: **T-007** — first remote CI run and the integration-base decision
-(`enhancement-cacheObjects` vs `main`); see `PROGRESS.md` §4.
+Remaining: T-021 frames, T-022 legacy delegation + `BUG-01`, T-023
+immutability, T-024 performance + `DTGEOMETRY` shim, T-025 `test/` triage.
+
+Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
+until the maintainer approves it.**
 
 Commands:
 
@@ -46,15 +50,16 @@ PYTHONPATH=/home/destrada/mplDTs \
   /home/destrada/Geant4/DTG4Simulator/env/bin/python -m pytest -q
 ```
 
-Full oracle: add `-m slow` (250 chambers, minutes).
+Full oracle and the builder sweep: add `-m slow` (250 chambers, seconds).
 
-Do not start Phase 1 before M0 is green. Do not start Phase 2 before M1.
+Do not start Phase 3 before M2 is green.
 
 ---
 
 ## 3. What not to touch yet
 
-- `mpldts/` runtime classes — the refactor starts in Phase 2.
+- `mpldts/` legacy runtime classes — T-022 rewires them; leave them
+  alone until then.
 - `mpldts/patches/` — plotting must keep working; changes need an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
 - `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and

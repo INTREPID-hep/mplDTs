@@ -1,11 +1,11 @@
 # State — dated snapshot
 
 **Last updated:** 2026-11-06 10:30 (Europe/Madrid)
-**Branch:** `enhancement-cacheObjects`
+**Branch:** `feature/phase-2-runtime`
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** M0 done — Phase 1 (specs + CMS source) is next
+**Current phase:** M1 done — Phase 2 (runtime model) in progress: T-020 done
 
 ---
 
@@ -23,8 +23,8 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 + Phase 1 | `super_layer.py` alias; `specs.py` and `sources/cms_xml.py` added; runtime classes unchanged |
-| pytest suite for geometry | **Phase 0 done** | `test/geometry/`: smoke + oracle + reference; 15 pass, 4 xfail |
+| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py` and `model.py` (`Node`, `build_station`) added; legacy runtime classes unchanged |
+| pytest suite for geometry | **through Phase 2 (T-020)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes; 73 pass, 4 xfail, 2 skip |
 
 The prototype verifies:
 
@@ -47,7 +47,6 @@ prototype has no wire fields either.
 
 - `mpldts/geometry/presets/`.
 - `FrameGraph`/`FrameView` in the library (only in the prototype).
-- `Shape`/`Box`/`Tube`/`CellGrid` in the library.
 - `SolidSpec` attachments (honeycomb) and `StructureSpec` (yoke) in the library.
 - `mpldts/events/` (segments refactor, tracks, jets).
 - A JSON loader or validation (CLI is out of scope).
@@ -103,11 +102,12 @@ you used in any measurement.
 | SL2 error | 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1) | same |
 | XML | 20.8 MB, 250 chambers, 61,760 layers, 171,732 cell centres | — |
 | CMS stagger | L1 49 @ x=−102.4; L2 50 @ −104.5; L3 49 @ −102.4; L4 48, first id 2 @ −100.3; pitch 4.2 cm | — |
+| `build_station` (spec -> node tree) | 1.87 s for 250 stations = **7.46 ms/station** | — |
 
 The old 2.3–4.1 s/station, 10–17 min for all 250, and the 3.75 s/2.64 s
 profile are retired: they belong to the pre-index code.
 
-Target after Phase 2: **< 20 ms per station**.
+Target after Phase 2: **< 20 ms per station** (already met by the builder).
 
 ---
 
@@ -117,8 +117,12 @@ Target after Phase 2: **< 20 ms per station**.
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
-- `pytest -q` on the checkout: 15 passed, 4 xfailed (SL2 `BUG-01`), 2 skipped, `8 s.
-- Full oracle (`-m slow`): 250 chambers green, only SL2 disagrees.
+- `pytest -q` on the checkout: 73 passed, 4 xfailed (SL2 `BUG-01`), 2 skipped,
+  12.5 s.
+- Builder oracle (`-m slow`): all 250 chambers through `build_station`, green
+  at `2e-3` cm, 4.9 s.
+- Legacy runtime oracle (`-m slow`): 250 chambers, only SL2 disagrees
+  (`BUG-01`); the spec and builder paths match the XML.
 - `smoke_tg.py` on the checkout: 621 placements, SL2 rotation present.
 - `bench_station.py`: 0.65 / 0.46 / 0.57 s for the three stations.
 
@@ -126,17 +130,17 @@ Target after Phase 2: **< 20 ms per station**.
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. Phase 0 is in
-progress:
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0 and M1 are
+done; Phase 2 is in progress on `feature/phase-2-runtime`:
 
-1. `T-001` — pytest scaffolding and `test/geometry/`.
-2. `T-003` — transform invariant + oracle harness (incl. node snapshot),
-   `BUG-01` xfail.
-3. `T-005` — downstream pin + `"SuperLayer"` alias + one-station `.tg` smoke.
-4. `T-006` — benchmark harness.
-5. `T-007` — branch baseline + CI.
+1. `T-021` — `FrameGraph`/`FrameView`, scoped aliases, virtual frames.
+2. `T-022` — legacy constructors delegate; `BUG-01` fixed; plotting works.
+3. `T-023` — immutable geometry + per-event overlay.
+4. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
+5. `T-025` — triage the visual scripts in `test/`.
 
-Do not start Phase 1 before M0 is green.
+Do not start Phase 3 before M2 is green. Do not merge the branch into
+`main` until the maintainer approves it.
 
 ---
 
