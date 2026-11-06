@@ -60,8 +60,8 @@ prototype has no wire fields either.
 | Id | Issue | Evidence |
 |---|---|---|
 | `BUG-01` | ~~SL2 transform off by `√2·|SL_local_x|`~~ **fixed in T-022** | was 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); the frame chain is the node poses now and the cell centres match the XML |
-| `BUG-02` | shared cache mutates cell data across events | `station.py:386-387`, `:288-325` |
-| `BUG-03` | attribute-order-dependent XML parsing | `_geometry.py:122`, `:126`, `layer.py:101` |
+| `BUG-02` | shared cache mutates cell data across events | `station.py:382-395` (`StationsCache.get`), `:296-324` (`set_cell_attrs`) |
+| `BUG-03` | attribute-order-dependent XML parsing | only `_geometry.py:122`, `:126` (the T-024 shim) is left; `sources/cms_xml.py` reads explicit names |
 | `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
 | `BUG-06` | version metadata drift | `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta |
