@@ -22,6 +22,7 @@ segments_info = [
     {"index": i, "sl": sl, "angle": np.degrees(angle), "position": x}
     for i, (angle, x, sl) in enumerate(zip(angles, positions, sl_values), start=1)
 ]
+
 # Create figure and subplots
 fig, axs = plt.subplots(1, 3, figsize=(10, 5), dpi=dpi)
 axs  = axs.flatten()
@@ -64,6 +65,6 @@ for i, (ax, ref_frame) in enumerate(zip(axs, ["Station", "SectorRef", "SL13Cente
     ax.legend(loc='upper left', fontsize=5)
 
 # Add title
-fig.suptitle(f"Wheel: 0, Station: 1, Sector: 1")
+fig.suptitle(f"Segments in DT Station : {station.name} - phi-view (global)", fontsize=12)
 plt.show()
 fig.savefig("test_cms_dt_global_segments_phi.png", dpi=dpi)

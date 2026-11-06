@@ -96,9 +96,9 @@ class Layer(DTFrame):
         """
         Ensemble a DT layer.
         """
-        wire_bounds = DTGEOMETRY.get("WiresSize", rawId=self.id)
-        for wire in DTGEOMETRY.get("Wires", rawId=self.id).iter("Wire"):
-            num, local_pos_str, global_pos_str = wire.attrib.values()
+        cell_bounds = DTGEOMETRY.get("WiresSize", rawId=self.id)
+        for wire_entry in DTGEOMETRY.get("Wires", rawId=self.id).iter("Wire"):
+            num, local_pos_str, global_pos_str = wire_entry.attrib.values()
 
             cell = DriftCell(number=int(num))
 
@@ -107,7 +107,7 @@ class Layer(DTFrame):
 
             cell.local_center = local_pos
             cell.global_center = global_pos
-            cell.bounds = wire_bounds
+            cell.bounds = cell_bounds
             cell.parent = self
             cell._setup_transformer()
 
@@ -126,10 +126,10 @@ class Layer(DTFrame):
             transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
             if transform_matrix is not None:
                 self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
-            transform_matrix = self.parent.transformer.get_transformation("SuperLayer", "Station")
+            transform_matrix = self.parent.transformer.get_transformation(f"SL{self.parent.number}", "Station")
             if transform_matrix is not None:
                 self.transformer.add(
-                    "SuperLayer", "Station", transformation_matrix=transform_matrix
+                    f"SL{self.parent.number}", "Station", transformation_matrix=transform_matrix
                 )
 
             # Define the transformation from the layer to the SL frame
@@ -139,9 +139,8 @@ class Layer(DTFrame):
             )  # This translation leave te cords in the SL frame
 
             self.transformer.add(
-                "Layer", "SuperLayer", translation_vector=_SlTL
+                "Layer", f"SL{self.parent.number}", translation_vector=_SlTL
             )  # add the transformation from layer to SL frame
-
 
 if __name__ == "__main__":
     # This is to check that nothing fails

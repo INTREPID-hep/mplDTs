@@ -1,6 +1,11 @@
 name: "Sphinx: Render docs"
 
-on: push
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
 
 jobs:
   build:
@@ -17,7 +22,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        pip install . && pip install sphinx sphinx_rtd_theme sphinx-copybutton
+        pip install . && pip install .[docs]
     - name: Build docs
       run: |
         cd $GITHUB_WORKSPACE/docs && ls && make html

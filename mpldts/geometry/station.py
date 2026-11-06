@@ -5,7 +5,8 @@ from mpldts.geometry.transforms import TransformManager
 from pandas import DataFrame
 from copy import deepcopy
 import warnings
-
+import threading
+from typing import Optional, Any
 
 class Station(DTFrame):
     """
@@ -39,7 +40,7 @@ class Station(DTFrame):
         :type station: int
         :param dt_info: Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
         # == Chamber related parameters
@@ -290,7 +291,7 @@ class Station(DTFrame):
 
         :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list, or pandas.DataFrame
         """
         if isinstance(dt_info, dict):
@@ -310,7 +311,7 @@ class Station(DTFrame):
             w = info_item.pop("w", None)
             if not all([sl, l, w]):
                 raise ValueError(
-                    "The drift cell information must contain the super layer, layer, and wire identifiers."
+                    "The drift cell information must contain the super layer, layer, and cell identifiers."
                 )
             super_layer = self.super_layer(sl)
 
@@ -350,5 +351,50 @@ if __name__ == "__main__":
             print(3 * "\t", l.cell(len(l.cells) - 1))
     print(
         "\t",
-        f"properties contained into cells: {st.super_layer(1).layer(1).cell(10).__dict__.keys()}",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
     )
+
+
+class StationsCache:
+    """Singleton cache for Station objects to avoid recreating expensive geometry."""
+    
+    _instance = None
+    _lock = threading.Lock()
+    
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                # Double-check locking pattern
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._cache = {}
+                    cls._instance._cache_lock = threading.Lock()
+        return cls._instance
+
+    def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
+        key = (wh, sc, st)
+        with self._cache_lock:
+            station = self._cache.get(key)
+            if station is None:
+                try:
+                    station = Station(wheel=wh, sector=sc, station=st, dt_info=dt_info)
+                    self._cache[key] = station
+                except ValueError:
+                    self._cache[key] = None
+                    return None
+            else:
+                if dt_info is not None and station is not None:
+                    station.set_cell_attrs(dt_info)
+            return station
+    
+    def clear(self):
+        """Clear the cache (useful for testing or memory management)."""
+        with self._cache_lock:
+            self._cache.clear()
+    
+    def size(self):
+        """Return the number of cached stations."""
+        with self._cache_lock:
+            return len(self._cache)
+
+STATION_CACHE = StationsCache()

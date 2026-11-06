@@ -73,14 +73,14 @@ class DriftCell(DTFrame):
             transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
             if transform_matrix is not None:
                 self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
-            transform_matrix = self.parent.transformer.get_transformation("SuperLayer", "Station")
+            transform_matrix = self.parent.transformer.get_transformation(f"SL{self.parent.parent.number}", "Station")
             if transform_matrix is not None:
                 self.transformer.add(
-                    "SuperLayer", "Station", transformation_matrix=transform_matrix
+                    f"SL{self.parent.parent.number}", "Station", transformation_matrix=transform_matrix
                 )
-            transform_matrix = self.parent.transformer.get_transformation("Layer", "SuperLayer")
+            transform_matrix = self.parent.transformer.get_transformation("Layer", f"SL{self.parent.parent.number}")
             if transform_matrix is not None:
-                self.transformer.add("Layer", "SuperLayer", transformation_matrix=transform_matrix)
+                self.transformer.add("Layer", f"SL{self.parent.parent.number}", transformation_matrix=transform_matrix)
 
             # Define the transformation from the cell to the Layer frame
             _parent_center = self.parent.local_center

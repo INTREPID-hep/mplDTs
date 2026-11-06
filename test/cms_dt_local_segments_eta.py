@@ -62,6 +62,6 @@ for i, (ax, ref_frame) in enumerate(zip(axs, ["Station", "SL13Center"])):
     ax.legend(loc='upper left', fontsize=5)
 
 # Add title
-fig.suptitle(f"Segments in DT Station : {station.name}")
+fig.suptitle(f"Segments in DT Station : {station.name}- eta-view (local)", fontsize=12)
 plt.show()
-fig.savefig("test_cms_dt_global_segments_eta.png", dpi=dpi)
+fig.savefig("test_cms_dt_local_segments_eta.png", dpi=dpi)

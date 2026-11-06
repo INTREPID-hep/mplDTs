@@ -36,7 +36,7 @@ class SuperLayer(DTFrame):
             self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
             self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
             self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
-        self._setup_transformer()
+        self._updated_parent_transoformer()
         self._layers = []
         self._build_super_layer()
 
@@ -90,19 +90,11 @@ class SuperLayer(DTFrame):
         for layer in DTGEOMETRY.get(rawId=self.id).iter("Layer"):
             self._add_layer(Layer(layer.get("rawId"), parent=self))
 
-    def _setup_transformer(self):
+    def _updated_parent_transoformer(self):
         """
         Set up the transformer for the super layer. It defines the transformation from the local frame to the global frame.
         """
         from numpy import array
-
-        self.transformer = TransformManager("SuperLayer")  # intial frame is the SL frame
-        # Inherit transformation from the parent to the global frame
-        if self.parent is not None:
-            transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
-            if transform_matrix is not None:
-                self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
-
         # Define the transformation from Super layer frame to Station frame
         if self.number == 2:
             StezSl = [0, 0, 1]  # same as the z axis of the Station frame
@@ -114,6 +106,23 @@ class SuperLayer(DTFrame):
 
         _TStSl = [self._x_local, self._y_local, self._z_local]  # translation
 
+        if self.parent is None:
+            self.transformer = TransformManager("SuperLayer")  # intial frame is the SL frame
+        else:
+            # Keep the station transformer complete (it carries every SL frame),
+            # but give the super layer its own manager so that the legacy generic
+            # "SuperLayer" name is unambiguous for this super layer (T-005).
+            self.parent.transformer.add(
+                f"SL{self.number}", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
+            )
+            self.transformer = TransformManager("SuperLayer")
+            self.transformer.transform_chain.update(self.parent.transformer.transform_chain)
+            self.transformer.available_frames.update(self.parent.transformer.available_frames)
+
+        self.transformer.add(
+            f"SL{self.number}", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
+        )
+        # Backward compatibility: the DTG4Simulator generator asks for this name.
         self.transformer.add(
             "SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
         )

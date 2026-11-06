@@ -56,5 +56,6 @@ axs.set_ylabel("y [cm]")
 
 axs.set_xlim(000, 800)
 axs.set_ylim(-200, 700)
+axs.set_aspect('equal', adjustable='box')
 
 plt.show()
