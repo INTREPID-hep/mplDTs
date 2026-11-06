@@ -11,10 +11,10 @@
 
 | Item | Value |
 |---|---|
-| Phase | 0 complete (M0) |
+| Phase | 1 (specs + CMS source) |
 | Current milestone | M1 — Specs + CMS source |
-| Last completed | CP-005 (M0 safety net) |
-| Next | T-010 (geometry specs), then T-011 / T-012 |
+| Last completed | T-010 (geometry specs) |
+| Next | T-011 (`CMSXMLSource`) |
 | Code changes | `super_layer.py` alias (T-005); tests, benchmark, CI (T-001/T-003/T-006/T-007) |
 | Library tests | `pytest -q`: 15 passed, 4 xfailed (SL2), 2 skipped |
 | pyg4ometry | deferred, not installed |
@@ -94,6 +94,8 @@ No history was rewritten.
 | 2026-11-06 | `test/benchmarks/bench_station.py` | import 1.32 s, parse 0.53 s, stations 0.65 / 0.46 / 0.57 s |
 | 2026-11-06 | `geometry/smoke_tg.py` (checkout) | 621 placements, SL2 rotation present |
 | 2026-11-06 | GitHub Actions `tests` on `feature/phase-0-safety-net` | success (run 42215563781) |
+| 2026-11-06 | `pytest -q test/geometry/test_specs.py` | 22 passed |
+| 2026-11-06 | `pytest -q` (37 tests) | 37 passed, 4 xfailed, 2 skipped |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.

@@ -57,7 +57,7 @@ smoke + CI. Nothing else starts before M0.
 | T-005 | Downstream pin + `.tg` smoke | 0 | proposed | T-001 | [T-005](tickets/T-005-downstream-pin-tg-smoke.md) |
 | T-006 | Benchmark harness | 0 | proposed | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
-| T-010 | Geometry specs | 1 | proposed | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
+| T-010 | Geometry specs | 1 | done | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
 | T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
