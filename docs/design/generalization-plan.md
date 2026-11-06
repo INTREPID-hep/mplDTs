@@ -300,7 +300,7 @@ class CellGrid:
     count: int
     shape: Shape                 # template, e.g. Box(...) or Tube(...)
     first_id: int = 1
-    offset: float = 0.0          # half-cell stagger
+    offset: float = 0.0          # extra shift along x, cm
 
     def x_positions(self) -> np.ndarray:
         i = np.arange(self.count)
@@ -312,12 +312,15 @@ The CMS pattern is captured without special cases:
 | layer | count | first id | offset |
 |---|---|---|---|
 | 1 | 49 | 1 | 0 |
-| 2 | 50 | 1 | −pitch/2 |
+| 2 | 50 | 1 | 0 |
 | 3 | 49 | 1 | 0 |
-| 4 | 48 | 2 | +pitch/2 |
+| 4 | 48 | 2 | 0 |
 
-(Measured from `DTGeometry_v3.xml`: L1 first x = −102.4, L2 = −104.5,
-L3 = −102.4, L4 has 48 cells, first id 2 at −100.3, pitch 4.2.)
+All four grids are centred on the layer frame (`offset = 0`); the
+half-cell stagger falls out of the cell-count parity (49/50/49/48), not from
+an explicit offset. Measured from `DTGeometry_v3.xml`, pitch 4.2, every grid
+centred at x = −1.6 in the super-layer frame: L1 −102.4…99.2, L2 −104.5…101.3,
+L3 −102.4…99.2, L4 (48 cells, first id 2) −100.3…97.1.
 
 The XML `<Wire>` element is the **cell entry** (number + position), mapped
 once by the CMS source. A cell is the gas/drift volume; its centre is that
