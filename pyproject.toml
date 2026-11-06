@@ -27,6 +27,9 @@ docs = [
 dev = [
     "black"
 ]
+test = [
+    "pytest>=8"
+]
 
 [project.urls]
 Documentation = "https://danielestrada971102.github.io/mplDTs/"
@@ -42,3 +45,10 @@ include = ["mpldts*"]
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["test/geometry"]
+addopts = "-m 'not slow'"
+markers = [
+    "slow: run the oracle against all 250 chambers (minutes)"
+]
