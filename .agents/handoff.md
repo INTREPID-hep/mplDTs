@@ -4,7 +4,7 @@
 **Previous session:** Phase 0 implementation (tests, alias, benchmark, CI).
 **Current state:** **M0 done on `feature/phase-0-safety-net` (not merged).**
 **Current checkpoint:** `CP-005` (M0) in progress.
-**Next action:** push the branch for the first CI run, then start Phase 1 (T-010).
+**Next action:** start Phase 1 (T-010 geometry specs) on top of the branch.
 
 ---
 

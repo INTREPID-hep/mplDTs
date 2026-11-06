@@ -93,6 +93,7 @@ No history was rewritten.
 | 2026-11-06 | `pytest -q -m slow` (250 chambers) | all chambers green; only SL2 disagrees |
 | 2026-11-06 | `test/benchmarks/bench_station.py` | import 1.32 s, parse 0.53 s, stations 0.65 / 0.46 / 0.57 s |
 | 2026-11-06 | `geometry/smoke_tg.py` (checkout) | 621 placements, SL2 rotation present |
+| 2026-11-06 | GitHub Actions `tests` on `feature/phase-0-safety-net` | success (run 42215563781) |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.
