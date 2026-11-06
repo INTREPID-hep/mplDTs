@@ -280,6 +280,25 @@ XML names `<Wire>`, `WiresSize`, `WiresRange`, `wireNumber` stay only inside
 
 ---
 
+## ADR-020 — Assemblies are a spec level; the CMS preset stays the default
+
+**Status:** accepted · 2026-11-07
+**Context:** Phase 3 must place chambers arbitrarily (custom 1-SL/5-SL stations,
+two-station assemblies) without changing any CMS result. `DetectorSpec` exists
+in `specs.py` but nothing builds it, and the CMS virtual plotting frames are
+welded to the CMS constructor.
+**Decision:** the detector is the root of the same node tree
+(`build_detector`); stations hang under it at their own poses; the CMS-specific
+pieces (XML chamber keys, `StationNvPhi`/`StationNvEta`, `SectorRef`,
+`SL13Center`, MB4 13/14 correction) live in a preset applied only to CMS
+geometries. A custom station is a `StationSpec` plus a view and never sees CMS
+conventions.
+**Consequences:** one builder for CMS and custom geometry; plotting can choose
+phi/eta from the geometry instead of `number == 2`; the CMS signature and its
+oracle stay untouched and no CSG or backend dependency is introduced.
+
+---
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |
