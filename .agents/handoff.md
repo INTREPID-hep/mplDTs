@@ -1,11 +1,11 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-020 runtime topology.
+**Previous session:** T-021 frame graph.
 **Current state:** **M1 done; Phase 2 in progress on
 `feature/phase-2-runtime` (not merged).**
 **Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
-**Next action:** T-021 — `FrameGraph`/`FrameView` with the legacy aliases.
+**Next action:** T-022 — the legacy constructors delegate to the source and the builder, and `BUG-01` goes away.
 
 ---
 
@@ -34,9 +34,10 @@ Expected: all checks `0.000e+00`; 193 placements; box/tube alignments.
 
 Done: Phase 0 (tests, oracle, alias, benchmark, CI), Phase 1 (`specs.py`,
 `sources/cms_xml.py`, spec oracle over 250 chambers), T-020 (`Node` +
-`build_station`, exported from `mpldts.geometry`).
+`build_station`, exported from `mpldts.geometry`), T-021 (`FrameGraph` + `FrameView`,
+scoped aliases, legacy `add`/`remove`).
 
-Remaining: T-021 frames, T-022 legacy delegation + `BUG-01`, T-023
+Remaining: T-022 legacy delegation + `BUG-01`, T-023
 immutability, T-024 performance + `DTGEOMETRY` shim, T-025 `test/` triage.
 
 Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
