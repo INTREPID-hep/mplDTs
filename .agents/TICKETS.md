@@ -58,6 +58,7 @@ smoke + CI. Nothing else starts before M0.
 | T-006 | Benchmark harness | 0 | proposed | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
 | T-010 | Geometry specs | 1 | proposed | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
+| T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
@@ -89,7 +90,7 @@ M0 is reached when T-001, T-003, T-005, T-006 and T-007 are `done`.
 |---|---|---|
 | M0 Safety net | tests + invariant + `.tg` smoke + CI | T-001, T-003, T-005, T-006, T-007 |
 | M1 Specs + source | spec oracle green for all 250 chambers | T-010, T-011, T-012 |
-| M2 Runtime parity | public API oracle green; `< 20 ms`; no XML in model | T-020…T-024 |
+| M2 Runtime parity | public API oracle green; `< 20 ms`; no XML in model; `test/` triaged | T-020…T-025 |
 | M3 Assemblies + extras | custom stations; honeycomb; yoke data hook | T-030…T-033 |
 | M4 Event annotations (optional) | segments/tracks/jets; legacy API | T-040…T-042 |
 | M5 Authoring + `.tg` | JSON → build → plot → `.tg`; parity | T-050, T-051, T-052, T-054 |

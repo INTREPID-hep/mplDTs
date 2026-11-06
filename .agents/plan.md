@@ -136,7 +136,7 @@ runtime classes stay untouched.
 **Goal:** the new model is the runtime model, reproduces CMS through the public
 API, and the old classes delegate to it.
 
-**Tickets:** T-020, T-021, T-022, T-023, T-024.
+**Tickets:** T-020, T-021, T-022, T-023, T-024, T-025.
 
 **Deliverables**
 
@@ -150,6 +150,9 @@ API, and the old classes delegate to it.
 - Immutable geometry + per-event data overlay (no shared-cache mutation).
 - No XML imports in the model classes; `DTGEOMETRY` becomes a deprecated shim
   over `CMSXMLSource`.
+- `test/` stops mixing suites and demos: the doc examples move to
+  `docs/examples/`, the rest is deleted, and one smoke test runs them headless
+  (T-025).
 - Performance: no per-cell `TransformManager`; **< 20 ms/station**.
 - No `VolumeSink` yet; exporters are Phase 5.
 
@@ -160,6 +163,7 @@ API, and the old classes delegate to it.
 - Plotting scripts and the existing constructors still work.
 - No XML outside `sources/` (and the shim).
 - No backend import in the core; performance budget met.
+- `test/` holds only the pytest suite; the docs examples still build.
 
 ---
 

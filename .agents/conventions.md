@@ -149,7 +149,8 @@ once in `CMSXMLSource`, and never let the name leak into the model.
    - rotations: `1e-9` for orthonormality, `1e-6` for round-trips.
 4. Never loosen a tolerance without an ADR; never delete `xfail(BUG-01)` —
    remove the marker only when the fix is in.
-5. No network, no GUI, no sleeps in tests. Visual scripts are not tests.
+5. No network, no GUI, no sleeps in tests. Visual scripts are not tests and
+   do not live in `test/`: T-025 converts, moves or deletes them.
 6. Performance budget (non-blocking CI): one station `< 50 ms` in Phase 1,
    `< 20 ms` in Phase 2; full CMS `< 10 s`.
 7. Tests must be deterministic; seed any random rotation test.
