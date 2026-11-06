@@ -45,7 +45,7 @@ prototype has no wire fields either.
 
 ## 2. What does not exist yet
 
-- `mpldts/geometry/specs.py`, `sources/`, `presets/`.
+- `mpldts/geometry/sources/`, `presets/`.
 - `FrameGraph`/`FrameView` in the library (only in the prototype).
 - `Shape`/`Box`/`Tube`/`CellGrid` in the library.
 - `SolidSpec` attachments (honeycomb) and `StructureSpec` (yoke) in the library.

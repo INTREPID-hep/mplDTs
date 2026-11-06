@@ -1,6 +1,6 @@
 # T-010 — Geometry specs
 
-- **Status:** proposed
+- **Status:** done
 - **Phase:** 1
 - **Epic:** E1 Specs + source
 - **Depends on:** T-003
@@ -45,13 +45,13 @@ untouched by this ticket.
 
 ## Acceptance criteria
 
-- [ ] Specs are immutable dataclasses with no I/O and no backend import.
-- [ ] `Pose` round-trips: compose/inverse within `1e-9`.
-- [ ] `Box` and `Tube` AABB/volume are correct; a tube axis is explicit.
-- [ ] `CellGrid` reproduces the CMS 49/50/49/48 pattern and half-cell stagger.
-- [ ] `validate` rejects negative sizes, non-orthonormal rotations and cells
+- [x] Specs are immutable dataclasses with no I/O and no backend import.
+- [x] `Pose` round-trips: compose/inverse within `1e-9`.
+- [x] `Box` and `Tube` AABB/volume are correct; a tube axis is explicit.
+- [x] `CellGrid` reproduces the CMS 49/50/49/48 pattern and half-cell stagger.
+- [x] `validate` rejects negative sizes, non-orthonormal rotations and cells
       wider than their layer.
-- [ ] There is no separate wire object; the XML `<Wire>` maps to a cell.
+- [x] There is no separate wire object; the XML `<Wire>` maps to a cell.
 
 ## Verification
 
@@ -72,3 +72,6 @@ PYTHONPATH=/home/destrada/mplDTs pytest -q test/geometry/test_specs.py
 
 - 2026-11-05: proposed as a `GeometrySource` protocol (too early).
 - 2026-11-06: rewritten as the specs ticket; the source is T-011.
+- 2026-11-06: done. `specs.py` with Pose/Shape/Box/Tube/CellGrid and the four
+  node specs; `validate()` checks poses, shapes and the cell fit.
+  22 tests in `test/geometry/test_specs.py`.
