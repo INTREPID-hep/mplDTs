@@ -5,7 +5,7 @@
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** M1 done — Phase 2 (runtime model) in progress: T-020 done
+**Current phase:** M1 done — Phase 2 (runtime model) in progress: T-020, T-021 done
 
 ---
 
@@ -23,8 +23,8 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py` and `model.py` (`Node`, `build_station`) added; legacy runtime classes unchanged |
-| pytest suite for geometry | **through Phase 2 (T-020)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes; 73 pass, 4 xfail, 2 skip |
+| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; legacy runtime classes unchanged |
+| pytest suite for geometry | **through Phase 2 (T-021)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames; 88 pass, 4 xfail, 2 skip |
 
 The prototype verifies:
 
@@ -117,8 +117,8 @@ Target after Phase 2: **< 20 ms per station** (already met by the builder).
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
-- `pytest -q` on the checkout: 73 passed, 4 xfailed (SL2 `BUG-01`), 2 skipped,
-  12.5 s.
+- `pytest -q` on the checkout: 88 passed, 4 xfailed (SL2 `BUG-01`), 2 skipped,
+  46 s (the machine is slow today; the same suite took 12 s this morning).
 - Builder oracle (`-m slow`): all 250 chambers through `build_station`, green
   at `2e-3` cm, 4.9 s.
 - Legacy runtime oracle (`-m slow`): 250 chambers, only SL2 disagrees
@@ -133,11 +133,11 @@ Target after Phase 2: **< 20 ms per station** (already met by the builder).
 Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0 and M1 are
 done; Phase 2 is in progress on `feature/phase-2-runtime`:
 
-1. `T-021` — `FrameGraph`/`FrameView`, scoped aliases, virtual frames.
-2. `T-022` — legacy constructors delegate; `BUG-01` fixed; plotting works.
-3. `T-023` — immutable geometry + per-event overlay.
-4. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
-5. `T-025` — triage the visual scripts in `test/`.
+1. `T-022` — legacy constructors delegate to the source/builder; `BUG-01`
+   fixed; plotting works.
+2. `T-023` — immutable geometry + per-event overlay.
+3. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
+4. `T-025` — triage the visual scripts in `test/`.
 
 Do not start Phase 3 before M2 is green. Do not merge the branch into
 `main` until the maintainer approves it.

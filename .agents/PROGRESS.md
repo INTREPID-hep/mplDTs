@@ -11,12 +11,12 @@
 
 | Item | Value |
 |---|---|
-| Phase | 2 in progress (T-020 done) |
+| Phase | 2 in progress (T-020, T-021 done) |
 | Current milestone | M2 — Runtime model + compatibility |
 | Last completed | CP-006 (M1: specs + CMS source) |
-| Next | T-021 (`FrameGraph` + `FrameView`, aliases) |
-| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011); `model.py` (T-020); tests, benchmark, CI |
-| Library tests | `pytest -q`: 73 passed, 4 xfailed (SL2), 2 skipped, 2 deselected |
+| Next | T-022 (legacy delegation + `BUG-01`) |
+| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011); `model.py` (T-020); `frames.py` (T-021); tests, benchmark, CI |
+| Library tests | `pytest -q`: 88 passed, 4 xfailed (SL2), 2 skipped, 2 deselected |
 | Builder cost | 7.46 ms/station (250 stations, spec -> `Node` tree) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
@@ -56,6 +56,7 @@ the evidence is linked here.
 | 2026-11-06 | T-001, T-003, T-005, T-006, T-007 | Phase 0: pytest + oracle harness with the XML node snapshot (T-002 folded in); `SuperLayer` alias + one-station `.tg` smoke; benchmark; CI workflow | 15 passed / 4 xfailed (SL2) / 2 skipped; all-250 oracle; 621 placements; 0.65-0.57 s/station | Phase 1 |
 | 2026-11-06 | T-010, T-011, T-012 | Phase 1: immutable specs, `CMSXMLSource` with parse-time indexes, spec oracle over all 250 chambers; poses derived from the XML globals (SL2 locals are mixed-frame, which is `BUG-01`) | `pytest` 55 passed / 4 xfailed; spec oracle worst 1.25e-3 cm in 1.1 s | Phase 2 (T-020) |
 | 2026-11-06 | T-020 | Phase 2 starts: `Node` + `build_station` (top-down `world_pose`, grouping nodes with `shape=None`, cells from the `CellGrid`); exported from `mpldts.geometry` | `pytest` 73 passed / 4 xfailed / 2 skipped; builder oracle 250/250 at 2e-3 cm (slow); 7.46 ms/station | T-021 |
+| 2026-11-06 | T-021 | Phase 2 frames: `FrameGraph` (one edge per parent/child pose, BFS with a per-pair cache) and `FrameView` (scoped `Station`/`SuperLayer`/`SL{n}`/`Layer`/`Cell`/`CMS` aliases, legacy `add`/`remove` signatures, virtual frames) | `pytest` 88 passed / 4 xfailed / 2 skipped; the graph matches the node tree, the XML cell centres and the legacy station chain | T-022 |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 
