@@ -1,11 +1,12 @@
 # Handoff — start here if you are new
 
-**Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-025 `test/` triage (documented examples moved to
-`docs/examples/`).
-**Current state:** **Phases 0-2 done on `feature/phase-2-runtime` (not merged).**
+**Last updated:** 2026-11-07 (Europe/Madrid)
+**Previous session:** T-026 release prep (2.3.0, runtime docs) on
+`refactor/v2-integration`.
+**Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
+merged); Phase 3 planned on `feature/phase-3-assemblies`.**
 **Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** Phase 3 (`T-030`), after the maintainer reviews M2.
+**Next action:** `T-030` — `DetectorSpec` assemblies and custom stations.
 
 ---
 
@@ -42,11 +43,15 @@ T-023 (`Station.overlay` and a cache that never writes on the shared station;
 XML attribute names; `BUG-03` gone).
 
 T-025 closed the `test/` triage: the documented examples live in
-`docs/examples/` and run headless in `test/geometry/test_examples.py`. M2 is
-green; Phase 3 is next.
+`docs/examples/` and run headless in `test/geometry/test_examples.py`.
+T-026 released 2.3.0 (one version string, new `docs/src/geometry/runtime.rst`)
+on `refactor/v2-integration`. Phase 3 is planned: `T-030` assemblies,
+`T-031` CMS preset + plotting orientation, `T-032` honeycomb, `T-033` yoke hook.
 
-Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
-until the maintainer approves it.**
+Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
+`refactor/v2-integration` (2.3.0) and Phase 3 works on
+`feature/phase-3-assemblies`. **Nothing merges into `main` until the maintainer
+approves it.**
 
 Commands:
 

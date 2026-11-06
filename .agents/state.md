@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-06 21:40 (Europe/Madrid)
-**Branch:** `feature/phase-2-runtime`
+**Last updated:** 2026-11-07 00:40 (Europe/Madrid)
+**Branch:** `refactor/v2-integration` (2.3.0)
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-2 done — Phase 2 closed at T-025 (M2 gate met)
+**Current phase:** Phases 0-2 done — M2 released as 2.3.0; M3 (T-030) ready to start
 
 ---
 
@@ -64,13 +64,14 @@ prototype has no wire fields either.
 | `BUG-03` | ~~attribute-order-dependent XML parsing~~ **fixed in T-024** | was `element.attrib.values()` in `_geometry.py`; `Bounds`/`Wires` read explicit names and `test_bounds_and_wires_do_not_depend_on_attribute_order` pins it |
 | `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
-| `BUG-06` | version metadata drift | `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta |
+| `BUG-06` | ~~version metadata drift~~ **fixed in T-026** | was `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta; both are 2.3.0 now and `docs/conf.py` reads the package version |
 
 `BUG-01` was fixed in Phase 2 (T-022): the strict xfail is gone and
 `test_sl2_cell_centres` pins the regression. `BUG-02` (shared cache) was fixed
 in T-023: the cache never writes on the station it returns, and `overlay`
 gives every event its own cells. `BUG-03` (attribute-order parsing) was
-fixed in T-024: the shim reads explicit attribute names.
+fixed in T-024: the shim reads explicit attribute names. `BUG-06` (version drift)
+was fixed in T-026: one version string, and the docs read it from the package.
 
 ---
 
@@ -82,8 +83,8 @@ fixed in T-024: the shim reads explicit attribute names.
 | Python | 3.12.3 |
 | Env used for runs | `/home/destrada/Geant4/DTG4Simulator/env` |
 | Installed `mpldts` | 2.2.0-beta in that env (`site-packages`); no XML indexes |
-| Source checkout | branch `enhancement-cacheObjects`, package `__version__` 2.2.0-beta; indexed XML |
-| `pyproject.toml` version | 2.1.0 (drift) |
+| Source checkout | branch `refactor/v2-integration`, package `__version__` 2.3.0; indexed XML |
+| `pyproject.toml` version | 2.3.0 (matches `__version__` since T-026) |
 | pyg4ometry | **not installed**; deferred |
 | pytest | 9.2.0 in the env; `test` extra in `pyproject.toml` |
 | Dependencies available | numpy, pandas, matplotlib, pytransform3d, mplhep |
@@ -146,12 +147,13 @@ Target after Phase 2: **< 20 ms per station** (met).
 ## 7. Immediate next actions
 
 Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0, M1 and M2 are
-done on `feature/phase-2-runtime`:
+done on `refactor/v2-integration` (2.3.0, `main` untouched):
 
-1. the maintainer reviews M2 and decides when the three phase branches merge;
-2. Phase 3 starts after that: `T-030` (custom station assembly).
+1. the maintainer reviews `refactor/v2-integration`;
+2. Phase 3 starts on `feature/phase-3-assemblies` with `T-030` (assemblies and
+   custom 1-SL/5-SL stations); T-031...T-033 are planned behind it.
 
-Do not merge the branch into `main` until the maintainer approves it.
+Nothing merges into `main` until the maintainer approves it.
 
 ---
 

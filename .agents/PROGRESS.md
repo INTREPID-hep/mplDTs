@@ -1,8 +1,9 @@
 # PROGRESS — checkpoints and session log
 
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-07
 **Current checkpoint:** `CP-007 — M2 runtime parity`
-**Implementation status:** Phases 0-2 complete on `feature/phase-2-runtime`
+**Implementation status:** Phases 0-2 complete on `refactor/v2-integration`
+(release 2.3.0); Phase 3 planned
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md)
 
 ---
@@ -13,8 +14,9 @@
 |---|---|
 | Phase | 2 complete (T-020...T-025 done) |
 | Current milestone | M2 — Runtime parity (gate met 2026-11-06) |
-| Last completed | T-025 (`test/` triage: examples moved to `docs/examples/`) |
-| Next | Phase 3 (`T-030`) after the maintainer reviews M2 |
+| Last completed | T-026 (release 2.3.0: one version string, runtime docs page) |
+| Integration branch | `refactor/v2-integration` (T-025 + T-026); `main` untouched |
+| Next | Phase 3: `T-030` on `feature/phase-3-assemblies` |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); tests, benchmark, CI |
 | Library tests | `pytest -q`: 111 passed, 2 skipped, 2 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
@@ -61,6 +63,7 @@ the evidence is linked here.
 | 2026-11-06 | T-023 | Phase 2 immutability: `Station.overlay()` shares the node tree, the graph and the raw-id index and rebuilds only the legacy view objects; `StationsCache.get` returns an overlay instead of writing on the cached station (`BUG-02`); stale docs anchors fixed | `pytest` 102 passed / 2 skipped; slow sweeps green; overlay 7 ms + 5 ms for 704 attributes vs 32 ms for a full station | T-024 |
 | 2026-11-06 | T-024 | Phase 2 performance: `DTGEOMETRY` is a lazy proxy (no XML parse at import); one build per chamber shared by every `Station`; wire locals parsed once per chamber; `Bounds`/`Wires` read explicit attribute names (`BUG-03`); docs anchors refreshed | `pytest` 105 passed / 2 skipped; slow sweeps green; import 2.83 -> 0.96 s; station 6.1 / 2.1 / 3.0 ms | T-025 |
 | 2026-11-06 | T-025 | Phase 2 cleanup: six documented examples moved to `docs/examples/` (five patch demos plus the `TransformManager` one), seven demos + the debug script + a generated SVG deleted, both `test/`-relative `literalinclude` path sets updated, one headless smoke test for every example | `pytest` 111 passed / 2 skipped; `test_examples.py` 6 passed; Sphinx build succeeded | **M2 gate met**; Phase 3 |
+| 2026-11-07 | T-026 | Release prep: 2.3.0 in `pyproject.toml` and `mpldts.__version__`, `docs/conf.py` reads the package version, new `docs/src/geometry/runtime.rst` documenting XML -> specs -> nodes -> frames, the legacy pages point at it; the untracked printer script is deleted; `refactor/v2-integration` cut from T-025 (`main` untouched) | `pytest` 111 passed / 2 skipped; Sphinx build succeeded with no warnings; both metadata sources report 2.3.0 | **Phase 3 planning** |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 
@@ -119,6 +122,9 @@ No history was rewritten.
 | 2026-11-06 | `pytest -q` (111 tests, after T-025) | 111 passed, 2 skipped, 2 deselected, 25-33 s |
 | 2026-11-06 | `pytest -q test/geometry/test_examples.py` | 6 passed, 9-20 s |
 | 2026-11-06 | `sphinx-build -b html docs` (Sphinx 9.1.1) | build succeeded; examples and images render |
+| 2026-11-07 | `pytest -q` (after T-026) | 111 passed, 2 skipped, 2 deselected |
+| 2026-11-07 | `sphinx-build -b html docs` (after T-026) | build succeeded, no warnings; `runtime.html` carries all 10 new autodoc objects |
+| 2026-11-07 | `python -c "import mpldts; print(mpldts.__version__)"` | 2.3.0 |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.
