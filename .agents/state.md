@@ -124,7 +124,7 @@ Target after Phase 2: **< 20 ms per station** (met).
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
 - `pytest -q` on the checkout: 105 passed, 2 skipped, 2 deselected, 41 s.
 - Slow sweeps (`-m slow`): the builder oracle and the legacy runtime oracle,
-  all 250 chambers at `2e-3` cm, SL2 included, 166 s.
+  all 250 chambers at `2e-3` cm, SL2 included, 140 s.
 - `DTStationPatch` on three chambers x phi/eta x local/inverted/global: the
   rectangles are bit-identical to the pre-T-022 code, and so are the values
   the .tg generator reads.

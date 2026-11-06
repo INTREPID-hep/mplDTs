@@ -109,6 +109,7 @@ No history was rewritten.
 | 2026-11-06 | `pytest -q` (102 tests, after T-023) | 102 passed, 2 skipped, 2 deselected, 28 s |
 | 2026-11-06 | `pytest -q` (105 tests, after T-024) | 105 passed, 2 skipped, 2 deselected, 41 s |
 | 2026-11-06 | `bench_station.py` (after T-024) | import 0.96 s; 6.1 / 2.1 / 3.0 ms per station |
+| 2026-11-06 | `pytest -q -m slow` (250 chambers, after T-024) | 2 passed, 107 deselected, 140 s |
 | 2026-11-06 | `pytest -q -m slow` (250 chambers, after T-023) | 2 passed, 104 deselected, 160 s |
 | 2026-11-06 | overlay vs full station build | 7 ms + 5 ms (704 cell attrs) vs 32 ms |
 | 2026-11-06 | `pytest -q -m slow` (250 chambers) | 2 passed, 152 s; SL2 matches the XML |
