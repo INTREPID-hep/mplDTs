@@ -40,7 +40,7 @@ class Station(DTFrame):
         :type station: int
         :param dt_info: Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
         # == Chamber related parameters
@@ -291,7 +291,7 @@ class Station(DTFrame):
 
         :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
         :type dt_info: dict, list, or pandas.DataFrame
         """
         if isinstance(dt_info, dict):
@@ -311,7 +311,7 @@ class Station(DTFrame):
             w = info_item.pop("w", None)
             if not all([sl, l, w]):
                 raise ValueError(
-                    "The drift cell information must contain the super layer, layer, and wire identifiers."
+                    "The drift cell information must contain the super layer, layer, and cell identifiers."
                 )
             super_layer = self.super_layer(sl)
 

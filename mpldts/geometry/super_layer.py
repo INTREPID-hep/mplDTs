@@ -109,10 +109,22 @@ class SuperLayer(DTFrame):
         if self.parent is None:
             self.transformer = TransformManager("SuperLayer")  # intial frame is the SL frame
         else:
-            self.transformer = self.parent.transformer  # inherit the parent's transformer
+            # Keep the station transformer complete (it carries every SL frame),
+            # but give the super layer its own manager so that the legacy generic
+            # "SuperLayer" name is unambiguous for this super layer (T-005).
+            self.parent.transformer.add(
+                f"SL{self.number}", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
+            )
+            self.transformer = TransformManager("SuperLayer")
+            self.transformer.transform_chain.update(self.parent.transformer.transform_chain)
+            self.transformer.available_frames.update(self.parent.transformer.available_frames)
 
         self.transformer.add(
             f"SL{self.number}", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
+        )
+        # Backward compatibility: the DTG4Simulator generator asks for this name.
+        self.transformer.add(
+            "SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
         )
 
 

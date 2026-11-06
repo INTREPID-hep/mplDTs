@@ -96,9 +96,9 @@ class Layer(DTFrame):
         """
         Ensemble a DT layer.
         """
-        wire_bounds = DTGEOMETRY.get("WiresSize", rawId=self.id)
-        for wire in DTGEOMETRY.get("Wires", rawId=self.id).iter("Wire"):
-            num, local_pos_str, global_pos_str = wire.attrib.values()
+        cell_bounds = DTGEOMETRY.get("WiresSize", rawId=self.id)
+        for wire_entry in DTGEOMETRY.get("Wires", rawId=self.id).iter("Wire"):
+            num, local_pos_str, global_pos_str = wire_entry.attrib.values()
 
             cell = DriftCell(number=int(num))
 
@@ -107,7 +107,7 @@ class Layer(DTFrame):
 
             cell.local_center = local_pos
             cell.global_center = global_pos
-            cell.bounds = wire_bounds
+            cell.bounds = cell_bounds
             cell.parent = self
             cell._setup_transformer()
 
