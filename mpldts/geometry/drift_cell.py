@@ -12,10 +12,9 @@
 #         <------- 4.2 cm --------->
 
 
-from mpldts.geometry._geometry import DTGEOMETRY
 from mpldts.geometry.dt_frame import DTFrame
-from mpldts.geometry.transforms import TransformManager
-import warnings as Warning
+from mpldts.geometry.frames import FrameView
+from mpldts.geometry.sources.cms_xml import position
 
 
 class DriftCell(DTFrame):
@@ -43,54 +42,26 @@ class DriftCell(DTFrame):
         :param parent: Parent layer of the drift cell (default is None).
         :type parent: Layer, optional
         """
-        # Parent rawId is used to get XML geometrical info to initialize
-        # the instance. If not parent, attributes are set manually...
         self.parent = parent
-        super().__init__()
         self.id = number
         self.number = number
 
-        if parent:
-            self.bounds = DTGEOMETRY.get("WiresSize", rawId=parent.id)
-            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=parent.id, w=number)
-            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=parent.id, w=number)
-
-        else:
+        if parent is None:
+            # detached cell, only useful as a placeholder
             self.bounds = (4.2, 1.3, 235)
             self.local_center = (0, 0, 0)
             self.global_center = (0, 0, 0)
+            return
 
-    def _setup_transformer(self):
-        """
-        Set up the transformer for the Drift Cell. It defines the transformation from the local frame to the global frame.
-        """
-        from numpy import array
-
-        self.transformer = TransformManager("Cell")  # intial frame is the layer frame
-
-        # Inherit transformation from the parent to the global frame
-        if self.parent is not None:
-            transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
-            if transform_matrix is not None:
-                self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
-            transform_matrix = self.parent.transformer.get_transformation(f"SL{self.parent.parent.number}", "Station")
-            if transform_matrix is not None:
-                self.transformer.add(
-                    f"SL{self.parent.parent.number}", "Station", transformation_matrix=transform_matrix
-                )
-            transform_matrix = self.parent.transformer.get_transformation("Layer", f"SL{self.parent.parent.number}")
-            if transform_matrix is not None:
-                self.transformer.add("Layer", f"SL{self.parent.parent.number}", transformation_matrix=transform_matrix)
-
-            # Define the transformation from the cell to the Layer frame
-            _parent_center = self.parent.local_center
-            _LTC = array([self._x_local, self._y_local, self._z_local]) - array(
-                _parent_center
-            )  # This translation leave te cords in the SL frame
-
-            self.transformer.add(
-                "Cell", "Layer", translation_vector=_LTC
-            )  # add the transformation from cell to Layer frame
+        node = parent._cells.get("C%d" % number)
+        if node is None:
+            raise ValueError(f"cell {number} is not in layer {parent.number}")
+        width, length, thickness = node.shape.aabb()
+        self.bounds = (width, thickness, length)
+        self.local_center = position(parent._cell_local_text[number])
+        self.global_center = tuple(float(value) for value in node.world_pose.translation)
+        self._node = node
+        self.transformer = FrameView(parent.transformer.graph, node)
 
 
 if __name__ == "__main__":

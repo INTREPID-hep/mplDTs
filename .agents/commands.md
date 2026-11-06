@@ -93,7 +93,7 @@ for sl in st.super_layers:
 PY
 ```
 
-Expected: SL1/SL3 ~0, SL2 ~2.475 cm (`BUG-01`).
+Expected: every error ~0, SL2 included (`BUG-01` was fixed in T-022).
 
 ---
 
@@ -124,11 +124,11 @@ cd /home/destrada/mplDTs
 PYTHONPATH=/home/destrada/mplDTs /home/destrada/Geant4/DTG4Simulator/env/bin/python -m pytest -q
 ```
 
-- Default: six representative chambers, ~15 s; the `slow` marker is deselected
+- Default: six representative chambers, ~30 s; the `slow` marker is deselected
   by `addopts`.
 - Full 250-chamber oracle (minutes): `pytest -q -m slow test/geometry/test_oracle.py`.
-- The SL2 comparison is `xfail(strict=True)` (`BUG-01`); if it starts passing,
-  the strict xfail fails and asks you to drop it.
+- The SL2 comparison is a plain test (`test_sl2_cell_centres`) since T-022; a
+  regression fails the suite.
 
 The XML is the reference; there is no golden JSON file (T-002 folded into
 T-003). Cell centres use `2e-3` cm because the XML stores 3 decimals.

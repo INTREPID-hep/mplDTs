@@ -23,8 +23,8 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; legacy runtime classes unchanged |
-| pytest suite for geometry | **through Phase 2 (T-021)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames; 88 pass, 4 xfail, 2 skip |
+| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022) |
+| pytest suite for geometry | **through Phase 2 (T-022)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy; 100 pass, 2 skip |
 
 The prototype verifies:
 
@@ -59,16 +59,16 @@ prototype has no wire fields either.
 
 | Id | Issue | Evidence |
 |---|---|---|
-| `BUG-01` | SL2 transform off by `√2·|SL_local_x|` | measured 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); `layer.py:137-143`, `drift_cell.py:87-93` |
+| `BUG-01` | ~~SL2 transform off by `√2·|SL_local_x|`~~ **fixed in T-022** | was 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); the frame chain is the node poses now and the cell centres match the XML |
 | `BUG-02` | shared cache mutates cell data across events | `station.py:386-387`, `:288-325` |
 | `BUG-03` | attribute-order-dependent XML parsing | `_geometry.py:122`, `:126`, `layer.py:101` |
 | `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
 | `BUG-06` | version metadata drift | `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta |
 
-`BUG-01` is expected to fail the transform invariant test until Phase 2
-(T-022). Mark it `xfail(strict=True)` with a comment referencing this id,
-never delete the test.
+`BUG-01` was fixed in Phase 2 (T-022): the strict xfail is gone and
+`test_sl2_cell_centres` pins the regression. `BUG-02` (shared cache) and
+`BUG-03` (attribute-order parsing) are the next two, in T-023 and T-024.
 
 ---
 
@@ -117,12 +117,13 @@ Target after Phase 2: **< 20 ms per station** (already met by the builder).
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
-- `pytest -q` on the checkout: 88 passed, 4 xfailed (SL2 `BUG-01`), 2 skipped,
-  46 s (the machine is slow today; the same suite took 12 s this morning).
-- Builder oracle (`-m slow`): all 250 chambers through `build_station`, green
-  at `2e-3` cm, 4.9 s.
-- Legacy runtime oracle (`-m slow`): 250 chambers, only SL2 disagrees
-  (`BUG-01`); the spec and builder paths match the XML.
+- `pytest -q` on the checkout: 100 passed, 2 skipped, 2 deselected, 31 s.
+- Slow sweeps (`-m slow`): the builder oracle and the legacy runtime oracle,
+  all 250 chambers at `2e-3` cm, SL2 included, 152 s.
+- `DTStationPatch` on three chambers x phi/eta x local/inverted/global: the
+  rectangles are bit-identical to the pre-T-022 code, and so are the values
+  the .tg generator reads.
+- Station build: 1009 ms -> 64 ms per station (five chambers, old vs new).
 - `smoke_tg.py` on the checkout: 621 placements, SL2 rotation present.
 - `bench_station.py`: 0.65 / 0.46 / 0.57 s for the three stations.
 
@@ -133,11 +134,9 @@ Target after Phase 2: **< 20 ms per station** (already met by the builder).
 Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0 and M1 are
 done; Phase 2 is in progress on `feature/phase-2-runtime`:
 
-1. `T-022` — legacy constructors delegate to the source/builder; `BUG-01`
-   fixed; plotting works.
-2. `T-023` — immutable geometry + per-event overlay.
-3. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
-4. `T-025` — triage the visual scripts in `test/`.
+1. `T-023` — immutable geometry + per-event overlay (`BUG-02`).
+2. `T-024` — performance pass, `DTGEOMETRY` shim, no XML in the model.
+3. `T-025` — triage the visual scripts in `test/`.
 
 Do not start Phase 3 before M2 is green. Do not merge the branch into
 `main` until the maintainer approves it.

@@ -15,8 +15,8 @@ from mpldts.geometry._geometry import DTGeometry
 #: One chamber per wheel/station family, used by the default test run.
 REPRESENTATIVE = [(-2, 1, 1), (-1, 3, 2), (0, 5, 3), (1, 3, 4), (2, 14, 4), (0, 1, 1)]
 
-#: Super layer affected by BUG-01; its pose is off by up to 0.5 cm.
-BUGGY_SUPER_LAYER = 2
+#: The super layer BUG-01 used to affect; the SL2 test still pins it.
+SL2 = 2
 
 #: Cell-centre tolerance in cm. The XML stores 3 decimals, and the model also
 #: reads 3-decimal local positions, so two roundings ~5e-4 each set the floor.
