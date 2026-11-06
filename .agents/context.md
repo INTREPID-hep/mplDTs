@@ -89,10 +89,12 @@ The new model uses one explicit pose per node, so frames cannot be mixed.
 **Fixed in T-022**: the legacy classes are views over those poses, the table
 above is history, and `test_sl2_cell_centres` guards it.
 
-**(b) Shared-cache mutation.** `StationsCache.get(..., dt_info=...)` returns the
-same `Station` and calls `set_cell_attrs`, which writes on shared `DriftCell`
-objects (`station.py:386-387`, `:288-325`). Event A's values leak into event B.
-Geometry must be immutable; per-event data belongs in an overlay.
+**(b) Shared-cache mutation.** `StationsCache.get(..., dt_info=...)` returned the
+same `Station` and called `set_cell_attrs`, which writes on shared `DriftCell`
+objects. Event A's values leaked into event B.
+**Fixed in T-023**: `Station.overlay(dt_info)` shares the node tree and the
+graph and owns its cell attributes; the cache returns it and never writes to
+the cached station. `test_cache_overlays_isolate_cell_attributes` guards it.
 
 **(c) Attribute-order-dependent XML parsing.** `_geometry.py:122`, `:126` and
 `layer.py:101` use `element.attrib.values()` positionally. Legal XML attribute

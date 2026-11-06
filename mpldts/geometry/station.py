@@ -301,6 +301,11 @@ class Station(DTFrame):
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
                 layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
         :type dt_info: dict, list, or pandas.DataFrame
+
+        .. note::
+            This writes on this station's own cells. On a station shared through
+            :class:`StationsCache` use :meth:`overlay` instead: the cache hands
+            the same instance to every caller.
         """
         if isinstance(dt_info, dict):
             info = [deepcopy(dt_info)]
@@ -331,6 +336,28 @@ class Station(DTFrame):
 
             for key, value in info_item.items():
                 setattr(cell, key, value)
+
+    def overlay(self, dt_info=None):
+        """
+        A per-event view of this station: the same geometry, its own cell attributes.
+
+        The node tree and the frame graph are shared with this station, so an
+        overlay costs a fraction of a full build; the super layers, layers and
+        cells are new objects, so setting an attribute on an overlay cell never
+        reaches the station or another overlay.
+
+        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
+        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
+        :return: The overlay station.
+        :rtype: Station
+        """
+        view = object.__new__(type(self))
+        view.__dict__.update(self.__dict__)
+        view.transformer = FrameView(self._graph, self._node)
+        view._super_layers = [SuperLayer(rawId=sl.id, parent=view) for sl in self._super_layers]
+        if dt_info is not None:
+            view.set_cell_attrs(dt_info)
+        return view
 
 
 if __name__ == "__main__":
@@ -380,20 +407,25 @@ class StationsCache:
         return cls._instance
 
     def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
+        """The cached station of a chamber, or a per-event overlay of it.
+
+        The cached station is never mutated: when `dt_info` is given the
+        result is :meth:`Station.overlay`, which shares the geometry and owns
+        its cell attributes.
+        """
         key = (wh, sc, st)
         with self._cache_lock:
             station = self._cache.get(key)
             if station is None:
                 try:
-                    station = Station(wheel=wh, sector=sc, station=st, dt_info=dt_info)
+                    station = Station(wheel=wh, sector=sc, station=st)
                     self._cache[key] = station
                 except ValueError:
                     self._cache[key] = None
                     return None
-            else:
-                if dt_info is not None and station is not None:
-                    station.set_cell_attrs(dt_info)
-            return station
+            if dt_info is None:
+                return station
+            return station.overlay(dt_info)
     
     def clear(self):
         """Clear the cache (useful for testing or memory management)."""

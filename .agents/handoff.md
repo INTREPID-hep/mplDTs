@@ -1,11 +1,11 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-022 legacy delegation.
+**Previous session:** T-023 immutable cache + per-event overlay.
 **Current state:** **M1 done; Phase 2 in progress on
 `feature/phase-2-runtime` (not merged).**
 **Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
-**Next action:** T-023 — immutable geometry and the per-event overlay (`BUG-02`).
+**Next action:** T-024 — performance pass, `DTGEOMETRY` shim, no XML in the model (`BUG-03`).
 
 ---
 
@@ -13,7 +13,7 @@
 
 1. Read [`AGENT.md`](AGENT.md) — the contract and the HOLD gate.
 2. Read [`state.md`](state.md) — what is true now.
-3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-022 are `done`.
+3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-023 are `done`.
 4. Read [`PROGRESS.md`](PROGRESS.md) — checkpoints and the session log.
 5. Skim [`context.md`](context.md) §2–§5 — architecture, findings, target model.
 6. Open [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md)
@@ -36,10 +36,12 @@ Done: Phase 0 (tests, oracle, alias, benchmark, CI), Phase 1 (`specs.py`,
 `sources/cms_xml.py`, spec oracle over 250 chambers), T-020 (`Node` +
 `build_station`, exported from `mpldts.geometry`), T-021 (`FrameGraph` + `FrameView`,
 scoped aliases, legacy `add`/`remove`), T-022 (the legacy classes are views
-over the source, the tree and the graph; `BUG-01` gone, plotting bit-identical).
+over the source, the tree and the graph; `BUG-01` gone, plotting bit-identical),
+T-023 (`Station.overlay` and a cache that never writes on the shared station;
+`BUG-02` gone).
 
-Remaining: T-023 immutability (`BUG-02`), T-024 performance + `DTGEOMETRY`
-shim + `BUG-03`, T-025 `test/` triage.
+Remaining: T-024 performance + `DTGEOMETRY` shim + `BUG-03`, T-025 `test/`
+triage.
 
 Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
 until the maintainer approves it.**
@@ -61,7 +63,8 @@ Do not start Phase 3 before M2 is green.
 ## 3. What not to touch yet
 
 - `mpldts/` legacy runtime classes — T-022 wired them to the source and
-  the graph; T-023 adds the per-event overlay, so do not give them state.
+  the graph; T-023 added `Station.overlay`, so per-event data goes there and
+  never on a cached station.
 - `mpldts/patches/` — plotting must keep working; changes need an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
 - `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and
