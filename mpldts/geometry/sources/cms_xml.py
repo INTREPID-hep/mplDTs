@@ -28,7 +28,7 @@ from mpldts.geometry.specs import (
     SuperLayerSpec,
 )
 
-__all__ = ["CMSXMLSource", "DEFAULT_XML"]
+__all__ = ["CMSXMLSource", "DEFAULT_XML", "position"]
 
 #: Geometry shipped with the package (cm).
 DEFAULT_XML = Path(__file__).resolve().parents[1] / "DTGeometry_v3.xml"
@@ -43,7 +43,8 @@ _CHAMBER_ID = re.compile(r"Wh:(-?\d+)\s+St:(\d+)\s+Se:(\d+)")
 _NUMBER = re.compile(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?")
 
 
-def _position(text):
+def position(text):
+    """(x, y, z) from an XML position string (the parser is the source's job)."""
     values = _NUMBER.findall(text or "")
     if len(values) < 3:
         raise ValueError("cannot read a position from %r" % (text,))
@@ -61,6 +62,7 @@ class CMSXMLSource:
     def __init__(self, path=None):
         self.path = Path(path) if path is not None else DEFAULT_XML
         self._chambers = {}
+        self._chamber_of = {}
         self._parse()
 
     # -- public API --------------------------------------------------------
@@ -75,10 +77,28 @@ class CMSXMLSource:
     def station(self, wheel, sector, station):
         """StationSpec for one chamber; KeyError if the chamber is absent."""
         key = (wheel, sector, station)
-        record = self._chambers.get(key)
+        return self._station_spec(key, self._record(*key))
+
+    def record(self, wheel, sector, station):
+        """Raw parse record of one chamber (read-only); KeyError if absent.
+
+        The legacy wrappers (T-022) read the values the XML states verbatim:
+        raw ids, local positions and bounds. The model reads the derived poses.
+        """
+        return self._record(wheel, sector, station)
+
+    def chamber_of(self, raw_id):
+        """(wheel, sector, station) of the element with this rawId."""
+        try:
+            return self._chamber_of[int(raw_id)]
+        except (KeyError, TypeError, ValueError):
+            raise KeyError("rawId %r is not in %s" % (raw_id, self.path.name)) from None
+
+    def _record(self, wheel, sector, station):
+        record = self._chambers.get((wheel, sector, station))
         if record is None:
-            raise KeyError("chamber %r is not in %s" % (key, self.path.name))
-        return self._station_spec(key, record)
+            raise KeyError("chamber %r is not in %s" % ((wheel, sector, station), self.path.name))
+        return record
 
     def detector(self, name="CMS", chamber_keys=None):
         """DetectorSpec with one StationSpec per chamber (all by default)."""
@@ -97,7 +117,7 @@ class CMSXMLSource:
         centres = {}
         for super_layer in record["super_layers"]:
             for layer in super_layer["layers"]:
-                for number, centre in layer["cells"]:
+                for number, centre, _ in layer["cells"]:
                     centres[(super_layer["number"], layer["number"], number)] = centre
         return centres
 
@@ -110,35 +130,49 @@ class CMSXMLSource:
             if match is None:
                 continue
             wheel, station, sector = (int(value) for value in match.groups())
-            self._chambers[(wheel, sector, station)] = self._read_chamber(chamber)
+            key = (wheel, sector, station)
+            self._chambers[key] = self._read_chamber(chamber)
+            for element in chamber.iter():
+                raw_id = element.get("rawId")
+                if raw_id is not None:
+                    self._chamber_of[int(raw_id)] = key
 
     @staticmethod
     def _read_chamber(chamber):
         record = {
             "id": int(chamber.get("rawId")),
-            "global": _position(chamber.find("GlobalPosition").text),
-            "local": _position(chamber.find("LocalPosition").text),
-            "direction": _position(chamber.find("NormalVector").text),
+            "global": position(chamber.find("GlobalPosition").text),
+            "local": position(chamber.find("LocalPosition").text),
+            "direction": position(chamber.find("NormalVector").text),
             "bounds": _bounds(chamber),
             "super_layers": [],
         }
         for super_layer in chamber.iter("SuperLayer"):
             sl_record = {
+                "raw_id": int(super_layer.get("rawId")),
                 "number": int(super_layer.get("superLayerNumber")),
-                "global": _position(super_layer.find("GlobalPosition").text),
+                "local": position(super_layer.find("LocalPosition").text),
+                "global": position(super_layer.find("GlobalPosition").text),
                 "bounds": _bounds(super_layer),
                 "layers": [],
             }
             for layer in super_layer.iter("Layer"):
                 wires = layer.find("Wires").attrib
                 cells = [
-                    (int(wire.get("wireNumber")), _position(wire.get("GlobalPosition")))
+                    (
+                        int(wire.get("wireNumber")),
+                        position(wire.get("GlobalPosition")),
+                        # kept as text: only the legacy wrappers read it
+                        wire.get("LocalPosition"),
+                    )
                     for wire in layer.iter("Wire")
                 ]
                 sl_record["layers"].append(
                     {
+                        "raw_id": int(layer.get("rawId")),
                         "number": int(layer.get("layerNumber")),
-                        "global": _position(layer.find("GlobalPosition").text),
+                        "local": position(layer.find("LocalPosition").text),
+                        "global": position(layer.find("GlobalPosition").text),
                         "bounds": _bounds(layer),
                         "wires": (
                             float(wires["width"]),

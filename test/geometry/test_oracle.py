@@ -29,18 +29,18 @@ def _computed_cell_centres(station):
     return out
 
 
-def _compare(chamber, keep_super_layer):
-    """Failures for the super layers accepted by the predicate."""
+def _compare(chamber, super_layer=None):
+    """Failures for one super layer, or for every super layer when None."""
     station = _station(chamber)
     expected = {
         key: value
         for key, value in reference.cell_centres(chamber).items()
-        if keep_super_layer(key[0])
+        if super_layer is None or key[0] == super_layer
     }
     computed = {
         key: value
         for key, value in _computed_cell_centres(station).items()
-        if keep_super_layer(key[0])
+        if super_layer is None or key[0] == super_layer
     }
     return reference.compare_cell_centres(computed, expected)
 
@@ -56,23 +56,18 @@ def _report(chamber, failures, limit=5):
 
 @pytest.mark.parametrize("chamber", reference.REPRESENTATIVE)
 def test_cell_centres(chamber):
-    """Every cell centre matches the XML, except the BUG-01 super layer."""
-    failures = _compare(chamber, lambda sl: sl != reference.BUGGY_SUPER_LAYER)
+    """Every cell centre matches the XML, SL2 included."""
+    failures = _compare(chamber)
     assert not failures, _report(chamber, failures)
 
 
 @pytest.mark.parametrize("chamber", reference.REPRESENTATIVE)
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="BUG-01: SL2 pose is wrong by up to 0.5 cm (T-022 fixes it)",
-)
-def test_sl2_cell_centres_are_known_broken(chamber):
-    """SL2 must disagree with the XML until BUG-01 is fixed."""
-    if reference.BUGGY_SUPER_LAYER not in reference.super_layer_numbers(chamber):
+def test_sl2_cell_centres(chamber):
+    """SL2 used to be off by up to 0.5 cm (BUG-01); it must match the XML now."""
+    if reference.SL2 not in reference.super_layer_numbers(chamber):
         pytest.skip("chamber has no SL2")
-    failures = _compare(chamber, lambda sl: sl == reference.BUGGY_SUPER_LAYER)
-    assert not failures, _report(chamber, failures) + "\n(if SL2 matches now, BUG-01 is fixed: drop the xfail)"
+    failures = _compare(chamber, super_layer=reference.SL2)
+    assert not failures, _report(chamber, failures)
 
 
 @pytest.mark.parametrize("chamber", reference.REPRESENTATIVE)
@@ -115,15 +110,12 @@ def test_perturbed_reference_is_detected():
 
 @pytest.mark.slow
 def test_all_chambers():
-    """All 250 chambers: only SL2 may disagree, and it must disagree."""
+    """All 250 chambers must match the XML."""
     broken = []
     for chamber in reference.all_chambers():
-        others = _compare(chamber, lambda sl: sl != reference.BUGGY_SUPER_LAYER)
-        if others:
-            broken.append(_report(chamber, others))
-        has_sl2 = reference.BUGGY_SUPER_LAYER in reference.super_layer_numbers(chamber)
-        if has_sl2 and not _compare(chamber, lambda sl: sl == reference.BUGGY_SUPER_LAYER):
-            broken.append("chamber %s: SL2 matches the XML, BUG-01 is fixed" % (str(chamber),))
+        failures = _compare(chamber)
+        if failures:
+            broken.append(_report(chamber, failures))
     assert not broken, "\n".join(broken[:5]) + (
         "\n... and %d more chamber(s)" % (len(broken) - 5) if len(broken) > 5 else ""
     )

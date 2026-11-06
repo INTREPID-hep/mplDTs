@@ -86,6 +86,8 @@ the error (`drift_cell.py:87-93`). Measured errors:
 
 The stored XML `GlobalPosition` is correct; the composed transform is not.
 The new model uses one explicit pose per node, so frames cannot be mixed.
+**Fixed in T-022**: the legacy classes are views over those poses, the table
+above is history, and `test_sl2_cell_centres` guards it.
 
 **(b) Shared-cache mutation.** `StationsCache.get(..., dt_info=...)` returns the
 same `Station` and calls `set_cell_attrs`, which writes on shared `DriftCell`

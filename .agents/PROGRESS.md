@@ -11,13 +11,13 @@
 
 | Item | Value |
 |---|---|
-| Phase | 2 in progress (T-020, T-021 done) |
+| Phase | 2 in progress (T-020, T-021, T-022 done) |
 | Current milestone | M2 — Runtime model + compatibility |
-| Last completed | CP-006 (M1: specs + CMS source) |
-| Next | T-022 (legacy delegation + `BUG-01`) |
-| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011); `model.py` (T-020); `frames.py` (T-021); tests, benchmark, CI |
-| Library tests | `pytest -q`: 88 passed, 4 xfailed (SL2), 2 skipped, 2 deselected |
-| Builder cost | 7.46 ms/station (250 stations, spec -> `Node` tree) |
+| Last completed | T-022 (legacy delegation + `BUG-01`) |
+| Next | T-023 (immutable geometry + per-event overlay) |
+| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); tests, benchmark, CI |
+| Library tests | `pytest -q`: 100 passed, 2 skipped, 2 deselected |
+| Builder cost | 7.5 ms/station (250 stations, spec -> `Node` tree); legacy `Station` 64 ms/station (was ~1 s) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
 
@@ -57,6 +57,7 @@ the evidence is linked here.
 | 2026-11-06 | T-010, T-011, T-012 | Phase 1: immutable specs, `CMSXMLSource` with parse-time indexes, spec oracle over all 250 chambers; poses derived from the XML globals (SL2 locals are mixed-frame, which is `BUG-01`) | `pytest` 55 passed / 4 xfailed; spec oracle worst 1.25e-3 cm in 1.1 s | Phase 2 (T-020) |
 | 2026-11-06 | T-020 | Phase 2 starts: `Node` + `build_station` (top-down `world_pose`, grouping nodes with `shape=None`, cells from the `CellGrid`); exported from `mpldts.geometry` | `pytest` 73 passed / 4 xfailed / 2 skipped; builder oracle 250/250 at 2e-3 cm (slow); 7.46 ms/station | T-021 |
 | 2026-11-06 | T-021 | Phase 2 frames: `FrameGraph` (one edge per parent/child pose, BFS with a per-pair cache) and `FrameView` (scoped `Station`/`SuperLayer`/`SL{n}`/`Layer`/`Cell`/`CMS` aliases, legacy `add`/`remove` signatures, virtual frames) | `pytest` 88 passed / 4 xfailed / 2 skipped; the graph matches the node tree, the XML cell centres and the legacy station chain | T-022 |
+| 2026-11-06 | T-022 | Phase 2 compatibility: the four legacy classes are views over `CMSXMLSource` + `build_station` + `FrameView`; the plotting frames live on the station graph; standalone `SuperLayer(rawId)`/`Layer(rawId)` kept; data attributes stay verbatim XML | `pytest` 100 passed / 2 skipped; slow 250-chamber sweeps green; `DTStationPatch` rectangles and the .tg inputs bit-identical to the old code; 1009 -> 64 ms per station | T-023 |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 
@@ -102,6 +103,10 @@ No history was rewritten.
 | 2026-11-06 | `pytest -q` (37 tests) | 37 passed, 4 xfailed, 2 skipped |
 | 2026-11-06 | `pytest -q` (55 tests, after T-011/T-012) | 55 passed, 4 xfailed, 2 skipped |
 | 2026-11-06 | spec oracle, 250 chambers | worst 1.25e-3 cm, 1.1 s |
+| 2026-11-06 | `pytest -q` (100 tests, after T-022) | 100 passed, 2 skipped, 2 deselected, 31 s |
+| 2026-11-06 | `pytest -q -m slow` (250 chambers) | 2 passed, 152 s; SL2 matches the XML |
+| 2026-11-06 | patch rectangles, old vs new code (18 cases) | worst vertex deviation 0.0 cm |
+| 2026-11-06 | station build, old vs new code | 1009.3 -> 63.8 ms/station |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.
