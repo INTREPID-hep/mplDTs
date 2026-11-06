@@ -4,7 +4,7 @@
 **Previous session:** Phase 0 implementation (tests, alias, benchmark, CI).
 **Current state:** **M0 done on `feature/phase-0-safety-net` (not merged).**
 **Current checkpoint:** `CP-005` (M0) in progress.
-**Next action:** T-011 (`CMSXMLSource`) on `feature/phase-1-specs`.
+**Next action:** Phase 2 (T-020) — the runtime model replaces the XML queries.
 
 ---
 

@@ -23,7 +23,7 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 only | `super_layer.py`: legacy `SuperLayer` alias (T-005); no model refactor |
+| `mpldts/` library changes | Phase 0 + Phase 1 | `super_layer.py` alias; `specs.py` and `sources/cms_xml.py` added; runtime classes unchanged |
 | pytest suite for geometry | **Phase 0 done** | `test/geometry/`: smoke + oracle + reference; 15 pass, 4 xfail |
 
 The prototype verifies:
@@ -45,7 +45,7 @@ prototype has no wire fields either.
 
 ## 2. What does not exist yet
 
-- `mpldts/geometry/sources/`, `presets/`.
+- `mpldts/geometry/presets/`.
 - `FrameGraph`/`FrameView` in the library (only in the prototype).
 - `Shape`/`Box`/`Tube`/`CellGrid` in the library.
 - `SolidSpec` attachments (honeycomb) and `StructureSpec` (yoke) in the library.

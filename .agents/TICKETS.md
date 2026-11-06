@@ -58,6 +58,8 @@ smoke + CI. Nothing else starts before M0.
 | T-006 | Benchmark harness | 0 | proposed | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
 | T-010 | Geometry specs | 1 | done | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
+| T-011 | CMS XML source | 1 | done | T-010 | [T-011](tickets/T-011-cms-xml-source.md) |
+| T-012 | Spec oracle over 250 chambers | 1 | done | T-011 | [T-012](tickets/T-012-spec-oracle.md) |
 | T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
@@ -105,8 +107,7 @@ and the maintainer approves.
 
 | ID | Phase | Summary |
 |---|---|---|
-| T-011 | 1 | `CMSXMLSource` indexes + explicit attribute parsing |
-| T-012 | 1 | Spec oracle over all 250 chambers |
+
 | T-020 | 2 | Runtime topology + `build_station` |
 | T-021 | 2 | `FrameGraph` + `FrameView`, aliases, virtual frames |
 | T-022 | 2 | Legacy constructors delegate; SL2 fixed; plotting works |
