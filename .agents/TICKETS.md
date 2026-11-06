@@ -3,7 +3,7 @@
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-06
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 0 implementing — plan Rev 4 approved 2026-11-06
+**State:** Phase 2 implementing — T-020 done 2026-11-06
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -41,10 +41,12 @@ Status legend:
 
 ## 2. Current milestone
 
-**M0 — Safety net.** Gate: tests + transform invariant (SL2 `xfail`) + `.tg`
-smoke + CI. Nothing else starts before M0.
+**M2 — Runtime parity.** Gate: public-API oracle green, `< 20 ms/station`,
+no XML in the model, `test/` triaged. T-020 (topology + `build_station`) is
+done; T-021...T-025 remain.
 
-**Current checkpoint:** `CP-004 — plan Rev 4 ready for maintainer approval`.
+**Current checkpoint:** `CP-006 — M1 specs + source` complete; CP-007 (M2)
+in progress.
 
 ---
 
@@ -58,6 +60,9 @@ smoke + CI. Nothing else starts before M0.
 | T-006 | Benchmark harness | 0 | proposed | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
 | T-010 | Geometry specs | 1 | done | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
+| T-011 | CMS XML source | 1 | done | T-010 | [T-011](tickets/T-011-cms-xml-source.md) |
+| T-012 | Spec oracle over 250 chambers | 1 | done | T-011 | [T-012](tickets/T-012-spec-oracle.md) |
+| T-020 | Runtime topology + `build_station` | 2 | done | T-010, T-011 | [T-020](tickets/T-020-runtime-topology.md) |
 | T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
@@ -105,9 +110,7 @@ and the maintainer approves.
 
 | ID | Phase | Summary |
 |---|---|---|
-| T-011 | 1 | `CMSXMLSource` indexes + explicit attribute parsing |
-| T-012 | 1 | Spec oracle over all 250 chambers |
-| T-020 | 2 | Runtime topology + `build_station` |
+
 | T-021 | 2 | `FrameGraph` + `FrameView`, aliases, virtual frames |
 | T-022 | 2 | Legacy constructors delegate; SL2 fixed; plotting works |
 | T-023 | 2 | Immutable cache + per-event overlay |
