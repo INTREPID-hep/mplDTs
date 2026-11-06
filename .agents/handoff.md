@@ -1,12 +1,12 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-07 (Europe/Madrid)
-**Previous session:** T-026 release prep (2.3.0, runtime docs) on
-`refactor/v2-integration`.
+**Previous session:** T-030 (`build_detector`, `Station.from_spec`,
+orientation-based phi/eta) on `feature/phase-3-assemblies`.
 **Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
-merged); Phase 3 planned on `feature/phase-3-assemblies`.**
+merged); Phase 3 in progress on `feature/phase-3-assemblies` (T-030 done).**
 **Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** `T-030` — `DetectorSpec` assemblies and custom stations.
+**Next action:** `T-031` — CMS preset remainder and custom-station plotting.
 
 ---
 
@@ -45,8 +45,10 @@ XML attribute names; `BUG-03` gone).
 T-025 closed the `test/` triage: the documented examples live in
 `docs/examples/` and run headless in `test/geometry/test_examples.py`.
 T-026 released 2.3.0 (one version string, new `docs/src/geometry/runtime.rst`)
-on `refactor/v2-integration`. Phase 3 is planned: `T-030` assemblies,
-`T-031` CMS preset + plotting orientation, `T-032` honeycomb, `T-033` yoke hook.
+on `refactor/v2-integration`. T-030 is done on `feature/phase-3-assemblies`:
+`build_detector`, `Station.from_spec`, a custom 1-SL/5-SL test and example,
+and the phi/eta choice in the patches follows the super layer orientation.
+Remaining in Phase 3: `T-031` (CMS preset), `T-032` honeycomb, `T-033` yoke hook.
 
 Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
 `refactor/v2-integration` (2.3.0) and Phase 3 works on
@@ -72,7 +74,8 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - `mpldts/` legacy runtime classes — T-022 wired them to the source and
   the graph; T-023 added `Station.overlay`, so per-event data goes there and
   never on a cached station.
-- `mpldts/patches/` — plotting must keep working; changes need an ADR.
+- `mpldts/patches/` — plotting must keep working; the phi/eta choice follows
+  the super layer orientation since T-030, any further change needs an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
 - `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and
   the `VolumeSink`/`.tg` parity.

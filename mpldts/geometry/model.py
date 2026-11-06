@@ -23,7 +23,7 @@ from typing import List, Optional
 
 from mpldts.geometry.specs import Pose, Shape, validate
 
-__all__ = ["Node", "build_station"]
+__all__ = ["Node", "build_station", "build_detector"]
 
 
 @dataclass
@@ -84,3 +84,15 @@ def build_station(spec, parent=None):
                     )
                 )
     return station
+
+
+def build_detector(spec, parent=None):
+    """Build the node tree of a DetectorSpec: the detector is the root node.
+
+    Every station of the spec hangs under it at its own pose, so one graph holds
+    the whole assembly (T-030). A station is still built by build_station.
+    """
+    validate(spec)
+    detector = _make(parent, spec.name, "detector", spec.pose, spec.shape, spec.material)
+    detector.children = [build_station(station, detector) for station in spec.stations]
+    return detector

@@ -61,6 +61,28 @@ Building the node tree
 
 .. autoclass:: mpldts.geometry.model.Node
 
+Assemblies and custom stations
+------------------------------
+
+A detector is the root of the same node tree:
+:func:`build_detector <mpldts.geometry.model.build_detector>` hangs every
+station of a :class:`~mpldts.geometry.specs.DetectorSpec` under it at its
+own pose, so one graph holds the whole assembly. A chamber that is not in the CMS
+XML gets the legacy views with
+:meth:`Station.from_spec <mpldts.geometry.station.Station.from_spec>`: the
+values those classes read (local centres, bounds, direction, raw ids) are
+derived from the node tree, so the same plotting patches draw it. A super layer
+is chosen for the phi or the eta view by its orientation, not by its number.
+
+.. autofunction:: mpldts.geometry.model.build_detector
+
+.. automethod:: mpldts.geometry.station.Station.from_spec
+    :no-index:
+
+.. literalinclude:: ../../examples/custom_station.py
+    :language: python
+    :lines: 1-66
+
 The CMS source
 --------------
 

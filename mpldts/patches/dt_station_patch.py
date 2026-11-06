@@ -4,6 +4,17 @@ from mpldts.geometry import Station, DriftCell, SuperLayer
 from mpldts.patches.dt_patch_base import DTRelatedPatch
 
 
+def _is_turned(super_layer):
+    """True when a super layer is drawn turned, its cells running along the
+    station length instead of its width (the CMS middle super layer).
+
+    The orientation comes from the pose, so a chamber built from a spec draws like
+    a CMS one without the patch knowing which super layer number it is (T-030).
+    """
+    rotation = super_layer.transformer.node.pose.rotation
+    return abs(rotation[1, 0]) > abs(rotation[0, 0])
+
+
 class DTStationPatch(DTRelatedPatch):
     """
     A class to visualize a 2D representation of a DT Station data in matplotlib context.
@@ -117,10 +128,8 @@ class DTStationPatch(DTRelatedPatch):
         cells = []
         vars = []
         for super_layer in self.station.super_layers:
-            if self.view == "phi" and super_layer.number == 2:
-                continue  # skip superlayer 2
-            elif self.view == "eta" and super_layer.number != 2:
-                continue  # skip superlayer 1 and 3
+            if _is_turned(super_layer) != (self.view == "eta"):
+                continue  # phi draws the unturned super layers, eta the turned ones
             for layer in super_layer.layers:
                 for cell in layer.cells:
                     cell_patch = self._create_frame(cell)
@@ -138,16 +147,15 @@ class DTStationPatch(DTRelatedPatch):
         """
         width, height, length = obj.bounds
         x_min, y_min, z_min = obj.local_cords_at_min
+        turned = isinstance(obj, SuperLayer) and _is_turned(obj)
 
-        if self.view == "phi" and isinstance(obj, SuperLayer) and obj.number == 2:  # if SL2
+        if self.view == "phi" and turned:
             x_min, y_min, z_min = y_min, -x_min, z_min
             width = length
 
-        if (
-            self.view == "eta"
-            and not isinstance(obj, DriftCell)
-            and (obj.number != 2 or isinstance(obj, Station))
-        ):  # if SL1 or SL3
+        if self.view == "eta" and not isinstance(obj, DriftCell) and (
+            isinstance(obj, Station) or not turned
+        ):
             x_min, y_min, z_min = -y_min, x_min, z_min
             x_min = x_min - length
             width = length
@@ -166,10 +174,8 @@ class DTStationPatch(DTRelatedPatch):
         self.vmap = vmap
         vars = []
         for super_layer in self.station.super_layers:
-            if self.view == "phi" and super_layer.number == 2:
-                continue  # skip superlayer 2
-            elif self.view == "eta" and super_layer.number != 2:
-                continue  # skip superlayer 1 and 3
+            if _is_turned(super_layer) != (self.view == "eta"):
+                continue
             for layer in super_layer.layers:
                 for cell in layer.cells:
                     var = getattr(cell, self.vmap, 0)

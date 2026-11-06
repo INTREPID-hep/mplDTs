@@ -1,9 +1,9 @@
 # TICKETS — internal issue tracker
 
 **Project:** mplDTs geometry refactor
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-07
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 2 implementing — T-020...T-024 done 2026-11-06
+**State:** Phase 3 in progress — T-030 done 2026-11-07; T-031...T-033 ready
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -48,10 +48,11 @@ T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
 stations build and plot; a two-station assembly builds, transforms and plots;
 CMS plots unchanged; honeycomb data is pinned to a reference chamber; the yoke
 hook is data-only. M2 is done (`CP-007`, release 2.3.0 on
-`refactor/v2-integration`); T-030...T-033 are refined and ready.
+`refactor/v2-integration`); T-030 is done (2026-11-07), T-031...T-033 are
+refined and ready.
 
-**Current checkpoint:** `CP-007 — M2 runtime parity` complete; CP-008 (M3)
-not started.
+**Current checkpoint:** `CP-007 — M2 runtime parity` complete; CP-008 (M3) in
+progress (T-030 done).
 
 ---
 
@@ -74,7 +75,7 @@ not started.
 | T-024 | Performance pass + lazy `DTGEOMETRY` shim; `BUG-03` fixed | 2 | done | T-022, T-023 | [T-024](tickets/T-024-performance-shim.md) |
 | T-025 | Triage the visual scripts in `test/` | 2 | done | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-026 | Release 2.3: version metadata + runtime docs | 2 | done | T-022...T-025 | [T-026](tickets/T-026-release-2.3.md) |
-| T-030 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations | 3 | proposed | T-020, T-021, T-022, T-026 | [T-030](tickets/T-030-assemblies.md) |
+| T-030 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations | 3 | done | T-020, T-021, T-022, T-026 | [T-030](tickets/T-030-assemblies.md) |
 | T-031 | CMS preset remainder + orientation-based phi/eta plotting | 3 | proposed | T-030 | [T-031](tickets/T-031-cms-preset-plotting.md) |
 | T-032 | Honeycomb as a station attachment | 3 | proposed | T-030 | [T-032](tickets/T-032-honeycomb.md) |
 | T-033 | Yoke `StructureSpec` data hook | 3 | proposed | T-030 | [T-033](tickets/T-033-yoke-hook.md) |

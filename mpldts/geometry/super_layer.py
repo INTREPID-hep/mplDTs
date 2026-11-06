@@ -19,7 +19,7 @@ class SuperLayer(DTFrame):
         parent : Station
             Parent station of the super layer.
         number : int
-            Number of the super layer (1, 2, or 3).
+            Number of the super layer (1, 2 and 3 for the CMS chambers).
         layers : list
             List of layers in the super layer.
 
@@ -73,10 +73,10 @@ class SuperLayer(DTFrame):
 
         :param number: Number of the super layer.
         :type number: int
-        :raises ValueError: If the number is not between 1 and 3.
+        :raises ValueError: If the number is not a positive int.
         """
-        if number < 1 or number > 3:
-            raise ValueError("SuperLayer number must be between 1 and 3")
+        if number < 1:
+            raise ValueError("SuperLayer number must be a positive int")
         DTFrame.number.fset(self, number)
 
     def layer(self, layer_number):
