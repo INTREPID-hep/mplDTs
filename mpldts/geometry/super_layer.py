@@ -1,7 +1,13 @@
-from mpldts.geometry._geometry import DTGEOMETRY
+"""Legacy super-layer wrapper (T-022).
+
+A SuperLayer is a view over its node in the station tree (T-020). The station
+graph carries every frame, so nothing is copied per object and the SL2
+orientation comes from the source, not from a hand-written rotation matrix.
+"""
+
 from mpldts.geometry.dt_frame import DTFrame
+from mpldts.geometry.frames import FrameView
 from mpldts.geometry.layer import Layer
-from mpldts.geometry.transforms import TransformManager
 
 
 class SuperLayer(DTFrame):
@@ -26,19 +32,29 @@ class SuperLayer(DTFrame):
 
         :param rawId: Raw identifier of the super layer.
         :type rawId: int
-        :param parent: Parent station of the super layer. Default is None.
+        :param parent: Parent station of the super layer. Default is None: the
+            station holding the rawId is built for the standalone form.
         :type parent: Station, optional
         """
-        self.id = rawId
+        if rawId is None:
+            raise ValueError(
+                "SuperLayer needs a rawId; build one from Station(wheel, sector, station)."
+            )
+        if parent is None:
+            from mpldts.geometry.station import station_for
+
+            parent = station_for(rawId)
+
+        node, record = parent._legacy_part(rawId)
+        self.id = int(rawId)
         self.parent = parent
-        if rawId is not None:
-            self.number = int(DTGEOMETRY.get("superLayerNumber", rawId=rawId))
-            self.local_center = DTGEOMETRY.get("LocalPosition", rawId=rawId)
-            self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=rawId)
-            self.bounds = DTGEOMETRY.get("Bounds", rawId=rawId)
-        self._setup_transformer()
-        self._layers = []
-        self._build_super_layer()
+        self.number = int(node.name[2:])
+        self.local_center = record["local"]
+        self.global_center = record["global"]
+        self.bounds = record["bounds"]
+        self._node = node
+        self.transformer = FrameView(parent.transformer.graph, node)
+        self._layers = [Layer(rawId=layer_record["raw_id"], parent=self) for layer_record in record["layers"]]
 
     @property
     def layers(self):
@@ -74,49 +90,9 @@ class SuperLayer(DTFrame):
         """
         return next((l for l in self._layers if l.number == layer_number), None)
 
-    def _add_layer(self, layer):
-        """
-        Add a new layer to the super layer.
-
-        :param layer: Layer to be added.
-        :type layer: Layer
-        """
-        self._layers.append(layer)
-
-    def _build_super_layer(self):
-        """
-        Build up the super layer. It creates the layers contained in the super layer.
-        """
-        for layer in DTGEOMETRY.get(rawId=self.id).iter("Layer"):
-            self._add_layer(Layer(layer.get("rawId"), parent=self))
-
-    def _setup_transformer(self):
-        """
-        Set up the transformer for the super layer. It defines the transformation from the local frame to the global frame.
-        """
-        from numpy import array
-
-        self.transformer = TransformManager("SuperLayer")  # intial frame is the SL frame
-        # Inherit transformation from the parent to the global frame
-        if self.parent is not None:
-            transform_matrix = self.parent.transformer.get_transformation("Station", "CMS")
-            if transform_matrix is not None:
-                self.transformer.add("Station", "CMS", transformation_matrix=transform_matrix)
-
-        # Define the transformation from Super layer frame to Station frame
-        if self.number == 2:
-            StezSl = [0, 0, 1]  # same as the z axis of the Station frame
-            SteySl = [1, 0, 0]  # in SL2 y dir is x dir in Station frame
-            StexSl = [0, -1, 0]  # in SL2 x dir is -y dir in Station frame
-            _RStSl = array([StexSl, SteySl, StezSl]).T  # rotation matrix from SL to Station frame
-        else:
-            _RStSl = None  # no rotation needed, Sl1 and SL3 are aligned with the Station frame
-
-        _TStSl = [self._x_local, self._y_local, self._z_local]  # translation
-
-        self.transformer.add(
-            "SuperLayer", "Station", rotation_matrix=_RStSl, translation_vector=_TStSl
-        )
+    def _legacy_part(self, raw_id):
+        """(node, record) of a layer, resolved in the parent station."""
+        return self.parent._legacy_part(raw_id)
 
 
 # Example usage

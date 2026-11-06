@@ -1,10 +1,127 @@
-from mpldts.geometry._geometry import DTGEOMETRY
-from mpldts.geometry.dt_frame import DTFrame
-from mpldts.geometry.super_layer import SuperLayer
-from mpldts.geometry.transforms import TransformManager
-from pandas import DataFrame
+"""Legacy CMS station wrapper (T-022).
+
+A Station is a view over the T-011 source and the T-020 node tree:
+
+    CMSXMLSource.record()   ids, local positions and bounds, verbatim XML
+    CMSXMLSource.station()  StationSpec
+    build_station()         node tree with parent-relative poses
+    FrameGraph / FrameView  every frame, including the plotting ones
+
+The data attributes keep the XML values (conventions section 7.3): the frame
+chain never reads them, it is the node poses. That is what removes BUG-01.
+"""
+
 from copy import deepcopy
+import threading
 import warnings
+from typing import Any, Optional
+
+import numpy as np
+from pandas import DataFrame
+
+from mpldts.geometry.dt_frame import DTFrame
+from mpldts.geometry.frames import FrameGraph, FrameView
+from mpldts.geometry.model import build_station
+from mpldts.geometry.sources.cms_xml import CMSXMLSource
+from mpldts.geometry.specs import Pose
+from mpldts.geometry.super_layer import SuperLayer
+
+_SOURCE = None
+
+
+def _source():
+    """The CMS XML source of the package geometry, parsed once."""
+    global _SOURCE
+    if _SOURCE is None:
+        _SOURCE = CMSXMLSource()
+    return _SOURCE
+
+
+def station_for(raw_id):
+    """The Station holding the XML element with this rawId (legacy constructors)."""
+    try:
+        key = _source().chamber_of(raw_id)
+    except KeyError:
+        raise ValueError("rawId %r is not a CMS geometry element" % (raw_id,)) from None
+    return Station(*key)
+
+
+def _unit(vector):
+    return vector / np.linalg.norm(vector)
+
+
+def _face_factor(wheel, sector):
+    """-1 for negative wheels, 1 for positive; wheel 0 depends on the sector."""
+    return (
+        -1 if wheel < 0 else 1 if wheel > 0 else -1 if sector in [1, 4, 5, 8, 9, 12, 13] else 1
+    )
+
+
+def _add_plotting_frames(graph, node, record, wheel, sector):
+    """Register the frames the plotting patches ask for: the natural views
+    StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
+    geometrical center of the super layers 1 and 3 (SL13Center)."""
+    station_frame = node.frame_id
+
+    def add(name, pose):
+        graph.add_virtual(station_frame + "/" + name, station_frame, pose)
+
+    face = _face_factor(wheel, sector)
+
+    # Station 'Natural view' (phi): a rotation, the station frame to the view frame
+    ez = np.array([0.0, 0.0, -1.0])
+    ey = np.array([0.0, -1.0, 0.0]) * face
+    ex = _unit(np.cross(ey, ez))
+    add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Station 'Natural view' (eta)
+    ex = np.array([-1.0, 0.0, 0.0]) * face
+    ey = _unit(np.cross(ez, ex))
+    add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
+    # divided into 13 and 14, hence the sign correction.
+    x, y, _ = record["global"]
+    correction = 1
+    if sector in [13, 14]:
+        correction = -1
+        sector = 4 if sector == 13 else 10
+    dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
+    dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
+    add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
+
+    # Geometrical center of the super layers 1 and 3
+    sl1 = next((sl for sl in record["super_layers"] if sl["number"] == 1), None)
+    sl3 = next((sl for sl in record["super_layers"] if sl["number"] == 3), None)
+    if sl1 is not None and sl3 is not None:
+        centre = (np.asarray(sl1["local"]) + np.asarray(sl3["local"])) / 2.0
+        add("SL13Center", Pose.translated(*centre))
+
+
+# ponytail: unbounded per-chamber cache (250 entries at most); add an LRU only
+# if a long-lived process plots every chamber and memory matters.
+_BUILT = {}
+
+
+def _built(wheel, sector, station):
+    """(record, node, graph) of a chamber, built once and shared by its views.
+
+    The node tree and the graph are immutable geometry (ADR-007); a Station is
+    a view over them. The first build of a chamber is 20-60 ms, a later view a
+    few milliseconds.
+    """
+    key = (wheel, sector, station)
+    built = _BUILT.get(key)
+    if built is not None:
+        return built
+    source = _source()
+    record = source.record(wheel, sector, station)
+    node = build_station(source.station(wheel, sector, station))
+    graph = FrameGraph()
+    graph.add_nodes(node)
+    _add_plotting_frames(graph, node, record, wheel, sector)
+    built = _BUILT[key] = (record, node, graph)
+    return built
 
 
 class Station(DTFrame):
@@ -39,25 +156,43 @@ class Station(DTFrame):
         :type station: int
         :param dt_info: Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
         :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
         # == Chamber related parameters
         self.wheel = wheel
         self.sector = sector
         self.number = station
-        self.id = DTGEOMETRY.get("rawId", wh=wheel, sec=sector, st=station)
-        self.local_center = DTGEOMETRY.get("LocalPosition", rawId=self.id)
-        self.global_center = DTGEOMETRY.get("GlobalPosition", rawId=self.id)
-        self.direction = DTGEOMETRY.get("NormalVector", rawId=self.id)
-        self.bounds = DTGEOMETRY.get("Bounds", rawId=self.id)
-        self._setup_tranformer()
 
-        # == Build the station
-        self._super_layers = []
-        self._build_station()
-        # Set up the transformation from the SL13 center to the station frame
-        self._setup_sl13center_transformer()
+        try:
+            record, node, graph = _built(wheel, sector, station)
+        except KeyError:
+            raise ValueError(
+                "chamber Wh:%d St:%d Se:%d is not in the CMS geometry" % (wheel, station, sector)
+            ) from None
+
+        self.id = record["id"]
+        self.local_center = record["local"]
+        self.global_center = record["global"]
+        self.direction = record["direction"]
+        self.bounds = record["bounds"]
+
+        # == The station is a view over the shared tree and graph
+        self._node = node
+        self._graph = graph
+        self.transformer = FrameView(graph, node)
+
+        # rawId -> (node, record), for the legacy child constructors
+        self._parts = {}
+        for sl_record, sl_node in zip(record["super_layers"], node.children):
+            self._parts[sl_record["raw_id"]] = (sl_node, sl_record)
+            for layer_record, layer_node in zip(sl_record["layers"], sl_node.children):
+                self._parts[layer_record["raw_id"]] = (layer_node, layer_record)
+
+        self._super_layers = [
+            SuperLayer(rawId=sl_record["raw_id"], parent=self)
+            for sl_record in record["super_layers"]
+        ]
 
         # == Set the drift cell attributes
         if dt_info is not None:
@@ -115,11 +250,7 @@ class Station(DTFrame):
         :return: Face orientation factor.
         :rtype: int
         """
-        return (
-            -1
-            if self._wheel < 0
-            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
-        )
+        return _face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """
@@ -131,6 +262,15 @@ class Station(DTFrame):
         :rtype: SuperLayer
         """
         return next((sl for sl in self._super_layers if sl.number == super_layer_number), None)
+
+    def _legacy_part(self, raw_id):
+        """(node, record) of a super layer or layer of this station, by rawId."""
+        try:
+            return self._parts[int(raw_id)]
+        except (KeyError, TypeError, ValueError):
+            raise ValueError(
+                "rawId %r is not a super layer or layer of station %s" % (raw_id, self.name)
+            ) from None
 
     # == Setters
 
@@ -174,124 +314,19 @@ class Station(DTFrame):
             raise ValueError("Station value must be between 1 and 4")
         self._number = value
 
-    def _add_super_layer(self, super_layer):
-        """
-        Add a new super layer to the station.
-
-        :param super_layer: Super layer to be added.
-        :type super_layer: SuperLayer
-        """
-        self._super_layers.append(super_layer)
-
-    def _build_station(self):
-        """
-        Build up the station. It creates the super layers contained in the station.
-        """
-        for SL in DTGEOMETRY.get(rawId=self.id).iter("SuperLayer"):
-            self._add_super_layer(SuperLayer(rawId=SL.get("rawId"), parent=self))
-
-    def _setup_tranformer(self):
-        """
-        Set up the transformer for the station. It defines the transformation from the local frame
-        to the global frame and other useful transformations (e.g. for plotting).
-        """
-        from pytransform3d.rotations import perpendicular_to_vectors
-        from numpy import array, arctan2, radians, sin, sqrt, pi
-
-        self.transformer = TransformManager("Station")  # intial frame is the station frame
-
-        # negative wheel are facing towards the -z axis, positive wheel towards the +z axis, and
-        # 0 wheel is facing towards the +-z axis depending on the sector
-        face_orientation = self.face_orientation_factor
-
-        # --------- Define the transformation from Station frame to CMS global frame ----------
-
-        CMSezSt = self._direction
-        CMSeySt = array([0, 0, 1]) * face_orientation
-        CMSexSt = perpendicular_to_vectors(
-            CMSeySt, CMSezSt
-        )  # cross product to get the x axis of the local frame respect to the global frame
-
-        _RCMSSt = array([CMSexSt, CMSeySt, CMSezSt]).T  # rotation matrix from local to global frame
-        _TCMSSt = [
-            self._x_global,
-            self._y_global,
-            self._z_global,
-        ]  # translation vector from the DT center to the CMS center (0,0,0)
-
-        self.transformer.add(
-            "Station", "CMS", rotation_matrix=_RCMSSt, translation_vector=_TCMSSt
-        )  # add the transformation from local to global frame
-
-        # ----- add a orientation transformation (Station 'Natural view' - NV phi/eta), useful for matplotlib plotting ------
-        StNvezSt = array([0, 0, -1])
-        StNvPhieySt = array([0, -1, 0]) * face_orientation
-        StNvPhiexSt = perpendicular_to_vectors(StNvPhieySt, StNvezSt)
-
-        _RStNvPhiSt = array(
-            [StNvPhiexSt, StNvPhieySt, StNvezSt]
-        ).T  # rotation matrix from local to global frame
-
-        self.transformer.add("Station", "StationNvPhi", rotation_matrix=_RStNvPhiSt)
-
-        StNvEtaexSt = array([-1, 0, 0]) * face_orientation
-        StNvEtaeySt = perpendicular_to_vectors(StNvezSt, StNvEtaexSt)
-
-        _RStNvPhiSt = array(
-            [StNvEtaexSt, StNvEtaeySt, StNvezSt]
-        ).T  # rotation matrix from local to global frame
-
-        self.transformer.add("Station", "StationNvEta", rotation_matrix=_RStNvPhiSt)
-
-        # ----- Add transformation from the Station to the sector phi line (used for AM TPs) -----
-        # dphi is the angle between the sector center line and the line from the CMS center to the station center
-        StPhi = arctan2(self._y_global, self._x_global)
-        StR = sqrt(self._x_global**2 + self._y_global**2)
-        sector = self._sector
-
-        # factor required for MB4 in sector 4 and 10 which are divided (sectors 13 and 14)
-        mb4_sign_correction = 1
-        if self._sector in [13, 14]:
-            mb4_sign_correction = -1
-            if self._sector == 13:
-                sector = 4
-            elif self._sector == 14:
-                sector = 10
-
-        SectorPhi = (sector - 1) * pi / 6  # 30 degrees per sector
-
-        dphi = StPhi - SectorPhi * mb4_sign_correction
-
-        # distance from the station center to the sector phi line
-        dx = -1 * (StR * sin(dphi)) * face_orientation * mb4_sign_correction
-
-        self.transformer.add(
-            "Station", "SectorRef", translation_vector=(dx, 0, 0)
-        )  # add the transformation from the station frame to the sector phi frame (just a translation in x)
-
-    def _setup_sl13center_transformer(self):
-        """
-        Add to the parent transformer the transformation to move from the SL13 center frame
-        to the Station frame. The SL13 center frame is defined as the geometrical center of the super layers 1 and 3.
-        The transformation is added to the parent station's transformer with the name "SL13Center".
-        """
-        from numpy import array
-
-        sl1_center = array(self.super_layer(1).local_center)
-        sl3_center = array(self.super_layer(3).local_center)
-        sls_center = (sl1_center + sl3_center) / 2
-
-        # Translation vector to move the center of SL13 frame to the Station Frame
-        self.transformer.add("SL13Center", "Station", translation_vector=sls_center)
-
     def set_cell_attrs(self, dt_info):
         """
         Set the attributes for the drift cells in the station.
 
         :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and wire. e.g. ``[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]``
+                layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
         :type dt_info: dict, list, or pandas.DataFrame
+
+        .. note::
+            This writes on this station's own cells. On a station shared through
+            :class:`StationsCache` use :meth:`overlay` instead: the cache hands
+            the same instance to every caller.
         """
         if isinstance(dt_info, dict):
             info = [deepcopy(dt_info)]
@@ -310,7 +345,7 @@ class Station(DTFrame):
             w = info_item.pop("w", None)
             if not all([sl, l, w]):
                 raise ValueError(
-                    "The drift cell information must contain the super layer, layer, and wire identifiers."
+                    "The drift cell information must contain the super layer, layer, and cell identifiers."
                 )
             super_layer = self.super_layer(sl)
 
@@ -322,6 +357,28 @@ class Station(DTFrame):
 
             for key, value in info_item.items():
                 setattr(cell, key, value)
+
+    def overlay(self, dt_info=None):
+        """
+        A per-event view of this station: the same geometry, its own cell attributes.
+
+        The node tree and the frame graph are shared with this station, so an
+        overlay costs a fraction of a full build; the super layers, layers and
+        cells are new objects, so setting an attribute on an overlay cell never
+        reaches the station or another overlay.
+
+        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
+        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
+        :return: The overlay station.
+        :rtype: Station
+        """
+        view = object.__new__(type(self))
+        view.__dict__.update(self.__dict__)
+        view.transformer = FrameView(self._graph, self._node)
+        view._super_layers = [SuperLayer(rawId=sl.id, parent=view) for sl in self._super_layers]
+        if dt_info is not None:
+            view.set_cell_attrs(dt_info)
+        return view
 
 
 if __name__ == "__main__":
@@ -350,5 +407,55 @@ if __name__ == "__main__":
             print(3 * "\t", l.cell(len(l.cells) - 1))
     print(
         "\t",
-        f"properties contained into cells: {st.super_layer(1).layer(1).cell(10).__dict__.keys()}",
+        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
     )
+
+
+class StationsCache:
+    """Singleton cache for Station objects to avoid recreating expensive geometry."""
+    
+    _instance = None
+    _lock = threading.Lock()
+    
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                # Double-check locking pattern
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._cache = {}
+                    cls._instance._cache_lock = threading.Lock()
+        return cls._instance
+
+    def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
+        """The cached station of a chamber, or a per-event overlay of it.
+
+        The cached station is never mutated: when `dt_info` is given the
+        result is :meth:`Station.overlay`, which shares the geometry and owns
+        its cell attributes.
+        """
+        key = (wh, sc, st)
+        with self._cache_lock:
+            station = self._cache.get(key)
+            if station is None:
+                try:
+                    station = Station(wheel=wh, sector=sc, station=st)
+                    self._cache[key] = station
+                except ValueError:
+                    self._cache[key] = None
+                    return None
+            if dt_info is None:
+                return station
+            return station.overlay(dt_info)
+    
+    def clear(self):
+        """Clear the cache (useful for testing or memory management)."""
+        with self._cache_lock:
+            self._cache.clear()
+    
+    def size(self):
+        """Return the number of cached stations."""
+        with self._cache_lock:
+            return len(self._cache)
+
+STATION_CACHE = StationsCache()

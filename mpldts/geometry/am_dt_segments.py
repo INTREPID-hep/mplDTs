@@ -82,7 +82,7 @@ class AMDTSegment(Segment):
         ):  # If the segment belongs to SL1, SL2 or SL3, we transform from  vertical cord to SuperLayer frame to center it in SL
             try:
                 _local_center[2] = self.parent.super_layer(self.sl).transformer.transform(
-                    (0, 0, 0), from_frame="SuperLayer", to_frame="Station"
+                    (0, 0, 0), from_frame=f"SL{self.sl}", to_frame="Station"
                 )[2]
             except AttributeError:
                 raise ValueError(

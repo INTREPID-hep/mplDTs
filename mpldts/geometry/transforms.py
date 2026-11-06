@@ -18,7 +18,7 @@ class TransformManager:
     The following example shows how the transform manager of an object can be used to move a point between
     frames.
 
-    .. literalinclude:: ../../../test/transform_validation.py
+    .. literalinclude:: ../../../docs/examples/transform_validation.py
         :language: python
 
     .. rubric:: Output
