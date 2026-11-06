@@ -288,20 +288,23 @@ def _check_grid(grid, layer_shape, where):
             )
 
 
-def _check_number(number, limit, where):
-    if not isinstance(number, int) or not 1 <= number <= limit:
-        raise ValueError("%s: number must be an int in [1, %d], got %r" % (where, limit, number))
+def _check_number(number, where):
+    """Numbers are positive ints. How many super layers and layers a station has
+    is the source's concern: the CMS chambers have three and four, a custom
+    station may have any count (T-030)."""
+    if not isinstance(number, int) or number < 1:
+        raise ValueError("%s: number must be a positive int, got %r" % (where, number))
 
 
 def _validate_layer(layer, where):
-    _check_number(layer.number, 4, where)
+    _check_number(layer.number, where)
     _check_pose(layer.pose, where)
     _check_shape(layer.shape, where)
     _check_grid(layer.cells, layer.shape, where)
 
 
 def _validate_super_layer(super_layer, where):
-    _check_number(super_layer.number, 3, where)
+    _check_number(super_layer.number, where)
     _check_pose(super_layer.pose, where)
     _check_shape(super_layer.shape, where)
     if not super_layer.layers:

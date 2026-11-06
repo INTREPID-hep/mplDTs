@@ -249,7 +249,7 @@ def compute_theta(x, y, z):
 
 
 def compute_eta(x, y, z):
-    """
+    r"""
     Compute the pseudo-rapidity (:math:`\eta`) from the x, y, z coordinates.
 
     :param x: The x coordinate.

@@ -1,6 +1,6 @@
 from mpldts.geometry._geometry import DTGeometry, DTGEOMETRY
 from mpldts.geometry.dt_frame import DTFrame
-from mpldts.geometry.model import Node, build_station
+from mpldts.geometry.model import Node, build_detector, build_station
 from mpldts.geometry.frames import FrameGraph, FrameView
 from mpldts.geometry.station import Station, StationsCache,  STATION_CACHE
 from mpldts.geometry.super_layer import SuperLayer

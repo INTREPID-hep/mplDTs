@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-07 00:40 (Europe/Madrid)
-**Branch:** `refactor/v2-integration` (2.3.0)
+**Last updated:** 2026-11-07 01:00 (Europe/Madrid)
+**Branch:** `feature/phase-3-assemblies` (2.3.0 base)
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-2 done — M2 released as 2.3.0; M3 (T-030) ready to start
+**Current phase:** Phases 0-2 done — M2 released as 2.3.0; Phase 3 in progress (T-030 done)
 
 ---
 
@@ -23,8 +23,9 @@
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
-| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024) |
-| pytest suite for geometry | **through Phase 2 (T-025)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples; 111 pass, 2 skip |
+| `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
+`build_detector` and `Station.from_spec` (T-030) |
+| pytest suite for geometry | **through Phase 3 (T-030)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples, assemblies; 134 pass, 2 skip |
 
 The prototype verifies:
 
@@ -46,7 +47,6 @@ prototype has no wire fields either.
 ## 2. What does not exist yet
 
 - `mpldts/geometry/presets/`.
-- `FrameGraph`/`FrameView` in the library (only in the prototype).
 - `SolidSpec` attachments (honeycomb) and `StructureSpec` (yoke) in the library.
 - `mpldts/events/` (segments refactor, tracks, jets).
 - A JSON loader or validation (CLI is out of scope).
