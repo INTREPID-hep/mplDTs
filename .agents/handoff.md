@@ -1,11 +1,11 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-024 performance pass + lazy `DTGEOMETRY` shim.
-**Current state:** **M1 done; Phase 2 in progress on
-`feature/phase-2-runtime` (not merged).**
-**Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
-**Next action:** T-025 — triage the visual scripts in `test/` (last M2 item).
+**Previous session:** T-025 `test/` triage (documented examples moved to
+`docs/examples/`).
+**Current state:** **Phases 0-2 done on `feature/phase-2-runtime` (not merged).**
+**Current checkpoint:** `CP-007` (M2) complete.
+**Next action:** Phase 3 (`T-030`), after the maintainer reviews M2.
 
 ---
 
@@ -41,7 +41,9 @@ T-023 (`Station.overlay` and a cache that never writes on the shared station;
 `BUG-02` gone), T-024 (one build per chamber, lazy `DTGEOMETRY`, explicit
 XML attribute names; `BUG-03` gone).
 
-Remaining: T-025 `test/` triage (last M2 item).
+T-025 closed the `test/` triage: the documented examples live in
+`docs/examples/` and run headless in `test/geometry/test_examples.py`. M2 is
+green; Phase 3 is next.
 
 Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
 until the maintainer approves it.**
@@ -56,7 +58,7 @@ PYTHONPATH=/home/destrada/mplDTs \
 
 Full oracle and the builder sweep: add `-m slow` (250 chambers, seconds).
 
-Do not start Phase 3 before M2 is green.
+Phase 3 does not start before the maintainer reviews M2; M2 has been green since 2026-11-06.
 
 ---
 

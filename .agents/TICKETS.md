@@ -44,11 +44,12 @@ Status legend:
 **M2 — Runtime parity.** Gate: public-API oracle green, `< 20 ms/station`,
 no XML in the model, `test/` triaged. T-020 (topology + `build_station`),
 T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
-T-023 (immutable cache + overlay, `BUG-02`) and T-024 (performance pass +
-lazy `DTGEOMETRY`, `BUG-03`) are done; T-025 remains.
+T-023 (immutable cache + overlay, `BUG-02`), T-024 (performance pass +
+lazy `DTGEOMETRY`, `BUG-03`) and T-025 (visual-script triage) are done; the
+M2 gate is met.
 
-**Current checkpoint:** `CP-006 — M1 specs + source` complete; CP-007 (M2)
-in progress.
+**Current checkpoint:** `CP-007 — M2 runtime parity` complete; Phase 3 is
+next and waits for the maintainer's review.
 
 ---
 
@@ -69,7 +70,7 @@ in progress.
 | T-022 | Legacy constructors delegate; `BUG-01` fixed | 2 | done | T-020, T-021 | [T-022](tickets/T-022-legacy-delegation.md) |
 | T-023 | Immutable cache + per-event overlay; `BUG-02` fixed | 2 | done | T-022 | [T-023](tickets/T-023-immutable-overlay.md) |
 | T-024 | Performance pass + lazy `DTGEOMETRY` shim; `BUG-03` fixed | 2 | done | T-022, T-023 | [T-024](tickets/T-024-performance-shim.md) |
-| T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
+| T-025 | Triage the visual scripts in `test/` | 2 | done | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design

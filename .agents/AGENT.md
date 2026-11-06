@@ -195,7 +195,8 @@ A task is done only when:
 | `mpldts/geometry/` | runtime model (to be refactored) |
 | `mpldts/geometry/_geometry.py` | legacy XML reader; `DTGEOMETRY` is a lazy proxy |
 | `mpldts/patches/` | matplotlib consumers; keep working |
-| `test/` | current visual scripts (to be converted to pytest) |
+| `test/geometry/` | pytest suite; `test/benchmarks/` holds the station benchmark |
+| `docs/examples/` | documented examples, run headless by `test/geometry/test_examples.py` |
 | `docs/design/generalization-plan.md` | technical design (Rev 4) |
 | `prototype/parametric_poc.py` | executable reference model |
 | `prototype/custom_station.png` | box + tube station preview |

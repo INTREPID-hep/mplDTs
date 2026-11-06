@@ -231,7 +231,8 @@ CMS knowledge. Do not refactor this generator until the model is stable.
 |---|---|
 | `mpldts/geometry/` | runtime model |
 | `mpldts/patches/` | matplotlib consumers |
-| `test/` | current visual scripts |
+| `test/` | pytest suite (`test/geometry/`) |
+| `docs/examples/` | documented examples, smoke-tested headless |
 | `docs/design/generalization-plan.md` | full design |
 | `prototype/parametric_poc.py` | executable model |
 | `/home/destrada/Geant4/DTG4Simulator/` | downstream simulator |

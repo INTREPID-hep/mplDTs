@@ -65,7 +65,7 @@ axins.set_ylim(y1, y2)
 plt.xticks(visible=False)
 plt.yticks(visible=False)
 
-mark_inset(ax, axins, loc1=2, loc2=3, fc="none", ec="0.5", edgecolor="r", color="red", fill=True)
+mark_inset(ax, axins, loc1=2, loc2=3, fc="none", ec="r", fill=True)
 
 plt.subplots_adjust(right=0.55)  # Increase space on the right
 

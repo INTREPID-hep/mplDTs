@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-06 20:40 (Europe/Madrid)
+**Last updated:** 2026-11-06 21:40 (Europe/Madrid)
 **Branch:** `feature/phase-2-runtime`
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** M1 done — Phase 2 (runtime model) in progress: T-020...T-024 done
+**Current phase:** Phases 0-2 done — Phase 2 closed at T-025 (M2 gate met)
 
 ---
 
@@ -24,7 +24,7 @@
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024) |
-| pytest suite for geometry | **through Phase 2 (T-024)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime; 105 pass, 2 skip |
+| pytest suite for geometry | **through Phase 2 (T-025)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples; 111 pass, 2 skip |
 
 The prototype verifies:
 
@@ -122,7 +122,11 @@ Target after Phase 2: **< 20 ms per station** (met).
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
 - Station timing + SL2 check on the checkout (2026-11-06): see §5.
-- `pytest -q` on the checkout: 105 passed, 2 skipped, 2 deselected, 41 s.
+- `pytest -q` on the checkout: 111 passed, 2 skipped, 2 deselected, 25-33 s
+  (105 geometry tests plus the six documented examples run headless).
+- `sphinx-build -b html docs`: build succeeded with the examples in
+  `docs/examples/`; the five patch demos and the `TransformManager` example
+  render into the HTML.
 - Slow sweeps (`-m slow`): the builder oracle and the legacy runtime oracle,
   all 250 chambers at `2e-3` cm, SL2 included, 140 s.
 - `DTStationPatch` on three chambers x phi/eta x local/inverted/global: the
@@ -141,13 +145,13 @@ Target after Phase 2: **< 20 ms per station** (met).
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0 and M1 are
-done; Phase 2 is in progress on `feature/phase-2-runtime`:
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0, M1 and M2 are
+done on `feature/phase-2-runtime`:
 
-1. `T-025` — triage the visual scripts in `test/` (last M2 item).
+1. the maintainer reviews M2 and decides when the three phase branches merge;
+2. Phase 3 starts after that: `T-030` (custom station assembly).
 
-Do not start Phase 3 before M2 is green. Do not merge the branch into
-`main` until the maintainer approves it.
+Do not merge the branch into `main` until the maintainer approves it.
 
 ---
 
