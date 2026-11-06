@@ -2,9 +2,9 @@
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
 **Previous session:** Phase 0 implementation (tests, alias, benchmark, CI).
-**Current state:** **Phase 0 in progress — 5 of 6 tickets done, T-007 open.**
+**Current state:** **M0 done on `feature/phase-0-safety-net` (not merged).**
 **Current checkpoint:** `CP-005` (M0) in progress.
-**Next action:** T-007 (first CI run, integration base), then the M0 gate.
+**Next action:** push the branch for the first CI run, then start Phase 1 (T-010).
 
 ---
 

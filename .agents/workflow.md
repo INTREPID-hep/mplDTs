@@ -128,19 +128,21 @@ No CI job may require pyg4ometry until T-060 is approved.
 
 ---
 
-## 7. Current branch reconciliation (T-007)
+## 7. Branch policy (T-007, decided 2026-11-06)
 
-The repository is on `enhancement-cacheObjects`, and the installed package
-differs in frame naming. Before the first ticket:
+**The refactor lives on `feature/phase-0-safety-net`, branched from
+`enhancement-cacheObjects`. Nothing merges into `main` until the maintainer
+says the work is ready.**
 
-1. Compare `main` vs `enhancement-cacheObjects`; list unique commits.
-2. Decide: merge the branch into `main` (recommended), or base the refactor on
-   it and merge later.
-3. Tag the chosen base (`geometry-refactor-base`).
-4. Add the CI workflow and PR template.
-5. Record the decision in `PROGRESS.md` and, if architectural, an ADR.
+1. `main` stays untouched; no merge, no rebase, no history rewrite.
+2. Next phases branch from the integration branch, not from `main`.
+3. CI runs on every branch push, so the branch is verifiable without a PR.
+4. The maintainer decides when to merge; the agent does not.
+5. The simulator side is `feature/T-005-tg-smoke` in `DTG4Simulator`, also
+   unmerged.
 
-Do not rewrite shared history.
+Branch names: `feature/phase-N-<slug>` for a phase, `feature/T-0xx-<slug>`
+for a single ticket. Do not commit directly to `main`.
 
 ---
 

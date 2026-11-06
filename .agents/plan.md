@@ -3,7 +3,7 @@
 **Last updated:** 2026-11-06
 **Design:** [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md) Rev 4
 **Board:** [`TICKETS.md`](TICKETS.md) · **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
-**Status:** **approved 2026-11-06 — Phase 0 (safety net) in progress**
+**Status:** **M0 (Phase 0) done on `feature/phase-0-safety-net` — not merged; Phase 1 next**
 
 Guiding rule: **each phase is shippable and ends with a green test suite.** Do
 not start a phase before the previous one meets its exit criteria.

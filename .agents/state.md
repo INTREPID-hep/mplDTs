@@ -5,7 +5,7 @@
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phase 0 — safety net (implementation started 2026-11-06)
+**Current phase:** M0 done — Phase 1 (specs + CMS source) is next
 
 ---
 

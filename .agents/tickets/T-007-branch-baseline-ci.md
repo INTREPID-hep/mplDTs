@@ -1,6 +1,6 @@
 # T-007 — Branch baseline and CI
 
-- **Status:** doing
+- **Status:** done
 - **Phase:** 0
 - **Epic:** E0 Safety net
 - **Depends on:** —
@@ -60,3 +60,6 @@ verifiable.
 - 2026-11-06: `.github/workflows/tests.yml` added (pytest, slow deselected);
   integration base recorded as an open maintainer decision; remote green run
   still pending.
+- 2026-11-06: integration base decided: `feature/phase-0-safety-net`, never
+  merged into `main` without the maintainer's go; CI triggers on every branch
+  push. Policy in `workflow.md` §7.

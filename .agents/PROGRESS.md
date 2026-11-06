@@ -1,8 +1,8 @@
 # PROGRESS — checkpoints and session log
 
 **Last updated:** 2026-11-06
-**Current checkpoint:** `CP-004 — plan Rev 4 reviewed and cleaned`
-**Implementation status:** Phase 0 in progress (T-001, T-003)
+**Current checkpoint:** `CP-005 — M0 safety net`
+**Implementation status:** Phase 0 complete on `feature/phase-0-safety-net`
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md)
 
 ---
@@ -11,10 +11,10 @@
 
 | Item | Value |
 |---|---|
-| Phase | 0 (5 of 6 tickets done; T-007 open) |
-| Current milestone | M0 — Safety net |
-| Last completed | CP-004 (plan Rev 4) |
-| Next | T-007 (CI first run + integration base) |
+| Phase | 0 complete (M0) |
+| Current milestone | M1 — Specs + CMS source |
+| Last completed | CP-005 (M0 safety net) |
+| Next | T-010 (geometry specs), then T-011 / T-012 |
 | Code changes | `super_layer.py` alias (T-005); tests, benchmark, CI (T-001/T-003/T-006/T-007) |
 | Library tests | `pytest -q`: 15 passed, 4 xfailed (SL2), 2 skipped |
 | pyg4ometry | deferred, not installed |
@@ -31,7 +31,7 @@
 | CP-002 | `.agents` operating workspace | 2026-11-05 | done | `AGENT.md`, `context.md`, `state.md`, ... |
 | CP-003 | Plan Rev 3 + ticket system | 2026-11-05 | done | `TICKETS.md`, `tickets/`, this file |
 | CP-004 | Plan Rev 4 review + cleanup | 2026-11-06 | done | `plan.md`, `TICKETS.md`, design Rev 4 |
-| CP-005 | M0 safety net | — | in progress | T-001, T-003, T-005, T-006, T-007 |
+| CP-005 | M0 safety net | 2026-11-06 | done | `feature/phase-0-safety-net`: pytest 15/4xfail/2skip, all-250 oracle, 621-placement `.tg`, benchmark, CI |
 | CP-006 | M1 specs + source | — | pending | T-010, T-011, T-012 |
 | CP-007 | M2 runtime parity | — | pending | T-020…T-024 |
 | CP-008 | M3 assemblies + extras | — | pending | T-030…T-033 |
@@ -72,10 +72,11 @@ The plan Rev 4 defaults are recorded in `TICKETS.md` §7 and ADR-018:
 **Approved 2026-11-06.** Plan Rev 4 and the tickets were accepted, with
 T-002 folded into T-003.
 
-**Open (T-007): the integration base.** Phase 0 landed on
-`enhancement-cacheObjects` with the go-ahead to implement. Reconciling
-it into `main` and splitting per-ticket branches is a maintainer
-decision; no history was rewritten.
+**Decided 2026-11-06 (T-007):** the refactor lives on
+`feature/phase-0-safety-net`, branched from `enhancement-cacheObjects`.
+Nothing merges into `main` until the maintainer approves; CI runs on every
+branch push. The simulator side is `feature/T-005-tg-smoke`.
+No history was rewritten.
 
 ---
 
