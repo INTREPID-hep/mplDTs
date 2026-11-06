@@ -1,11 +1,11 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-06 (Europe/Madrid)
-**Previous session:** T-023 immutable cache + per-event overlay.
+**Previous session:** T-024 performance pass + lazy `DTGEOMETRY` shim.
 **Current state:** **M1 done; Phase 2 in progress on
 `feature/phase-2-runtime` (not merged).**
 **Current checkpoint:** `CP-006` (M1) complete; CP-007 (M2) in progress.
-**Next action:** T-024 — performance pass, `DTGEOMETRY` shim, no XML in the model (`BUG-03`).
+**Next action:** T-025 — triage the visual scripts in `test/` (last M2 item).
 
 ---
 
@@ -13,7 +13,7 @@
 
 1. Read [`AGENT.md`](AGENT.md) — the contract and the HOLD gate.
 2. Read [`state.md`](state.md) — what is true now.
-3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-023 are `done`.
+3. Read [`TICKETS.md`](TICKETS.md) — the board; T-020...T-024 are `done`.
 4. Read [`PROGRESS.md`](PROGRESS.md) — checkpoints and the session log.
 5. Skim [`context.md`](context.md) §2–§5 — architecture, findings, target model.
 6. Open [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md)
@@ -38,10 +38,10 @@ Done: Phase 0 (tests, oracle, alias, benchmark, CI), Phase 1 (`specs.py`,
 scoped aliases, legacy `add`/`remove`), T-022 (the legacy classes are views
 over the source, the tree and the graph; `BUG-01` gone, plotting bit-identical),
 T-023 (`Station.overlay` and a cache that never writes on the shared station;
-`BUG-02` gone).
+`BUG-02` gone), T-024 (one build per chamber, lazy `DTGEOMETRY`, explicit
+XML attribute names; `BUG-03` gone).
 
-Remaining: T-024 performance + `DTGEOMETRY` shim + `BUG-03`, T-025 `test/`
-triage.
+Remaining: T-025 `test/` triage (last M2 item).
 
 Branch policy: work on `feature/phase-2-runtime`; **do not merge into `main`
 until the maintainer approves it.**

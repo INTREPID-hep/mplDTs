@@ -6,8 +6,9 @@ This module provides tools to manage geometrical objects in the context of CMS D
 The CMS DTs geometry informatio is stored in a XML file - (:download:`DTGeometry.xml <../../_static/DTGeometry_v3.xml>`). 
 The ``geometry`` module includes a class to read and manage this file (`DTGeometry`_).
 
-By default, an instance of this class is created when this module (``geometry``) is imported, and the geometry information
-can be accessed through the ``DTGEOMETRY`` global variable.
+By default the geometry information can be accessed through the ``DTGEOMETRY``
+global variable. It is parsed on first use, so importing the ``geometry`` module
+does not read the XML.
 
 Additionally, this module offers a base class for defining geometrical objects representing various
 DT chamber components (e.g., :doc:`./drift_cell`, DT :doc:`./layer`, DT :doc:`./super_layer`). This base class represents a general 
@@ -34,11 +35,11 @@ for each component are defined. Transformations between these frames are possibl
     layer
     drift_cell
 
-.. warning::
-    Starting from version 1.1.0, the XML geometry file includes the local and global positions of each Drift Cell. 
-    Consequently, the :doc:`./layer` module was updated to directly read these properties from the file in the cells creation. 
-    While this enhancement simplifies data access, it increases the creation time of a :doc:`./station` 
-    object. To mitigate this when several stations are created, parallelization of the process is strongly recommended.
+.. note::
+    Every drift cell centre is read from the XML. A chamber is built once and
+    every :doc:`./station` is a view over that build, so creating many stations
+    is cheap: the XML is parsed once per process and the legacy data attributes
+    stay verbatim XML values.
 
 Classes
 -------
@@ -58,7 +59,7 @@ The following example shows how to access the CMS DT geometry information.
 .. literalinclude:: ../../../mpldts/geometry/_geometry.py
     :language: python
     :dedent:
-    :lines: 113-134
+    :lines: 223-245
 
 .. rubric:: Output
 

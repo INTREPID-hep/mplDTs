@@ -13,7 +13,7 @@ Station
 .. literalinclude:: ../../../mpldts/geometry/station.py
     :language: python
     :dedent:
-    :lines: 363-390
+    :lines: 381-408
 
 
 .. rubric:: Output

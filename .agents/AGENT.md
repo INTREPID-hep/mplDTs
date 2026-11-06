@@ -193,7 +193,7 @@ A task is done only when:
 | Path | Purpose |
 |---|---|
 | `mpldts/geometry/` | runtime model (to be refactored) |
-| `mpldts/geometry/_geometry.py` | current XML singleton (`DTGEOMETRY`) |
+| `mpldts/geometry/_geometry.py` | legacy XML reader; `DTGEOMETRY` is a lazy proxy |
 | `mpldts/patches/` | matplotlib consumers; keep working |
 | `test/` | current visual scripts (to be converted to pytest) |
 | `docs/design/generalization-plan.md` | technical design (Rev 4) |

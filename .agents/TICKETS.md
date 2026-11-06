@@ -3,7 +3,7 @@
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-06
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 2 implementing — T-020...T-023 done 2026-11-06
+**State:** Phase 2 implementing — T-020...T-024 done 2026-11-06
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -43,8 +43,9 @@ Status legend:
 
 **M2 — Runtime parity.** Gate: public-API oracle green, `< 20 ms/station`,
 no XML in the model, `test/` triaged. T-020 (topology + `build_station`),
-T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`) and
-T-023 (immutable cache + overlay, `BUG-02`) are done; T-024 and T-025 remain.
+T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
+T-023 (immutable cache + overlay, `BUG-02`) and T-024 (performance pass +
+lazy `DTGEOMETRY`, `BUG-03`) are done; T-025 remains.
 
 **Current checkpoint:** `CP-006 — M1 specs + source` complete; CP-007 (M2)
 in progress.
@@ -67,6 +68,7 @@ in progress.
 | T-021 | `FrameGraph` + `FrameView` | 2 | done | T-020 | [T-021](tickets/T-021-frame-graph.md) |
 | T-022 | Legacy constructors delegate; `BUG-01` fixed | 2 | done | T-020, T-021 | [T-022](tickets/T-022-legacy-delegation.md) |
 | T-023 | Immutable cache + per-event overlay; `BUG-02` fixed | 2 | done | T-022 | [T-023](tickets/T-023-immutable-overlay.md) |
+| T-024 | Performance pass + lazy `DTGEOMETRY` shim; `BUG-03` fixed | 2 | done | T-022, T-023 | [T-024](tickets/T-024-performance-shim.md) |
 | T-025 | Triage the visual scripts in `test/` | 2 | proposed | T-022 | [T-025](tickets/T-025-visual-scripts.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
@@ -115,7 +117,6 @@ and the maintainer approves.
 | ID | Phase | Summary |
 |---|---|---|
 
-| T-024 | 2 | Performance pass + `DTGEOMETRY` shim + remove XML imports |
 | T-030 | 3 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations |
 | T-031 | 3 | CMS preset remainder (virtual frames, MB4) + plotting orientation |
 | T-032 | 3 | Honeycomb as station attachment (`SolidSpec`) |

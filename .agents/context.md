@@ -96,9 +96,11 @@ objects. Event A's values leaked into event B.
 graph and owns its cell attributes; the cache returns it and never writes to
 the cached station. `test_cache_overlays_isolate_cell_attributes` guards it.
 
-**(c) Attribute-order-dependent XML parsing.** `_geometry.py:122`, `:126` and
-`layer.py:101` use `element.attrib.values()` positionally. Legal XML attribute
-reordering changes `bounds` or `WiresSize`. Use explicit keys.
+**(c) Attribute-order-dependent XML parsing.** `_geometry.py` used
+`element.attrib.values()` positionally, so legal XML attribute reordering
+changed `bounds` or `WiresSize`.
+**Fixed in T-024**: the shim reads explicit names; `test_bounds_and_wires_do_not_depend_on_attribute_order`
+pins it.
 
 **(d) `bounds` assumes a box.** `DTFrame.width/height/length` and
 `local_cords_at_min` assume rectangular extents. A tube cannot be represented;

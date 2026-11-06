@@ -7,6 +7,7 @@ carry the cell grid, the graph carries the frames.
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.drift_cell import DriftCell
 from mpldts.geometry.frames import FrameView
+from mpldts.geometry.sources.cms_xml import position
 
 
 class Layer(DTFrame):
@@ -54,9 +55,13 @@ class Layer(DTFrame):
         self._last_cell_id = int(node.children[-1].name[1:]) if node.children else int(record["last"])
         self._node = node
         self._cells = {child.name: child for child in node.children}
-        self._cell_local_text = {
-            number: local_text for number, _, local_text in record["cells"]
-        }
+        # parsed once per chamber: every Station and overlay shares the record
+        cell_locals = record.get("cell_locals")
+        if cell_locals is None:
+            cell_locals = record["cell_locals"] = {
+                number: position(local_text) for number, _, local_text in record["cells"]
+            }
+        self._cell_local = cell_locals
         self.transformer = FrameView(parent.transformer.graph, node)
         self._DriftCells = [DriftCell(number=int(child.name[1:]), parent=self) for child in node.children]
 

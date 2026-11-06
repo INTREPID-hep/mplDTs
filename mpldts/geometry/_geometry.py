@@ -119,15 +119,22 @@ class DTGeometry:
                     x, y, z = self._transform_to_pos(str_pos_tuple=element.get(attribute))
                 return x, y, z
             elif attribute == "Bounds":
-                width, height, length = element.find(attribute).attrib.values()
-                return (float(width), float(height), float(length))
+                bounds = element.find(attribute).attrib
+                return (
+                    float(bounds["width"]),
+                    float(bounds["thickness"]),
+                    float(bounds["length"]),
+                )
             elif "wire" in attribute.lower():
                 element = element.find(".//Wires")
-                width, height, length, first, last = element.attrib.values()
                 if attribute == "WiresSize":
-                    return (float(width), float(height), float(length))
+                    return (
+                        float(element.get("width")),
+                        float(element.get("thickness")),
+                        float(element.get("length")),
+                    )
                 elif attribute == "WiresRange":
-                    return (int(first), int(last))
+                    return (int(element.get("first")), int(element.get("last")))
                 else:
                     return element
             else:
@@ -192,8 +199,25 @@ class DTGeometry:
         return (x, y, z)
 
 
+class _LazyDTGeometry:
+    """The default geometry, parsed on first use.
+
+    Parsing DTGeometry_v3.xml costs ~3 s and the model no longer reads it, so
+    the legacy entry point pays only when a caller touches it.
+    """
+
+    def __init__(self, path):
+        self._path = path
+        self._geometry = None
+
+    def __getattr__(self, name):
+        if self._geometry is None:
+            self._geometry = DTGeometry(self._path)
+        return getattr(self._geometry, name)
+
+
 # Initialize the DTGeometry object with the path to the XML file
-DTGEOMETRY = DTGeometry(os.path.join(os.path.dirname(__file__), "DTGeometry_v3.xml"))
+DTGEOMETRY = _LazyDTGeometry(os.path.join(os.path.dirname(__file__), "DTGeometry_v3.xml"))
 
 # Example usage
 if __name__ == "__main__":

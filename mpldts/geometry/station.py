@@ -50,6 +50,80 @@ def _unit(vector):
     return vector / np.linalg.norm(vector)
 
 
+def _face_factor(wheel, sector):
+    """-1 for negative wheels, 1 for positive; wheel 0 depends on the sector."""
+    return (
+        -1 if wheel < 0 else 1 if wheel > 0 else -1 if sector in [1, 4, 5, 8, 9, 12, 13] else 1
+    )
+
+
+def _add_plotting_frames(graph, node, record, wheel, sector):
+    """Register the frames the plotting patches ask for: the natural views
+    StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
+    geometrical center of the super layers 1 and 3 (SL13Center)."""
+    station_frame = node.frame_id
+
+    def add(name, pose):
+        graph.add_virtual(station_frame + "/" + name, station_frame, pose)
+
+    face = _face_factor(wheel, sector)
+
+    # Station 'Natural view' (phi): a rotation, the station frame to the view frame
+    ez = np.array([0.0, 0.0, -1.0])
+    ey = np.array([0.0, -1.0, 0.0]) * face
+    ex = _unit(np.cross(ey, ez))
+    add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Station 'Natural view' (eta)
+    ex = np.array([-1.0, 0.0, 0.0]) * face
+    ey = _unit(np.cross(ez, ex))
+    add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
+
+    # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
+    # divided into 13 and 14, hence the sign correction.
+    x, y, _ = record["global"]
+    correction = 1
+    if sector in [13, 14]:
+        correction = -1
+        sector = 4 if sector == 13 else 10
+    dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
+    dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
+    add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
+
+    # Geometrical center of the super layers 1 and 3
+    sl1 = next((sl for sl in record["super_layers"] if sl["number"] == 1), None)
+    sl3 = next((sl for sl in record["super_layers"] if sl["number"] == 3), None)
+    if sl1 is not None and sl3 is not None:
+        centre = (np.asarray(sl1["local"]) + np.asarray(sl3["local"])) / 2.0
+        add("SL13Center", Pose.translated(*centre))
+
+
+# ponytail: unbounded per-chamber cache (250 entries at most); add an LRU only
+# if a long-lived process plots every chamber and memory matters.
+_BUILT = {}
+
+
+def _built(wheel, sector, station):
+    """(record, node, graph) of a chamber, built once and shared by its views.
+
+    The node tree and the graph are immutable geometry (ADR-007); a Station is
+    a view over them. The first build of a chamber is 20-60 ms, a later view a
+    few milliseconds.
+    """
+    key = (wheel, sector, station)
+    built = _BUILT.get(key)
+    if built is not None:
+        return built
+    source = _source()
+    record = source.record(wheel, sector, station)
+    node = build_station(source.station(wheel, sector, station))
+    graph = FrameGraph()
+    graph.add_nodes(node)
+    _add_plotting_frames(graph, node, record, wheel, sector)
+    built = _BUILT[key] = (record, node, graph)
+    return built
+
+
 class Station(DTFrame):
     """
     Class representing a CMS Drift Tube Chamber.
@@ -90,10 +164,8 @@ class Station(DTFrame):
         self.sector = sector
         self.number = station
 
-        source = _source()
         try:
-            record = source.record(wheel, sector, station)
-            spec = source.station(wheel, sector, station)
+            record, node, graph = _built(wheel, sector, station)
         except KeyError:
             raise ValueError(
                 "chamber Wh:%d St:%d Se:%d is not in the CMS geometry" % (wheel, station, sector)
@@ -105,15 +177,14 @@ class Station(DTFrame):
         self.direction = record["direction"]
         self.bounds = record["bounds"]
 
-        # == Build the station: node tree, one graph, one view per object
-        self._node = build_station(spec)
-        self._graph = FrameGraph()
-        self._graph.add_nodes(self._node)
-        self.transformer = FrameView(self._graph, self._node)
+        # == The station is a view over the shared tree and graph
+        self._node = node
+        self._graph = graph
+        self.transformer = FrameView(graph, node)
 
         # rawId -> (node, record), for the legacy child constructors
         self._parts = {}
-        for sl_record, sl_node in zip(record["super_layers"], self._node.children):
+        for sl_record, sl_node in zip(record["super_layers"], node.children):
             self._parts[sl_record["raw_id"]] = (sl_node, sl_record)
             for layer_record, layer_node in zip(sl_record["layers"], sl_node.children):
                 self._parts[layer_record["raw_id"]] = (layer_node, layer_record)
@@ -122,7 +193,6 @@ class Station(DTFrame):
             SuperLayer(rawId=sl_record["raw_id"], parent=self)
             for sl_record in record["super_layers"]
         ]
-        self._add_plotting_frames()
 
         # == Set the drift cell attributes
         if dt_info is not None:
@@ -180,11 +250,7 @@ class Station(DTFrame):
         :return: Face orientation factor.
         :rtype: int
         """
-        return (
-            -1
-            if self._wheel < 0
-            else 1 if self._wheel > 0 else -1 if self._sector in [1, 4, 5, 8, 9, 12, 13] else 1
-        )
+        return _face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """
@@ -247,51 +313,6 @@ class Station(DTFrame):
         if value < 1 or value > 4:
             raise ValueError("Station value must be between 1 and 4")
         self._number = value
-
-    # == Frames for the plotting patches
-
-    def _add_plotting_frames(self):
-        """
-        Register the frames the plotting patches ask for: the natural views
-        StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
-        geometrical center of the super layers 1 and 3 (SL13Center).
-        """
-        station_frame = self._node.frame_id
-
-        def add(name, pose):
-            self._graph.add_virtual(station_frame + "/" + name, station_frame, pose)
-
-        face = self.face_orientation_factor
-
-        # Station 'Natural view' (phi): a rotation, the station frame to the view frame
-        ez = np.array([0.0, 0.0, -1.0])
-        ey = np.array([0.0, -1.0, 0.0]) * face
-        ex = _unit(np.cross(ey, ez))
-        add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
-
-        # Station 'Natural view' (eta)
-        ex = np.array([-1.0, 0.0, 0.0]) * face
-        ey = _unit(np.cross(ez, ex))
-        add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
-
-        # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
-        # divided into 13 and 14, hence the sign correction.
-        x, y, _ = self.global_center
-        sector = self._sector
-        correction = 1
-        if sector in [13, 14]:
-            correction = -1
-            sector = 4 if sector == 13 else 10
-        dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
-        dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
-        add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
-
-        # Geometrical center of the super layers 1 and 3
-        sl1 = self.super_layer(1)
-        sl3 = self.super_layer(3)
-        if sl1 is not None and sl3 is not None:
-            centre = (np.asarray(sl1.local_center) + np.asarray(sl3.local_center)) / 2.0
-            add("SL13Center", Pose.translated(*centre))
 
     def set_cell_attrs(self, dt_info):
         """

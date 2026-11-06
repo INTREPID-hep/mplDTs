@@ -11,13 +11,13 @@
 
 | Item | Value |
 |---|---|
-| Phase | 2 in progress (T-020...T-023 done) |
+| Phase | 2 in progress (T-020...T-024 done) |
 | Current milestone | M2 — Runtime model + compatibility |
-| Last completed | T-023 (immutable cache + per-event overlay; `BUG-02`) |
-| Next | T-024 (performance pass + `DTGEOMETRY` shim + `BUG-03`) |
-| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); tests, benchmark, CI |
-| Library tests | `pytest -q`: 102 passed, 2 skipped, 2 deselected |
-| Builder cost | 7.5 ms/station (250 stations, spec -> `Node` tree); legacy `Station` 64 ms/station (was ~1 s) |
+| Last completed | T-024 (performance pass + lazy `DTGEOMETRY`; `BUG-03`) |
+| Next | T-025 (triage the visual scripts in `test/`) |
+| Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); tests, benchmark, CI |
+| Library tests | `pytest -q`: 105 passed, 2 skipped, 2 deselected |
+| Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
 
@@ -59,6 +59,7 @@ the evidence is linked here.
 | 2026-11-06 | T-021 | Phase 2 frames: `FrameGraph` (one edge per parent/child pose, BFS with a per-pair cache) and `FrameView` (scoped `Station`/`SuperLayer`/`SL{n}`/`Layer`/`Cell`/`CMS` aliases, legacy `add`/`remove` signatures, virtual frames) | `pytest` 88 passed / 4 xfailed / 2 skipped; the graph matches the node tree, the XML cell centres and the legacy station chain | T-022 |
 | 2026-11-06 | T-022 | Phase 2 compatibility: the four legacy classes are views over `CMSXMLSource` + `build_station` + `FrameView`; the plotting frames live on the station graph; standalone `SuperLayer(rawId)`/`Layer(rawId)` kept; data attributes stay verbatim XML | `pytest` 100 passed / 2 skipped; slow 250-chamber sweeps green; `DTStationPatch` rectangles and the .tg inputs bit-identical to the old code; 1009 -> 64 ms per station | T-023 |
 | 2026-11-06 | T-023 | Phase 2 immutability: `Station.overlay()` shares the node tree, the graph and the raw-id index and rebuilds only the legacy view objects; `StationsCache.get` returns an overlay instead of writing on the cached station (`BUG-02`); stale docs anchors fixed | `pytest` 102 passed / 2 skipped; slow sweeps green; overlay 7 ms + 5 ms for 704 attributes vs 32 ms for a full station | T-024 |
+| 2026-11-06 | T-024 | Phase 2 performance: `DTGEOMETRY` is a lazy proxy (no XML parse at import); one build per chamber shared by every `Station`; wire locals parsed once per chamber; `Bounds`/`Wires` read explicit attribute names (`BUG-03`); docs anchors refreshed | `pytest` 105 passed / 2 skipped; slow sweeps green; import 2.83 -> 0.96 s; station 6.1 / 2.1 / 3.0 ms | T-025 (M2 gate) |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 
@@ -106,6 +107,8 @@ No history was rewritten.
 | 2026-11-06 | spec oracle, 250 chambers | worst 1.25e-3 cm, 1.1 s |
 | 2026-11-06 | `pytest -q` (100 tests, after T-022) | 100 passed, 2 skipped, 2 deselected, 31 s |
 | 2026-11-06 | `pytest -q` (102 tests, after T-023) | 102 passed, 2 skipped, 2 deselected, 28 s |
+| 2026-11-06 | `pytest -q` (105 tests, after T-024) | 105 passed, 2 skipped, 2 deselected, 41 s |
+| 2026-11-06 | `bench_station.py` (after T-024) | import 0.96 s; 6.1 / 2.1 / 3.0 ms per station |
 | 2026-11-06 | `pytest -q -m slow` (250 chambers, after T-023) | 2 passed, 104 deselected, 160 s |
 | 2026-11-06 | overlay vs full station build | 7 ms + 5 ms (704 cell attrs) vs 32 ms |
 | 2026-11-06 | `pytest -q -m slow` (250 chambers) | 2 passed, 152 s; SL2 matches the XML |
