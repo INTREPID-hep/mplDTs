@@ -14,7 +14,7 @@ Layer
 .. literalinclude:: ../../../mpldts/geometry/layer.py
     :language: python
     :dedent:
-    :lines: 106-111
+    :lines: 148-151
 
 
 .. rubric:: Output

@@ -6,18 +6,15 @@ This module provides tools to manage geometrical objects in the context of CMS D
 The CMS DTs geometry informatio is stored in a XML file - (:download:`DTGeometry.xml <../../_static/DTGeometry_v3.xml>`). 
 The ``geometry`` module includes a class to read and manage this file (`DTGeometry`_).
 
-By default the geometry information can be accessed through the ``DTGEOMETRY``
-global variable. It is parsed on first use, so importing the ``geometry`` module
-does not read the XML.
+By default, an instance of this class is created when this module (``geometry``) is imported, and the geometry information
+can be accessed through the ``DTGEOMETRY`` global variable.
 
-Since version 2.3 the model is built in four layers: an XML source produces
-immutable specs, a builder turns a spec into a node tree with one pose per
-node, and a frame graph resolves the transforms. :doc:`./runtime` documents that
-architecture and its API. The classes below (:doc:`./station`,
-:doc:`./super_layer`, :doc:`./layer`, :doc:`./drift_cell`) keep their historical API
-and are now thin views over it, so existing plotting code does not change: a
-chamber is a tree of SuperLayers, layers and cells, and the legacy
-``DTFrame`` base class still provides bounds, centres and ids.
+Additionally, this module offers a base class for defining geometrical objects representing various
+DT chamber components (e.g., :doc:`./drift_cell`, DT :doc:`./layer`, DT :doc:`./super_layer`). This base class represents a general 
+cubic form with properties such as bounds, center, id, width, height, etc. In this way, CMS DT chambers are built by nesting instances
+of `DTFrame`_ class (see the `geometry-submodules`_ below). In other words, a Chamber is a DTFrame child
+which contains SuperLayers; SuperLayers are DTFrame children that contain Layers; Layers are DTFrame
+children that contain DriftCells.
 
 The following image shows the composition of a CMS DT chamber and indicates how the reference frames 
 for each component are defined. Transformations between these frames are possible with the help of the
@@ -32,17 +29,16 @@ for each component are defined. Transformations between these frames are possibl
     :caption: Submodules
     :name: geometry-submodules
 
-    runtime
     station
     super_layer
     layer
     drift_cell
 
-.. note::
-    Every drift cell centre is read from the XML. A chamber is built once and
-    every :doc:`./station` is a view over that build, so creating many stations
-    is cheap: the XML is parsed once per process and the legacy data attributes
-    stay verbatim XML values.
+.. warning::
+    Starting from version 1.1.0, the XML geometry file includes the local and global positions of each Drift Cell. 
+    Consequently, the :doc:`./layer` module was updated to directly read these properties from the file in the cells creation. 
+    While this enhancement simplifies data access, it increases the creation time of a :doc:`./station` 
+    object. To mitigate this when several stations are created, parallelization of the process is strongly recommended.
 
 Classes
 -------
@@ -62,7 +58,7 @@ The following example shows how to access the CMS DT geometry information.
 .. literalinclude:: ../../../mpldts/geometry/_geometry.py
     :language: python
     :dedent:
-    :lines: 223-245
+    :lines: 113-134
 
 .. rubric:: Output
 
@@ -83,14 +79,7 @@ The following example shows how to access the CMS DT geometry information.
 
 .. tip::
     Instead of creating an instance of DTGeometry each time, if you will use the default geometry file,
-    you can access the geometry information from the variable ``DTGEOMETRY``. It is
-    parsed on first use, never at import.
-
-.. note::
-    ``DTGeometry`` and ``DTGEOMETRY`` are kept for compatibility. New
-    code reads the geometry through
-    :class:`~mpldts.geometry.sources.cms_xml.CMSXMLSource`, which returns specs
-    instead of XML elements (:doc:`./runtime`).
+    you can access the geometry information from the variable ``DTGEOMETRY``.
 
 
 .. _DTFrame:
@@ -120,11 +109,6 @@ between local, parent, and global reference frames.
 .. automodule:: mpldts.geometry.transforms
     :members:
     :special-members: __init__
-
-.. note::
-    ``TransformManager`` is the legacy entry point. The runtime model resolves the
-    same transforms through the frame graph with the node poses; see
-    :doc:`./runtime`.
 
 .. note::
     This documentation supports multiple versions. Use the version selector in the top-right corner to switch between versions.

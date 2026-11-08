@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DTRelatedPatch &mdash; mplDTs 2.9.0 documentation</title>
+  <title>DTRelatedPatch &mdash; mplDTs 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=182a64a0"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -48,74 +48,14 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../geometry/main.html">geometry</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../geometry/runtime.html">Runtime model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#poses-and-units">Poses and units</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#specs">Specs</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#the-command-line">The command line</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#the-cms-source">The CMS source</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#frames">Frames</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#migrating-to-3-0">Migrating to 3.0</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../geometry/station.html">Station</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
@@ -123,21 +63,17 @@
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -153,6 +89,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
@@ -176,6 +113,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
@@ -196,9 +134,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
@@ -255,14 +193,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dt_station_patch.html#examples">Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="objects_patch.html">DTObjectsPatch</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -349,8 +279,7 @@ common methods and functionalities such as moving to global coordinates and inve
 <dl class="py method">
 <dt class="sig sig-object py" id="mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes">
 <span class="sig-name descname"><span class="pre">_add_collections_to_axes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/patches/dt_patch_base.html#DTRelatedPatch._add_collections_to_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes" title="Link to this definition"></a></dt>
-<dd><p>Add the collections to the axes. A <cite>Line2D</cite> (the object renderer, T-043)
-goes through the line list, everything else through the collection list.</p>
+<dd><p>Add the collections to the axes.</p>
 </dd></dl>
 
 <dl class="py method">

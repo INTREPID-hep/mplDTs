@@ -38,7 +38,7 @@ Examples
 
 The following example shows how to create ``DTStationPatch`` objects and plot the cells of a DT chamber in the local view.
 
-.. literalinclude:: ../../../docs/examples/cms_dt_local_wb.py
+.. literalinclude:: ../../../test/cms_dt_local_wb.py
     :language: python
     :lines: 1-57
     :linenos:
@@ -57,7 +57,7 @@ appearance of the bounds and cells, respectively. And as mentioned before, the `
 passed to the ``Station`` instance can be used to define a colormap based on any drift cell property as 
 shown in the following example.
 
-.. literalinclude:: ../../../docs/examples/cms_dt_local_c.py
+.. literalinclude:: ../../../test/cms_dt_local_c.py
     :language: python
     :lines: 1-74
     :emphasize-lines: 4, 9-11, 17-18, 21-44, 51, 56, 60, 64 
@@ -74,7 +74,7 @@ Since each ``DTStationPatch`` object is an isolated instance, it is possible to 
 the same axes and use the global mode to utilize the exact CMS coordinate system to visualize part 
 or the whole DT system.
 
-.. literalinclude:: ../../../docs/examples/cms_dts_phi_zoomed.py
+.. literalinclude:: ../../../test/cms_dts_phi_zoomed.py
     :language: python
     :lines: 1-73
     :linenos:
@@ -87,7 +87,7 @@ or the whole DT system.
 
 And also in :math:`\eta` orientation, that means the longitudinal CMS view:
 
-.. literalinclude:: ../../../docs/examples/cms_dts_eta_zoomed.py
+.. literalinclude:: ../../../test/cms_dts_eta_zoomed.py
     :language: python
     :lines: 1-71
     :linenos:
@@ -117,7 +117,7 @@ if detector face is in :math:`+z` or :math:`-z` direction, detailed information 
 
 The following example shows how to do this:
 
-.. literalinclude:: ../../../docs/examples/cms_dt_local_inversion.py
+.. literalinclude:: ../../../test/cms_dt_local_inversion.py
     :language: python
     :lines: 1-118
     :linenos:
