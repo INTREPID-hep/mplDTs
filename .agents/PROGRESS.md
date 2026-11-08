@@ -19,7 +19,7 @@
 | Integration branch | `refactor/v2-integration` (2.3.0), `feature/phase-3-assemblies` (2.4.0), `feature/phase-5-authoring` (2.5.0); `main` untouched |
 | Next | maintainer review and merge; `T-005` switches the simulator to the exported `.tg` after it |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
-`Station.from_spec` (T-030); `serialize.py`, `builders.py` and `export/` (T-050...T-052); tests, benchmark, CI |
+`Station.from_spec` (T-030); `serialize.py`, `constructors.py` and `export/` (T-050...T-052); tests, benchmark, CI |
 | Library tests | `pytest -q`: 183 passed, 2 skipped, 3 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
@@ -70,7 +70,7 @@ the evidence is linked here.
 | 2026-11-08 | T-031 | CMS preset: `presets/cms.py` owns `face_factor` + `add_frames` (`SectorRef`, `SL13Center`); `_face_from_pose` gives any station its face factor, so a mirrored custom chamber inverts right and all 250 CMS chambers keep the wheel/sector value; docs and `test_presets.py` | `pytest` 143 passed / 2 skipped; slow 3 passed (250 chambers); CMS rectangles 0.0 deviation vs `v2.3.0` (60 collections); Sphinx warning-free | `T-032` |
 | 2026-11-07 | T-030 | Phase 3 starts: `build_detector` (the detector is the root node), `Station.from_spec` (the record is derived from the node tree, no CMS cache), shared `_add_natural_views`, specs no longer capped at the CMS counts, the patches pick the phi/eta super layers by orientation (`_is_turned`) instead of `number == 2`; custom 1-SL/5-SL tests and `docs/examples/custom_station.py` | `pytest` 134 passed / 2 skipped; slow 250-chamber oracle green; Sphinx warning-free | `T-031` |
 | 2026-11-07 | T-026 | Release prep: 2.3.0 in `pyproject.toml` and `mpldts.__version__`, `docs/conf.py` reads the package version, new `docs/src/geometry/runtime.rst` documenting XML -> specs -> nodes -> frames, the legacy pages point at it; the untracked printer script is deleted; `refactor/v2-integration` cut from T-025 (`main` untouched) | `pytest` 111 passed / 2 skipped; Sphinx build succeeded with no warnings; both metadata sources report 2.3.0 | **Phase 3 planning** |
-| 2026-11-08 | T-050...T-054 | M5: `builders.py` (four short constructors), `serialize.py` (JSON documents, strict reader), `export/` (`VolumeSink`, placement walk, `RecordingSink`, `TgSink`), cell material on the `CellGrid`, the tutorial example and the migration note; 2.5.0 | `pytest` 183 passed / 2 skipped; slow 3 passed; `.tg` parity 621 placements / 0.0 cm; Sphinx warning-free | **M5 gate met**, tag `v2.5.0` |
+| 2026-11-08 | T-050...T-054 | M5: `constructors.py` (four short constructors), `serialize.py` (JSON documents, strict reader), `export/` (`VolumeSink`, placement walk, `RecordingSink`, `TgSink`), cell material on the `CellGrid`, the tutorial example and the migration note; 2.5.0 | `pytest` 183 passed / 2 skipped; slow 3 passed; `.tg` parity 621 placements / 0.0 cm; Sphinx warning-free | **M5 gate met**, tag `v2.5.0` |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 
@@ -146,6 +146,13 @@ No history was rewritten.
 | 2026-11-08 | `pytest -q -m slow` (after T-033) | 3 passed, 156 deselected, 157 s |
 | 2026-11-08 | honeycomb panel, W-2/S1/MB2 | 265.8 x 250.1 x 11.8 cm at z 2.675, `G4_Al` (simulator formula) |
 | 2026-11-08 | `sphinx-build -b html docs` (after T-033) | build succeeded, no warnings |
+| 2026-11-08 | `pytest -q` (after T-054) | 183 passed, 2 skipped, 3 deselected, 28-41 s |
+| 2026-11-08 | `pytest -q -m slow` (after T-054) | 3 passed, 184 deselected, 110 s |
+| 2026-11-08 | `.tg` parity, `station_W0_Sec1_St1.tg` vs `TgSink` | the same 621 placements, solids, materials and rotations; worst position 0.0 cm at 1e-4 cm |
+| 2026-11-08 | JSON round trip, CMS chamber -2/1/MB2 with honeycomb | `to_dict(from_dict(document)) == document`; 13 kB per chamber |
+| 2026-11-08 | `sphinx-build -E -b html docs` (after T-054) | build succeeded, no warnings |
+| 2026-11-08 | `python -c "import mpldts; print(mpldts.__version__)"` | 2.5.0 |
+| 2026-11-08 | GitHub Actions `tests` on `feature/phase-5-authoring` | success (run 42487358163) |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.

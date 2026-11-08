@@ -18,14 +18,14 @@ layer. The plan asks for four constructors that fill the boring defaults.
 
 ## What was delivered
 
-- `mpldts/geometry/builders.py`: `make_layer`, `make_superlayer`,
+- `mpldts/geometry/constructors.py`: `make_layer`, `make_superlayer`,
   `make_station`, `make_detector`.
 - Defaults: identity pose, no envelope, `G4_AIR` for a station,
   `G4_Galactic` for the detector; attachments and structure are copied into
   lists so a tuple is accepted.
 - No eager validation: `validate()` stays the single gate, so a spec built
   with the helpers fails exactly where a hand-built spec fails.
-- `test/geometry/test_builders.py` (2 tests): the defaults, and a spec built
+- `test/geometry/test_constructors.py` (2 tests): the defaults, and a spec built
   with the helpers is the same document as the long hand-written one.
 
 ## Out of scope
@@ -44,7 +44,7 @@ layer. The plan asks for four constructors that fill the boring defaults.
 
 ```python
 cd /home/destrada/mplDTs
-PYTHONPATH=/home/destrada/mplDTs pytest -q test/geometry/test_builders.py
+PYTHONPATH=/home/destrada/mplDTs pytest -q test/geometry/test_constructors.py
 ```
 
 ## Risks / notes

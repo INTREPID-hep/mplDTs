@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 from mpldts.export import TgSink, export_volumes, iter_volume_placements
 from mpldts.geometry import Station, build_station
-from mpldts.geometry.builders import make_layer, make_station, make_superlayer
+from mpldts.geometry.constructors import make_layer, make_station, make_superlayer
 from mpldts.geometry.serialize import from_json, to_json
 from mpldts.geometry.specs import Box, CellGrid, Pose
 from mpldts.patches import DTStationPatch

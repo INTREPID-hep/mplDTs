@@ -26,7 +26,7 @@
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
 `build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
-`serialize.py` (JSON documents), `builders.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
+`serialize.py` (JSON documents), `constructors.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
 | pytest suite for geometry | **through Phase 5 (T-054)** | `test/geometry/`: the Phase 0-3 suites plus builders, serialize and export (parity); 183 pass, 2 skip |
 
 The prototype verifies:

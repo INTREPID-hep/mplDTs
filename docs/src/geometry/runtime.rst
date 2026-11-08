@@ -114,13 +114,13 @@ Four constructors fill the defaults that a hand-written spec should not repeat
 not validate eagerly: :func:`validate <mpldts.geometry.specs.validate>` stays the
 single gate, so a spec built with them fails where a hand-built one fails.
 
-.. autofunction:: mpldts.geometry.builders.make_layer
+.. autofunction:: mpldts.geometry.constructors.make_layer
 
-.. autofunction:: mpldts.geometry.builders.make_superlayer
+.. autofunction:: mpldts.geometry.constructors.make_superlayer
 
-.. autofunction:: mpldts.geometry.builders.make_station
+.. autofunction:: mpldts.geometry.constructors.make_station
 
-.. autofunction:: mpldts.geometry.builders.make_detector
+.. autofunction:: mpldts.geometry.constructors.make_detector
 
 A spec saves to a JSON document and loads back into the same spec
 (`mpldts.station/2` for a chamber, `mpldts.detector/2` for an assembly). The
