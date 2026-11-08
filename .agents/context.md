@@ -177,14 +177,15 @@ Concepts:
   keeps the current `.tg` boolean path.
 - There is no separate wire object; the XML `<Wire>` is the cell entry.
 
-### 5.2 Event objects
+### 5.2 Per-event data (no event layer)
 
-- `Segment` (already implemented), `Track` (polyline) and `Jet`/`Cone` are
-  **annotations**, not detector solids.
-- They reference a frame (station, SL, cell, CMS), reuse the `FrameGraph`, and
-  carry an opaque attribute bag.
-- They live in `mpldts/events/` (Phase 4), never in `StationSpec` or the
-  geometry exporter.
+- mplDTs does **not** own an event model (ADR-024). `DTPatternRecognition`
+  builds the events (`Event` = typed bag of config-declared `Particle`
+  records) and sends them as a table keyed by `(wh, sc, st, sl, l, w)`.
+- The table is applied to the immutable station as an overlay
+  (`Station.set_cell_attrs` / `overlay`), and the patches read it back.
+- `Segment`/`AMDTSegments` stay as views over the `FrameGraph`; they are not
+  detector solids and never enter `StationSpec` or the geometry exporter.
 
 Full details, code sketches and the CMS mapping are in the design document.
 

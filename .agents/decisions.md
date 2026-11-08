@@ -1,6 +1,6 @@
 # Decisions — ADR log
 
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-08
 **Format:** see [`templates/adr.md`](templates/adr.md).
 **Rule:** an accepted ADR is not reopened silently. Propose a new ADR that
 supersedes it, with the reason.
@@ -332,6 +332,79 @@ commit is an ancestor of `main` after the merge, so no history is rewritten.
 
 ---
 
+## ADR-023 — A document is the spec, an export is placements, names are not geometry
+
+**Status:** accepted · 2026-11-08
+**Context:** Phase 5 writes a detector down (JSON) and out (``.tg``). Both
+tempt a serializer to store or depend on derived values: a JSON file could carry
+cell centres and world poses, and a ``.tg`` writer could inherit the CMS
+generator's names, the layer-encoding suffix, the ``Station_W0_Sec1_St1``
+convention and the hardcoded ``GasMixture``.
+**Decision:**
+1. A JSON document holds poses, shapes and names only; centres and world poses
+   are rebuilt, so a file cannot disagree with the model. The reader is strict
+   (unknown keys, wrong types, mismatched rotations are errors) because a typo
+   in a detector description is a detector that is silently wrong.
+2. An exporter sees placements, not the tree: ``VolumeSink.begin/place/end``
+   and a walk that folds the grouping frames. The backend owns its names; the
+   ``.tg`` sink derives them from the node tree, qualifies them by the
+   exported root, writes no world volume and no ``R0``, and refuses a solid node
+   without a material instead of defaulting to air.
+3. Names are not part of the geometry contract: parity with the current
+   generator is judged on the placements (solid, material, dimensions, rotation,
+   position), not on the identifiers.
+**Consequences:** the cell material moved to ``CellGrid.material`` (the CMS
+source sets ``GasMixture``); ``station_W0_Sec1_St1.tg`` from the sink differs
+from the generator's file only in comments, cell volume names and the honeycomb
+copy number; a new backend is a new module implementing three methods, and the
+core still imports no backend.
+
+---
+
+## ADR-024 — mplDTs builds geometry and patches, not events
+
+**Status:** accepted · 2026-11-08 (supersedes the event-layer part of ADR-016)
+**Context:** Phase 4 was planned as `mpldts/events/` with `Event`, `Track`,
+`Jet`, collections and `mpldts.event/1`. `DTPatternRecognition` already owns a
+richer, config-declared event model: `Event` is a typed bag of `Particle`
+records built from ROOT branches, expressions or callables, with per-type
+amounts, filters, sorters and cross-references; the plotting and GUI layers are
+configured from YAML. A second event model in mplDTs would be a duplicate
+source of truth, and the two packages would have to keep agreeing on it.
+**Decision:** mplDTs ships geometry, frames, patches and exporters only. The
+contract between the two packages is data, not classes: a table keyed by
+`(wheel, sector, station, superlayer, layer, wire)` plus value columns, accepted
+by `Station.set_cell_attrs`/`overlay` as `dict`, `list[dict]` or `DataFrame`.
+`AMDTSegments` stays as a thin view of that data over the frame graph; no
+`Track`, `Jet`, `Cone`, collection or event JSON is added.
+**Consequences:** Phase 4 shrinks from 3-5 days to one contract ticket; T-041
+and T-042 are retired; the segment classes keep their behaviour and are tested
+against the cell-data contract; dtpr can evolve its event model without a
+mplDTs release.
+
+---
+
+## ADR-025 — the downstream packages are part of the release gate
+
+**Status:** accepted · 2026-11-08
+**Context:** `DTPatternRecognition` and `DTG4Simulator` import a small, specific
+surface, and nothing on either side tests it: `StationsCache.get(..., dt_info=)`,
+`DTStationPatch`/`MultiDTSegmentsPatch` with `.station` and `._collections`,
+`AMDTSegments`, `station.super_layer(sl).layer(l).cell(w)` with
+`local_center`/`global_center` and `Layer._first_cell_id`, and
+`transformer.available_frames`. A rename inside mplDTs breaks them silently.
+**Decision:** mplDTs keeps a `test/downstream/` suite that imports exactly that
+surface and exercises it (one chamber, one overlay row, one patch per view, one
+segment); compatibility aliases stay API until 3.0. `FrameView.available_frames`
+must contain the legacy alias names as well as the frame ids, which is what the
+design promised and what 2.2.0-beta did (T-056). Each downstream package pins a
+tag, never a branch, and runs its own check against that tag.
+**Consequences:** one small test in the normal suite (no ROOT, no Qt), a patch
+release 2.5.1, and `DTPatternRecognition` moving its pin from `v2.2.0-beta` to
+that tag.
+
+---
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |
@@ -341,7 +414,7 @@ commit is an ancestor of `main` after the merge, so no history is rewritten.
 | Wire / cell | the XML `<Wire>` is the cell; no separate object | ADR-019 |
 | pyg4ometry | optional extra `mplDTs[g4]`, deferred | ADR-014 |
 | Output | `.tg` first, GDML later | ADR-015 |
-| Event objects | separate annotation layer; segments/tracks/jets | ADR-016 |
+| Event objects | none in mplDTs; `DTPatternRecognition` owns them | ADR-024 (supersedes ADR-016) |
 | Honeycomb/yoke | data; CSG in a backend | ADR-017 |
 | Merge into `main` | not before the maintainer approves; releases are tagged on the integration branch | ADR-022 |
 
@@ -354,7 +427,7 @@ None blocking the plan. The defaults were resolved in Rev 4 and recorded in
 |---|---|---|
 | O-01 | Compatibility horizon? | until 3.0 |
 | O-02 | Plotting: orientation-based phi/eta? | yes, keep `faceview` (ADR-021) |
-| O-03 | Event scope? | Segment/Track/Jet only; no hits/digis |
+| O-03 | Event scope? | none in mplDTs (ADR-024); dtpr keeps Segment/Track/Jet |
 | O-04 | Yoke: keep in simulator or a `.tg` CSG sink? | keep in simulator until Phase 6 |
 | O-05 | Phase 0 granularity? | six tickets; T-004 folded into T-003 |
 

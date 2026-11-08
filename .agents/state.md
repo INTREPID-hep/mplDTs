@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-08 02:10 (Europe/Madrid)
-**Branch:** `feature/phase-3-assemblies` (2.4.0)
+**Last updated:** 2026-11-08 (Europe/Madrid)
+**Branch:** `main` — merged by the maintainer at `2eac105` (tag `v2.5.0`); `origin/main` is still `c341e65`, unpushed
 **Repo:** `/home/destrada/mplDTs`
-**Plan:** `.agents/plan.md` Rev 4
+**Plan:** `.agents/plan.md` Rev 5
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-3 done — M2 tagged `v2.3.0`, M3 tagged `v2.4.0`; Phase 5 next
+**Current phase:** Phases 0-3 and 5 merged into `main` — M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`; Phase 4 optional, Phase 6 deferred
 
 ---
 
@@ -19,14 +19,15 @@
 | `prototype/parametric_poc_v1.py` | **removed** | superseded; boxes only |
 | `prototype/custom_station.png` | done | box (top) and tube (bottom) stations, phi/eta |
 | `.agents/` | done | this operating workspace |
-| Release tags | done | `v2.3.0` (refactor/v2-integration) and `v2.4.0` (feature/phase-3-assemblies) per ADR-022; `main` still `c341e65` |
+| Release tags | done | `v2.3.0`, `v2.4.0`, `v2.5.0` per ADR-022; `main` carries all three now (`2eac105`, `v2.5.0`) |
 | `.agents/pyg4ometry-readiness.md` | done | contract for the deferred backend |
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
-`build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033) |
-| pytest suite for geometry | **through Phase 3 (T-033)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples, assemblies, presets, attachments, structure; 154 pass, 2 skip |
+`build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
+`serialize.py` (JSON documents), `constructors.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
+| pytest suite for geometry | **through Phase 5 (T-054)** | `test/geometry/`: the Phase 0-3 suites plus builders, serialize and export (parity); 183 pass, 2 skip |
 
 The prototype verifies:
 
@@ -47,10 +48,14 @@ prototype has no wire fields either.
 
 ## 2. What does not exist yet
 
-- `mpldts/events/` (segments refactor, tracks, jets).
-- A JSON loader or validation (CLI is out of scope).
-- Any change to the `.tg` generator or a `TgSink`.
+- `mpldts/events/` — **not planned any more** (ADR-024). The event model
+  lives in `DTPatternRecognition`; mplDTs exposes geometry, patches and a
+  cell-data contract keyed by `(sl, l, w)` instead.
 - pyg4ometry anywhere (intentionally).
+- A CLI (T-053) and YAML: JSON documents plus the Python builders are enough.
+- The simulator switch to `TgSink`: T-005 (reopened 2026-11-08, unblocked by
+  the merge); the yoke takes its station solid and rotation names from the
+  same export.
 
 ---
 
@@ -61,7 +66,7 @@ prototype has no wire fields either.
 | `BUG-01` | ~~SL2 transform off by `√2·|SL_local_x|`~~ **fixed in T-022** | was 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); the frame chain is the node poses now and the cell centres match the XML |
 | `BUG-02` | ~~shared cache mutates cell data across events~~ **fixed in T-023** | was `StationsCache.get` writing on shared cells; the cache returns `Station.overlay()` now and `test_cache_overlays_isolate_cell_attributes` pins it |
 | `BUG-03` | ~~attribute-order-dependent XML parsing~~ **fixed in T-024** | was `element.attrib.values()` in `_geometry.py`; `Bounds`/`Wires` read explicit names and `test_bounds_and_wires_do_not_depend_on_attribute_order` pins it |
-| `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
+| `BUG-04` | ~~the generator reorders `bounds` as if every cell were a box~~ **fixed for the export path in T-052** | `TgSink` reads the shape (`dx/dy/dz`) and handles `Box` and `Tube`; the legacy `bounds` attribute keeps its historical meaning |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
 | `BUG-06` | ~~version metadata drift~~ **fixed in T-026** | was `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta; both are 2.3.0 now and `docs/conf.py` reads the package version |
 
@@ -81,12 +86,13 @@ was fixed in T-026: one version string, and the docs read it from the package.
 | OS / shell | WSL Ubuntu 24.04, bash |
 | Python | 3.12.3 |
 | Env used for runs | `/home/destrada/Geant4/DTG4Simulator/env` |
-| Installed `mpldts` | 2.2.0-beta in that env (`site-packages`); no XML indexes |
-| Source checkout | branch `refactor/v2-integration`, package `__version__` 2.3.0; indexed XML |
-| `pyproject.toml` version | 2.3.0 (matches `__version__` since T-026) |
+| Installed `mpldts` | 2.2.0-beta in that env (`site-packages`); no XML indexes — reinstall from the checkout or `v2.5.0` before measuring with it |
+| Source checkout | `main` at `2eac105` (`v2.5.0`), package `__version__` 2.5.0; indexed XML |
+| `pyproject.toml` version | 2.5.0 (matches `__version__` since T-026) |
 | pyg4ometry | **not installed**; deferred |
 | pytest | 9.2.0 in the env; `test` extra in `pyproject.toml` |
 | Dependencies available | numpy, pandas, matplotlib, pytransform3d, mplhep |
+| `DTPatternRecognition` (dtpr) | `/home/destrada/DTPatternRecognition`, own env (`./env`), installed `mpldts` 2.2.0-beta, pyproject pins `v2.2.0-beta`; event model + PyQt visualizer live there |
 
 The installed package and the checkout are **not identical**. State which one
 you used in any measurement.
@@ -118,6 +124,18 @@ Target after Phase 2: **< 20 ms per station** (met).
 
 ## 6. Last verification
 
+- `pytest -q` (2026-11-08, after T-054): 183 passed, 2 skipped, 3 deselected,
+  41 s.
+- `pytest -q -m slow` (2026-11-08): 3 passed, 184 deselected, 110 s.
+- `.tg` parity (T-052): `station_W0_Sec1_St1.tg` from the generator and from
+  `TgSink` have the same 621 placements, solids, materials and rotation
+  matrices; the worst position difference is 0.0 cm at 1e-4 cm precision.
+- `sphinx-build -E -b html docs` (Sphinx 9.1.1): build succeeded, no warnings
+  (builders, JSON, the export seam and the migration note documented).
+- Merge state (2026-11-08): `main` is `2eac105` with tag `v2.5.0`; the three
+  feature branches are ancestors of it; `origin/main` is still `c341e65`.
+  Nothing was pushed: promoting `main` is the maintainer decision.
+- `import mpldts` reports 2.5.0; `docs/conf.py` reads the package version.
 - `python prototype/parametric_poc.py` after removing the wire object → all
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
@@ -139,20 +157,35 @@ Target after Phase 2: **< 20 ms per station** (met).
 - Overlay: 7 ms plus 5 ms for 704 cell attributes, against 32 ms for a full
   `Station` on a warm source.
 - `smoke_tg.py` on the checkout: 621 placements, SL2 rotation present.
+- dtpr contract (2026-11-08): against the `2.5.0` checkout, `StationsCache`,
+  `get(..., dt_info=)` + overlay, `DTStationPatch` (phi/eta, `.station`) and
+  `MultiDTSegmentsPatch` all work.
+- **Regression found (2026-11-08):** `AMDTSegments(ref, reference_frame="Station"
+  or "SL13Center")` raises `ValueError` on 2.5.0 because `FrameView.
+  available_frames` returns frame ids only; 2.2.0-beta returned the alias names
+  too. Fixed by T-056 (2.5.1): `Station`, `SL13Center` and `SL1` all build
+  again, with finite centres.
 - `bench_station.py`: 6.1 / 2.1 / 3.0 ms for the three stations (was 0.65 / 0.46 / 0.57 s).
 
 ---
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0, M1 and M2 are
-done on `refactor/v2-integration` (2.3.0, `main` untouched):
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0...M3 and M5 are
+done and merged into `main` by the maintainer (`2eac105`, tag `v2.5.0`,
+2026-11-08); `origin/main` has not been pushed.
 
-1. the maintainer reviews `refactor/v2-integration`;
-2. Phase 3 starts on `feature/phase-3-assemblies` with `T-030` (assemblies and
-   custom 1-SL/5-SL stations); T-031...T-033 are planned behind it.
+1. `T-005` reopens on the simulator: pin `mplDTs @ v2.5.0`, switch
+   `generate_geometry_data.py` to `TgSink`, take the yoke station solid and
+   rotation names from the same export, re-run the one-station smoke;
+2. `T-006`: record the benchmark baseline on merged code;
+3. `T-040` (`test/downstream` + the cell-data contract) -> `T-043` (object
+   renderers: `DTObjectsPatch`) -> `T-055` (dtpr pinned to `v2.5.1`); `T-053`
+   (thin CLI) in parallel; `T-056` is done: 2.5.1 carries the legacy names in
+   `available_frames`, tag `v2.5.1` on `main`;
+4. Phase 6 (GDML) is an idea only (ADR-008/ADR-014).
 
-Nothing merges into `main` until the maintainer approves it.
+Only the maintainer pushes `main` and decides on 3.0.
 
 ---
 
@@ -166,11 +199,18 @@ Nothing merges into `main` until the maintainer approves it.
   material. (ADR-019)
 - **pyg4ometry:** optional extra `mplDTs[g4]`, deferred. (ADR-014)
 - **Output:** `.tg` first, GDML later via the same `VolumeSink`. (ADR-015)
-- **Events:** a separate annotation layer; optional Phase 4. (ADR-016)
+- **Events:** none in mplDTs — `DTPatternRecognition` owns the event model;
+  mplDTs exposes a cell-data contract and the segment views. (ADR-024,
+  supersedes ADR-016)
+- **Downstream is part of the gate:** `test/downstream` pins the dtpr surface
+  and the aliases stay API until 3.0. (ADR-025)
 - **Honeycomb/yoke:** station attachment / detector structure data; CSG is a
   backend concern. (ADR-017)
 - **Plan Rev 4:** specs-first, `VolumeSink` at the first exporter, CLI/YAML
   out, events optional. (ADR-018)
+- **Documents and exports:** a JSON document stores the spec only and is read
+  strictly; an exporter is a `VolumeSink` and owns its names; a solid needs a
+  material. (ADR-023)
 
 **Open:** none blocking the plan. Compatibility horizon 3.0, plotting
 orientation-based, event scope Segment/Track/Jet, yoke in simulator until

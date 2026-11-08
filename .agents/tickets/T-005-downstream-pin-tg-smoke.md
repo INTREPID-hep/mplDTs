@@ -1,10 +1,10 @@
 # T-005 — Downstream pin + `.tg` smoke test
 
-- **Status:** done
+- **Status:** ready (reopened 2026-11-08 — migrate the simulator to 2.5.0)
 - **Phase:** 0
 - **Epic:** E0 Safety net
 - **Depends on:** T-001
-- **Branch:** `feature/T-005-downstream-pin-tg-smoke`
+- **Branch:** `feature/T-005-tg-smoke` (DTG4Simulator)
 - **PR:** —
 - **Owner:** unassigned
 - **Labels:** downstream, compatibility
@@ -70,3 +70,16 @@ PY
 - 2026-11-06: done. `SuperLayer` alias added per super layer
   (`super_layer.py`); DTG4Simulator `requirements.txt` pin;
   `geometry/smoke_tg.py` passes (621 placements, SL2 rotation present).
+
+## Reopened (2026-11-08)
+
+The merge into `main` (`2eac105`, `v2.5.0`) unblocks the migration. Scope:
+
+- [ ] Pin `mplDTs @ v2.5.0` in `DTG4Simulator/requirements.txt` (still
+      `v2.2.0-beta`).
+- [ ] Switch `geometry/generate_geometry_data.py` to `TgSink`; the yoke takes
+      its station solid and rotation names from the same export (cells are
+      `DriftCell_<station>_<SL>`, rotations `RM_<root>_<n>`).
+- [ ] Update `geometry/smoke_tg.py` to the exporter names; the count stays
+      621 for `W0/Sec1/St1`.
+- [ ] Re-run the smoke and record the command in `.agents/commands.md`.

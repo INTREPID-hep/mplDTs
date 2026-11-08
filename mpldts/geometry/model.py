@@ -94,7 +94,7 @@ def build_station(spec, parent=None):
                         "cell",
                         Pose.translated(float(x), 0.0, 0.0),
                         grid.shape,
-                        None,
+                        grid.material,
                     )
                 )
     return station

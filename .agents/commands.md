@@ -8,8 +8,24 @@
 
 ## 0. Status
 
-**Plan Rev 4 approved 2026-11-06. Phase 0 is in progress; Phase 1 is not
-authorized.** `pytest` is the test entry point.
+**Plan Rev 5 approved 2026-11-06; Phases 0-3 and 5 merged into `main`
+(`2eac105`, `v2.5.0`).** `pytest` is the test entry point. Next: `T-005`
+(simulator), `T-006`, then the downstream contract (`T-056`, `T-040`, `T-055`).
+
+## 0b. The downstream package (DTPatternRecognition)
+
+```bash
+cd /home/destrada/DTPatternRecognition
+# check the contract against the mplDTs checkout, without touching the pin
+PYTHONPATH=/home/destrada/mplDTs ./env/bin/python -c \
+  "import dtpr.utils.dt_plot_functions, dtpr.utils.gui.artist_gui_manager; print('ok')"
+# its own suite (needs ROOT and the test ntuples)
+./env/bin/python -m pytest -q tests
+```
+
+The dtpr env has `mpldts` 2.2.0-beta installed and `pyproject.toml` pins
+`v2.2.0-beta`; `PYTHONPATH=/home/destrada/mplDTs` overrides the installed copy.
+T-055 moves the pin to `v2.5.1`.
 
 ---
 

@@ -1,12 +1,16 @@
 # Handoff — start here if you are new
 
-**Last updated:** 2026-11-07 (Europe/Madrid)
-**Previous session:** T-031...T-033 on `feature/phase-3-assemblies`: the M3
-gate is met and the branch is tagged `v2.4.0`.
-**Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
-merged); Phase 3 done on `feature/phase-3-assemblies` (2.4.0, tag `v2.4.0`).**
-**Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** Phase 5 — `T-051` (JSON schema) and `T-052` (`VolumeSink`/`TgSink`, `.tg` parity); Phase 4 events only on request.
+**Last updated:** 2026-11-08 (Europe/Madrid)
+**Previous session:** T-050...T-054 on `feature/phase-5-authoring`: the
+authoring path (builders, JSON) and the `.tg` export with parity; 2.5.0.
+**Current state:** **Phases 0-3 and 5 merged into `main` by the maintainer
+(`2eac105`, tag `v2.5.0`); `origin/main` is still `c341e65`, not pushed.**
+**Current checkpoint:** `CP-010` (M5) complete and merged.
+**Next action:** `T-005` on the simulator — pin `mplDTs @ v2.5.0` and switch
+`generate_geometry_data.py` to `TgSink`; then `T-006` (baseline). After that:
+`T-040` -> `T-043` (object renderers) -> `T-055` (the downstream contract
+with `DTPatternRecognition`) and `T-053` (thin CLI) in parallel. `T-056` is done:
+2.5.1, tag `v2.5.1` on `main`.
 
 ---
 
@@ -52,12 +56,21 @@ T-031 moved the CMS-only frames (`SectorRef`, `SL13Center`) into
 `mpldts/geometry/presets/cms.py` and takes the face factor from the pose.
 T-032 added honeycomb as an attachment (`AttachmentSpec`, `Node.attachments`,
 the panel derived by the CMS preset) and T-033 added `StructureSpec` as
-detector-structure data. Phase 3 is complete; M5 (authoring + exporters) is next.
+detector-structure data. Phase 3 is complete.
 
-Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
-`refactor/v2-integration` (2.3.0) and Phase 3 works on
-`feature/phase-3-assemblies`. **Nothing merges into `main` until the maintainer
-approves it.**
+Phase 5 is also complete, on `feature/phase-5-authoring` (2.5.0). T-052 put the
+backend seam in the library: `mpldts/export/base.py` walks the tree and folds
+the grouping frames into the placements, `export/tg.py` writes them as the
+Geant4 ASCII format the simulator reads, and the exported
+`station_W0_Sec1_St1.tg` has the same 621 placements, solids, materials and
+rotation matrices as the current generator (worst position difference 0.0 cm at
+1e-4 cm). T-051 added the JSON documents with a strict reader, T-050 the four
+short constructors, T-054 the docs, the tutorial example and the migration note.
+
+Branch policy: `feature/phase-2-runtime` is frozen; `refactor/v2-integration`
+(2.3.0), `feature/phase-3-assemblies` (2.4.0) and `feature/phase-5-authoring`
+(2.5.0) are merged into `main` by the maintainer. New work branches from
+`main`, and **nothing merges into `main` until the maintainer approves it.**
 
 Commands:
 
@@ -69,7 +82,8 @@ PYTHONPATH=/home/destrada/mplDTs \
 
 Full oracle and the builder sweep: add `-m slow` (250 chambers, seconds).
 
-Phase 3 does not start before the maintainer reviews M2; M2 has been green since 2026-11-06.
+M5 has been green since 2026-11-08 and is merged into `main` (`2eac105`);
+the simulator work continues on `feature/T-005-tg-smoke`.
 
 ---
 
@@ -81,10 +95,12 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - `mpldts/patches/` — plotting must keep working; the phi/eta choice follows
   the super layer orientation since T-030, any further change needs an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
-- `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and
-  the `VolumeSink`/`.tg` parity.
+- `DTG4Simulator/geometry/generate_geometry_data.py` — T-005 switches it to
+  `TgSink`; keep the current CMS conventions until that ticket lands.
 - `pyproject.toml` runtime dependencies — no pyg4ometry, no heavy extras.
 - No separate wire object: the XML `<Wire>` is the cell entry.
+- `DTPatternRecognition` — its event model, plotting and GUI; do not add one
+  to mplDTs (ADR-024). dtpr only consumes geometry, patches and the overlay.
 - No CSG for the yoke in the core.
 
 ---
@@ -103,11 +119,17 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - Backward compatibility until 3.0 (ADR-010).
 - Physical policy: station, cells, honeycomb, yoke (ADR-011).
 - `.tg` first, GDML later (ADR-015).
-- Event objects are annotations (ADR-016).
+- No event layer in mplDTs: the contract is a `(sl, l, w)` cell-data table
+  and the segment views; the event model lives in `DTPatternRecognition`
+  (ADR-024, supersedes ADR-016).
+- The downstream packages are part of the release gate (`test/downstream`,
+  aliases stay API until 3.0) (ADR-025).
 - Honeycomb/yoke are data; CSG in a backend (ADR-017).
 - phi/eta follows the super layer orientation; `faceview` is kept (ADR-021).
 - Releases are tagged on the integration branch; `main` moves on approval
-  (ADR-022, `v2.3.0` at `8997ad7`).
+  (ADR-022: `v2.3.0`, `v2.4.0`, `v2.5.0`; `main` is `2eac105` now).
+- A JSON document stores the spec only and is read strictly; an exporter is a
+  `VolumeSink` and owns its names; a solid needs a material (ADR-023).
 
 If you need to change one, write a superseding ADR and ask the maintainer.
 

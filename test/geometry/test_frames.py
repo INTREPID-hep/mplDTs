@@ -184,6 +184,43 @@ def test_available_frames_and_str():
     assert str(view).startswith('FrameView:')
 
 
+def test_available_frames_keeps_the_legacy_names():
+    # T-056: AMDTSegment checks the reference frame here before transforming,
+    # so the names must be members, not only their ids. Use the station's own
+    # view: the virtual frames live in the graph the constructor builds.
+    from mpldts.geometry import Station
+
+    view = Station(*reference.REPRESENTATIVE[1]).transformer
+    frames = view.available_frames
+    for name in (
+        "Station",
+        "CMS",
+        "World",
+        "SL1",
+        "SL2",
+        "SL3",
+        "StationNvPhi",
+        "StationNvEta",
+        "SectorRef",
+        "SL13Center",
+    ):
+        assert name in frames, name
+    assert view.graph.root in frames
+
+
+def test_am_segments_build_from_the_legacy_reference_frames():
+    from mpldts.geometry import AMDTSegments, Station
+
+    chamber = Station(*reference.REPRESENTATIVE[1])
+    for frame in ("Station", "SL13Center", "SL1"):
+        segments = AMDTSegments(
+            [{"parent": chamber, "sl": 1, "position": 10.0, "angle": 5.0}],
+            reference_frame=frame,
+        )
+        assert np.all(np.isfinite(segments[0].local_center)), frame
+        assert np.all(np.isfinite(segments[0].global_center)), frame
+
+
 def test_the_legacy_station_chain_agrees():
     from mpldts.geometry import Station
 

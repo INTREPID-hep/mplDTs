@@ -65,7 +65,8 @@ def test_grouping_nodes_have_no_shape(source):
         assert layer.shape is None
         assert layer.material is None
         assert isinstance(cell.shape, Box)
-        assert cell.material is None
+        # the gas of the cell grid, not of the grouping layer (T-052)
+        assert cell.material == "GasMixture"
 
 
 def test_cells_sit_on_their_grid(source):
