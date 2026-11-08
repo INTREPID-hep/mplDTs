@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runtime model &mdash; mplDTs 2.6.0 documentation</title>
+  <title>Runtime model &mdash; mplDTs 2.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=ae39cb24"></script>
+      <script src="../../_static/documentation_options.js?v=dfec817d"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -703,9 +703,16 @@ solids, the volumes and the placements only: the world volume and the identity
 rotation <cite>R0</cite> belong to the document that includes the file. Volume and
 rotation names are qualified by the exported root, so several station files can
 be included in one document without redefining anything.</p>
+<p>The names are part of the contract with the reader: a consumer whose Geant4 code
+parses the volume names passes <code class="docutils literal notranslate"><span class="pre">name_of</span></code> to <a class="reference internal" href="#mpldts.export.tg.TgSink" title="mpldts.export.tg.TgSink"><code class="xref py py-class docutils literal notranslate"><span class="pre">TgSink</span></code></a>
+and keeps its own scheme. <code class="docutils literal notranslate"><span class="pre">DTG4Simulator</span></code> does exactly that, because its
+sensitive detectors decode the chamber from <code class="docutils literal notranslate"><span class="pre">Station_W&lt;w&gt;_Sec&lt;s&gt;_St&lt;n&gt;</span></code>, the
+super layer and the cells per layer from
+<code class="docutils literal notranslate"><span class="pre">DriftCell_W&lt;w&gt;_Sec&lt;s&gt;_St&lt;n&gt;_SL&lt;n&gt;_&lt;encoding&gt;</span></code>, and the layer and wire from
+the copy number of the cell volume (T-005, T-057).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mpldts.export.tg.TgSink">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mpldts.export.tg.</span></span><span class="sig-name descname"><span class="pre">TgSink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'world'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/export/tg.html#TgSink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.export.tg.TgSink" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mpldts.export.tg.</span></span><span class="sig-name descname"><span class="pre">TgSink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'world'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_of</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/export/tg.html#TgSink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.export.tg.TgSink" title="Link to this definition"></a></dt>
 <dd><p>Write the placements of one tree as a Geant4 ASCII geometry file.</p>
 </dd></dl>
 

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mpldts.export.tg &mdash; mplDTs 2.6.0 documentation</title>
+  <title>mpldts.export.tg &mdash; mplDTs 2.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=ae39cb24"></script>
+      <script src="../../../_static/documentation_options.js?v=dfec817d"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -307,6 +307,16 @@
 <span class="sd">`DriftCell_&lt;station&gt;_&lt;SL&gt;` and attachments `&lt;name&gt;_&lt;station&gt;`. Because the</span>
 <span class="sd">simulator includes every station file in one document, names and rotation</span>
 <span class="sd">matrices are qualified by the exported root name, so two files never collide.</span>
+
+<span class="sd">A consumer whose Geant4 code parses those names passes `name_of`: a callable</span>
+<span class="sd">`node -&gt; str or None` overriding the base name of a node (None keeps the</span>
+<span class="sd">default). DTG4Simulator decodes `DriftCell_&lt;w&gt;_Sec&lt;s&gt;_St&lt;n&gt;_SL&lt;n&gt;_&lt;encoding&gt;`</span>
+<span class="sd">from the volume name, and the layer and wire from the copy number, so it supplies</span>
+<span class="sd">both sides of that contract with the hook (T-057).</span>
+
+<span class="sd">Copy numbers restart for every volume placed in a mother, so a cell volume</span>
+<span class="sd">numbers its copies 1..n exactly as the reference CMS generator does; the</span>
+<span class="sd">downstream sensitive detectors decode the cell from that copy number.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -394,10 +404,12 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">TgSink</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write the placements of one tree as a Geant4 ASCII geometry file."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">world</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"world"</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">world</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"world"</span><span class="p">,</span> <span class="n">name_of</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1">#: a path or any object with `write` (a StringIO in tests)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_world</span> <span class="o">=</span> <span class="n">_clean</span><span class="p">(</span><span class="n">world</span><span class="p">)</span>
+        <span class="c1">#: optional `node -&gt; str or None` override of the volume base name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_of</span> <span class="o">=</span> <span class="n">name_of</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -424,8 +436,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_emit_volume</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">pose_in_mother</span><span class="o">.</span><span class="n">rotation</span> <span class="o">@</span> <span class="n">_AXIS_ALIGNMENT</span><span class="p">[</span><span class="n">_solid_axis</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
         <span class="n">mother_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mother_name</span><span class="p">(</span><span class="n">mother</span><span class="p">)</span>
-        <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mother_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_copies</span><span class="p">[</span><span class="n">mother_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span>
+        <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copies</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">mother_name</span><span class="p">,</span> <span class="n">volume</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_copies</span><span class="p">[(</span><span class="n">mother_name</span><span class="p">,</span> <span class="n">volume</span><span class="p">)]</span> <span class="o">=</span> <span class="n">copy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="s2">":PLACE </span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%.6f</span><span class="s2">*cm </span><span class="si">%.6f</span><span class="s2">*cm </span><span class="si">%.6f</span><span class="s2">*cm"</span>
             <span class="o">%</span> <span class="p">(</span>
@@ -469,6 +481,10 @@
         <span class="k">return</span> <span class="n">name</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_base_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_of</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">custom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_of</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">custom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_clean</span><span class="p">(</span><span class="n">custom</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">or</span> <span class="n">node</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"detector"</span><span class="p">,</span> <span class="s2">"station"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">_clean</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">station</span> <span class="o">=</span> <span class="n">_ancestor</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"station"</span><span class="p">)</span>
