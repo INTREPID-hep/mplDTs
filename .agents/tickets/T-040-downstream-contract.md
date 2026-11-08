@@ -48,10 +48,11 @@ and not tested.
 
 ## Acceptance criteria
 
-- [ ] `pytest -q test/downstream` passes with no ROOT and no Qt installed.
-- [ ] The test fails if any name in the contract list is renamed or removed.
-- [ ] The cell-data contract is documented with the required keys.
-- [ ] The suite runs in the normal `pytest -q` run (< 2 s).
+- [x] `pytest -q test/downstream` passes with no ROOT and no Qt installed.
+- [x] The test fails if any name in the contract list is renamed or removed.
+- [x] The cell-data contract is documented with the required keys.
+- [x] The suite runs in the normal `pytest -q` run (< 3 s: 1.2 s of it is
+      the first XML parse, the contract itself is milliseconds).
 
 ## Verification
 
@@ -69,3 +70,10 @@ PYTHONPATH=/home/destrada/mplDTs \
 ## Progress
 
 - 2026-11-08: opened after reading dtpr; scope cut by ADR-024.
+- 2026-11-08: done. `test/downstream/test_dtpr_contract.py`, 7 tests: the
+  cache/overlay split (the cached chamber never takes the attribute), the three
+  accepted shapes, `DTStationPatch` on both faces (`.station`, two
+  `._collections`), `MultiDTSegmentsPatch` built from `Station` and
+  `SL13Center`, the layer id bounds and the cell centres. `testpaths`
+  extended; `docs/src/geometry/runtime.rst` gained "The downstream contract"
+  (surface, keys, shapes, never-mutated cache) and the 2.5.1 bullet.

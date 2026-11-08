@@ -1,4 +1,4 @@
-# T-055 — `DTPatternRecognition` migration to 2.5.1
+# T-055 — `DTPatternRecognition` migration to 2.6.0
 
 - **Status:** ready
 - **Phase:** 4
@@ -16,11 +16,11 @@
 says 2.1.0 — the metadata drifted). With
 `PYTHONPATH=/home/destrada/mplDTs` the plotting imports and the station/cell/
 patch/segment contract all work against the `2.5.0` checkout except
-`AMDTSegments(reference_frame=...)`, which T-056 fixes.
+`AMDTSegments(reference_frame=...)`, which T-056 fixes in 2.5.1.
 
 ## Scope
 
-- Bump the pin to the tag that carries T-056 (`v2.5.1`), not a branch.
+- Bump the pin to the tag that carries T-056 and T-043 (`v2.6.0`), not a branch.
 - Reinstall the env from the pin so the installed copy matches it (and the
   metadata stops reporting 2.1.0).
 - Run the dtpr suite and the visualizer smoke (headless, `DTPR_TEST_AUTOCLOSE_GUI`).
@@ -39,7 +39,7 @@ patch/segment contract all work against the `2.5.0` checkout except
 
 ## Acceptance criteria
 
-- [ ] `pyproject.toml` pins the tag; `pip show mplDTs` reports 2.5.1.
+- [ ] `pyproject.toml` pins the tag; `pip show mplDTs` reports 2.6.0.
 - [ ] `pytest -q tests` in dtpr is green (or each failure is triaged in this
       ticket with a reason).
 - [ ] The visualizer opens one event, plots the station and a segment patch,

@@ -52,9 +52,10 @@ the downstream contract with `DTPatternRecognition` (ADR-024), `CP-009`.
 Phase 6 (`CP-011`) is deferred.
 
 **Current checkpoint:** `CP-010 — M5 authoring + .tg` complete and merged
-(2026-11-08). Next: `T-005` (simulator migration), `T-006` (baseline), then
-`T-040` -> `T-043` (object renderers) -> `T-055`; `T-053` (CLI) runs in
-parallel. `T-056` is done (2.5.1, tag `v2.5.1`).
+(2026-11-08). Next: `T-055` (dtpr pinned to `v2.6.0`, with the object
+renderers in use); `T-005`/`T-006` on the simulator and `T-053` (CLI) run in
+parallel. `T-056` (2.5.1), `T-040` (the contract test) and `T-043` (2.6.0)
+are done.
 
 ---
 
@@ -85,10 +86,10 @@ parallel. `T-056` is done (2.5.1, tag `v2.5.1`).
 | T-051 | JSON documents + strict validation | 5 | done | T-030 | [T-051](tickets/T-051-json-schema.md) |
 | T-052 | `VolumeSink` + `TgSink` + `.tg` parity | 5 | done | T-030 | [T-052](tickets/T-052-tg-sink.md) |
 | T-054 | Docs, tutorial, migration note, 2.5.0 | 5 | done | T-050...T-052 | [T-054](tickets/T-054-docs-tutorial.md) |
-| T-040 | Downstream cell-data contract + `test/downstream` | 4 | ready | T-022, T-052 | [T-040](tickets/T-040-downstream-contract.md) |
-| T-043 | Object renderers (`DTObjectsPatch`) | 4 | ready | T-022, T-023 | [T-043](tickets/T-043-object-renderers.md) |
+| T-040 | Downstream cell-data contract + `test/downstream` | 4 | done | T-022, T-052 | [T-040](tickets/T-040-downstream-contract.md) |
+| T-043 | Object renderers (`DTObjectsPatch`) | 4 | done | T-022, T-023 | [T-043](tickets/T-043-object-renderers.md) |
 | T-053 | Thin CLI (`convert`, `info`, `plot`) | 5 | ready | T-051, T-052 | [T-053](tickets/T-053-cli.md) |
-| T-055 | `DTPatternRecognition` migration to 2.5.1 | 4 | ready | T-040, T-043, T-056 | [T-055](tickets/T-055-dtpr-migration.md) |
+| T-055 | `DTPatternRecognition` migration to 2.6.0 | 4 | ready | T-040, T-043, T-056 | [T-055](tickets/T-055-dtpr-migration.md) |
 | T-056 | `FrameView.available_frames` accepts legacy aliases | 4 | done | T-021 | [T-056](tickets/T-056-frame-aliases.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
