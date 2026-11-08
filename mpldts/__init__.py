@@ -1,2 +1,2 @@
-__version__ = "2.9.1"
+__version__ = "3.0.0"
 __doc__ = "Set of tools to produce CMS DTs matplotlib patches"

@@ -1,55 +1,25 @@
-"""Legacy CMS station wrapper (T-022).
+"""Station view: what the plotting patches draw (T-022, T-030).
 
-A Station is a view over the T-011 source and the T-020 node tree:
+A Station is a view over two things:
 
-    CMSXMLSource.record()   ids, local positions and bounds, verbatim XML
-    CMSXMLSource.station()  StationSpec
-    build_station()         node tree with parent-relative poses
+    build_station(spec)     node tree, with parent-relative poses
     FrameGraph / FrameView  every frame, including the plotting ones
 
-The data attributes keep the XML values (conventions section 7.3): the frame
-chain never reads them, it is the node poses. That is what removes BUG-01.
+It holds no per-event data. The values a patch colours are the `(sl, l, w)`
+table the patch is given (ADR-024), so one station can draw an event without
+being copied and without any cell carrying a mutable attribute.
 
-A station that is not in the CMS XML is built with :meth:`Station.from_spec`:
-there is no record, so the record-shaped values the legacy classes read are
-derived from the node tree (T-030).
+Any `StationSpec` builds a station (T-030). A CMS chamber reaches this class
+through `CMSXMLSource().station(wheel, sector, station)`.
 """
 
-from copy import deepcopy
-import threading
-import warnings
-from typing import Any, Optional
-
 import numpy as np
-from pandas import DataFrame
 
-from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameGraph, FrameView
 from mpldts.geometry.model import build_station
-from mpldts.geometry.presets import cms
-from mpldts.geometry.sources.cms_xml import CMSXMLSource
 from mpldts.geometry.specs import Pose
 from mpldts.geometry.super_layer import SuperLayer
-
-_SOURCE = None
-
-
-def _source():
-    """The CMS XML source of the package geometry, parsed once."""
-    global _SOURCE
-    if _SOURCE is None:
-        _SOURCE = CMSXMLSource()
-    return _SOURCE
-
-
-def station_for(raw_id):
-    """The Station holding the XML element with this rawId (legacy constructors)."""
-    try:
-        key = _source().chamber_of(raw_id)
-    except KeyError:
-        raise ValueError("rawId %r is not a CMS geometry element" % (raw_id,)) from None
-    return Station(*key)
 
 
 def _unit(vector):
@@ -66,8 +36,13 @@ def _face_from_pose(node):
 
 
 def _add_natural_views(graph, node, face):
-    """Register StationNvPhi and StationNvEta for a station whose face orientation
-    factor is that value; the plotting patches invert the local views through them."""
+    """Register StationNvPhi, StationNvEta and SL13Center.
+
+    The two views are the ones the plotting patches invert through; the face
+    orientation factor is the value stated by the pose. SL13Center is the
+    geometrical centre of the outermost super layers, which the AM trigger
+    primitives are measured from (AMDTSegments' reference frame).
+    """
     station_frame = node.frame_id
 
     # phi view: a rotation, the station frame to the view frame
@@ -85,12 +60,43 @@ def _add_natural_views(graph, node, face):
         station_frame + "/StationNvEta", station_frame, Pose(np.column_stack([ex, ey, ez]).T)
     )
 
+    # centre of the outermost super layers
+    if node.children:
+        first = node.children[0].pose.translation
+        last = node.children[-1].pose.translation
+        graph.add_virtual(
+            station_frame + "/SL13Center", station_frame, Pose.translated(*((first + last) / 2.0))
+        )
 
-def _bounds(shape):
-    """(width, thickness, length) of a primitive, or zeros for a grouping frame."""
-    if shape is None:
-        return (0.0, 0.0, 0.0)
-    width, length, thickness = shape.aabb()
+
+def _extent(node):
+    """The eight corners of a node box, in the node frame.
+
+    A primitive states its box; a grouping frame (the CMS super layers and
+    layers carry no solid of their own) takes the box that contains its
+    children, so the plotting patches still draw its outline.
+    """
+    if node.shape is not None:
+        width, length, thickness = node.shape.aabb()
+        half = np.array([width, length, thickness]) / 2.0
+        return np.array(
+            [
+                [sx * half[0], sy * half[1], sz * half[2]]
+                for sx in (-1.0, 1.0)
+                for sy in (-1.0, 1.0)
+                for sz in (-1.0, 1.0)
+            ]
+        )
+    if not node.children:
+        return np.zeros((1, 3))
+    to_node = node.world_pose.inverse()
+    return np.vstack([to_node.apply(node.world_pose.apply(_extent(child))) for child in node.children])
+
+
+def _bounds(node):
+    """(width, thickness, length) of a node, in the node frame."""
+    corners = _extent(node)
+    width, length, thickness = corners.max(axis=0) - corners.min(axis=0)
     return (float(width), float(thickness), float(length))
 
 
@@ -106,11 +112,11 @@ def _plane_local(position, axis, across):
 
 
 def _record_for(node):
-    """The record shape the legacy classes read, derived from a node tree.
+    """The record shape the view classes read, derived from a node tree.
 
-    A station built from a spec has no XML record. The local positions are taken
-    in the station frame and the globals from the composed world pose; the raw
-    ids only have to be unique, they look the children up.
+    The local positions are taken in the station frame and the globals from the
+    composed world pose; the raw ids only have to be unique, they look the
+    children up.
     """
     station = node.world_pose
     to_station = station.inverse()
@@ -124,7 +130,7 @@ def _record_for(node):
         "local": local(node),
         "global": station.translation,
         "direction": station.rotation[:, 2],
-        "bounds": _bounds(node.shape),
+        "bounds": _bounds(node),
         "super_layers": [],
     }
     for super_layer in node.children:
@@ -135,7 +141,7 @@ def _record_for(node):
             "number": int(super_layer.name[2:]),
             "local": local(super_layer),
             "global": super_layer.world_pose.translation,
-            "bounds": _bounds(super_layer.shape),
+            "bounds": _bounds(super_layer),
             "layers": [],
         }
         for layer in super_layer.children:
@@ -145,7 +151,7 @@ def _record_for(node):
                     "number": int(layer.name[1:]),
                     "local": local(layer),
                     "global": layer.world_pose.translation,
-                    "bounds": _bounds(layer.shape),
+                    "bounds": _bounds(layer),
                     "cells": [],
                     "cell_locals": {
                         int(cell.name[1:]): _plane_local(local(cell), axis, across)
@@ -157,106 +163,35 @@ def _record_for(node):
     return record
 
 
-# ponytail: unbounded per-chamber cache (250 entries at most); add an LRU only
-# if a long-lived process plots every chamber and memory matters.
-_BUILT = {}
-
-
-def _built(wheel, sector, station):
-    """(record, node, graph) of a chamber, built once and shared by its views.
-
-    The node tree and the graph are immutable geometry (ADR-007); a Station is
-    a view over them. The first build of a chamber is 20-60 ms, a later view a
-    few milliseconds.
-    """
-    key = (wheel, sector, station)
-    built = _BUILT.get(key)
-    if built is not None:
-        return built
-    source = _source()
-    record = source.record(wheel, sector, station)
-    spec = cms.with_attachments(source.station(wheel, sector, station), record)
-    node = build_station(spec)
-    graph = FrameGraph()
-    graph.add_nodes(node)
-    _add_natural_views(graph, node, _face_from_pose(node))
-    cms.add_frames(graph, node, record, wheel, sector)
-    built = _BUILT[key] = (record, node, graph)
-    return built
-
-
 class Station(DTFrame):
     """
-    Class representing a CMS Drift Tube Chamber.
+    A CMS Drift Tube chamber, or any other station, as a drawing view.
 
     Attributes
     ----------
-        wheel : int
-            Geometrical position within CMS.
-        sector : int
-            Geometrical position within CMS.
-        number : int
-            Station type (1: MB1, 2: MB2, 3: MB3, or 4: MB4).
-        name : str
-            Name of the station. Returns "Wheel {wheel}, Sector {sector}, Station {number}".
         super_layers : list
             List of super layers in the station.
 
         Others inherit from ``mpldts.geometry.DTFrame``... (e.g. id, local_center, global_center, direction, etc.)
     """
 
-    def __init__(self, wheel, sector, station, dt_info=None):
-        """
-        Constructor of the Station class.
-
-        :param wheel: Wheel position within CMS.
-        :type wheel: int
-        :param sector: Sector position within CMS.
-        :type sector: int
-        :param station: Station type (1: MB1, 2: MB2, 3: MB3, or 4: MB4).
-        :type station: int
-        :param dt_info: Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
-                or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
-        :type dt_info: dict, list of dict, or pandas.DataFrame.
-        """
-        deprecated(
-            "Station(wheel, sector, station)",
-            "CMSXMLSource().station(wheel, sector, station) and build_station(spec), "
-            "or Station.from_spec(spec)",
-        )
-
-        # == Chamber related parameters
-        self.wheel = wheel
-        self.sector = sector
-        self.number = station
-        self._name = None
-
-        try:
-            record, node, graph = _built(wheel, sector, station)
-        except KeyError:
-            raise ValueError(
-                "chamber Wh:%d St:%d Se:%d is not in the CMS geometry" % (wheel, station, sector)
-            ) from None
-
-        self._bind(record, node, graph)
-
-        # == Set the drift cell attributes
-        if dt_info is not None:
-            self.set_cell_attrs(dt_info)
-
     @classmethod
-    def from_spec(cls, spec, dt_info=None):
-        """A Station view over any StationSpec, without the CMS cache (T-030).
+    def from_spec(cls, spec, wheel=None, sector=None, number=None):
+        """A Station view over any StationSpec: the one way to build a station.
 
-        The node tree and the frame graph are built here. The station has no XML
-        record, so the values the legacy classes read (local centres, bounds,
-        direction, raw ids) are derived from the node tree.
+        The node tree and the frame graph are built here, and the values the
+        view classes read (local centres, bounds, direction) are derived from
+        the node tree.
 
         :param spec: The station to build.
         :type spec: StationSpec
-        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
-        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
+        :param wheel: Wheel of the CMS chamber this station is, for the callers
+            that label a plot with it (default None: not a CMS chamber).
+        :type wheel: int, optional
+        :param sector: Sector of the CMS chamber, as for wheel.
+        :type sector: int, optional
+        :param number: Station type of the CMS chamber, as for wheel.
+        :type number: int, optional
         :return: The station.
         :rtype: Station
         """
@@ -266,11 +201,9 @@ class Station(DTFrame):
         _add_natural_views(graph, node, _face_from_pose(node))
 
         station = object.__new__(cls)
-        station._wheel, station._sector, station._number = 0, 0, 0
+        station._wheel, station._sector, station._number = wheel, sector, number
         station._name = spec.name
         station._bind(_record_for(node), node, graph)
-        if dt_info is not None:
-            station._set_cell_attrs(dt_info)
         return station
 
     def _bind(self, record, node, graph):
@@ -286,7 +219,7 @@ class Station(DTFrame):
         self._graph = graph
         self.transformer = FrameView(graph, node)
 
-        # rawId -> (node, record), for the legacy child constructors
+        # rawId -> (node, record), for the child views
         self._parts = {}
         for sl_record, sl_node in zip(record["super_layers"], node.children):
             self._parts[sl_record["raw_id"]] = (sl_node, sl_record)
@@ -303,9 +236,8 @@ class Station(DTFrame):
     @property
     def wheel(self):
         """
-        Wheel position within CMS.
+        Wheel position within CMS, or None for a station that is not a CMS chamber.
 
-        :return: Wheel position.
         :rtype: int
         """
         return self._wheel
@@ -313,9 +245,8 @@ class Station(DTFrame):
     @property
     def sector(self):
         """
-        Sector position within CMS.
+        Sector position within CMS, or None for a station that is not a CMS chamber.
 
-        :return: Sector position.
         :rtype: int
         """
         return self._sector
@@ -323,15 +254,11 @@ class Station(DTFrame):
     @property
     def name(self):
         """
-        Name of the station.
+        Name of the station: the name of its spec.
 
-        :return: Name of the station: "Wheel {wheel}, Sector {sector}, Station {number}" for a CMS
-            chamber, the spec name for a station built from a spec.
         :rtype: str
         """
-        if self._name is not None:
-            return self._name
-        return f"Wheel {self._wheel}, Sector {self._sector}, Station {self._number}"
+        return self._name
 
     @property
     def super_layers(self):
@@ -342,18 +269,6 @@ class Station(DTFrame):
         :rtype: list
         """
         return self._super_layers
-
-    @property
-    def face_orientation_factor(self):
-        """
-        Get the face orientation factor of the station. It is -1 for negative wheels, 1 for positive
-        wheels, and it depends on the sector for wheel 0 (it is -1 for sectors 1, 4, 5, 8, 9, 12,
-        and 13, and 1 otherwise). Details in https://dt-sx5.web.cern.ch/dt-sx5/run/docs/050912DT_type_naming.pdf
-
-        :return: Face orientation factor.
-        :rtype: int
-        """
-        return cms.face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """
@@ -374,213 +289,3 @@ class Station(DTFrame):
             raise ValueError(
                 "rawId %r is not a super layer or layer of station %s" % (raw_id, self.name)
             ) from None
-
-    # == Setters
-
-    @wheel.setter
-    def wheel(self, value):
-        """
-        Set the wheel position.
-
-        :param value: Wheel position.
-        :type value: int
-        :raises ValueError: If the value is not between -2 and 2.
-        """
-        if value < -2 or value > 2:
-            raise ValueError("Wheel value must be between -2 and 2")
-        self._wheel = value
-
-    @sector.setter
-    def sector(self, value):
-        """
-        Set the sector position.
-
-        :param value: Sector position.
-        :type value: int
-        :raises ValueError: If the value is not between 1 and 14.
-        """
-        if value < 1 or value > 14:
-            raise ValueError("Sector value must be between 1 and 14")
-        else:
-            self._sector = value
-
-    @DTFrame.number.setter
-    def number(self, value):
-        """
-        Set the station type.
-
-        :param value: Station type.
-        :type value: int
-        :raises ValueError: If the value is not between 1 and 4.
-        """
-        if value < 1 or value > 4:
-            raise ValueError("Station value must be between 1 and 4")
-        self._number = value
-
-    def set_cell_attrs(self, dt_info):
-        """
-        Set the attributes for the drift cells in the station.
-
-        .. deprecated:: 2.9
-           3.0 removes it. The per-event data is the (sl, l, w) cell-data
-           table of ADR-024; the event model lives in DTPatternRecognition.
-        """
-        deprecated(
-            "Station.set_cell_attrs(dt_info)",
-            "the (sl, l, w) cell-data table of ADR-024",
-        )
-        self._set_cell_attrs(dt_info)
-
-    def _set_cell_attrs(self, dt_info):
-        """
-        Set the attributes for the drift cells in the station.
-
-        :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
-                or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-                layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
-        :type dt_info: dict, list, or pandas.DataFrame
-
-        .. note::
-            This writes on this station's own cells. On a station shared through
-            :class:`StationsCache` use :meth:`overlay` instead: the cache hands
-            the same instance to every caller.
-        """
-        if isinstance(dt_info, dict):
-            info = [deepcopy(dt_info)]
-        elif isinstance(dt_info, DataFrame):
-            info = dt_info.to_dict(orient="records")
-        elif isinstance(dt_info, list):
-            info = deepcopy(dt_info)
-        else:
-            raise TypeError(
-                "The drift time information must be a dictionary, a list of dictionaries, or a pandas DataFrame."
-            )
-
-        for info_item in info:
-            sl = info_item.pop("sl", None)
-            l = info_item.pop("l", None)
-            w = info_item.pop("w", None)
-            if not all([sl, l, w]):
-                raise ValueError(
-                    "The drift cell information must contain the super layer, layer, and cell identifiers."
-                )
-            super_layer = self.super_layer(sl)
-
-            if super_layer is None:
-                warnings.warn(f"Super layer {sl} does not exist in station {self.name}.")
-                continue
-
-            cell = self.super_layer(sl).layer(l).cell(w)
-
-            for key, value in info_item.items():
-                setattr(cell, key, value)
-
-    def overlay(self, dt_info=None):
-        """
-        A per-event view of this station: the same geometry, its own cell attributes.
-
-        The node tree and the frame graph are shared with this station, so an
-        overlay costs a fraction of a full build; the super layers, layers and
-        cells are new objects, so setting an attribute on an overlay cell never
-        reaches the station or another overlay.
-
-        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
-        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
-        :return: The overlay station.
-        :rtype: Station
-        """
-        deprecated(
-            "Station.overlay(dt_info)",
-            "the (sl, l, w) cell-data table of ADR-024",
-        )
-        view = object.__new__(type(self))
-        view.__dict__.update(self.__dict__)
-        view.transformer = FrameView(self._graph, self._node)
-        view._super_layers = [SuperLayer(rawId=sl.id, parent=view) for sl in self._super_layers]
-        if dt_info is not None:
-            view._set_cell_attrs(dt_info)
-        return view
-
-
-if __name__ == "__main__":
-    # This is to check that nothing fails
-    st = Station(
-        wheel=-2,
-        sector=1,
-        station=2,
-        dt_info=[
-            {"sl": 1, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 1, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 1, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 1, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
-            {"sl": 3, "l": 1, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 3, "l": 2, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 3, "l": 3, "w": 10, "time": 10, "size": 2, "other": 34},
-            {"sl": 3, "l": 4, "w": 20, "time": 10, "size": 2, "other": 34},
-        ],
-    )
-    print(st)
-    for sl in st.super_layers:
-        print("\t", sl)
-        for l in sl.layers:
-            print(2 * "\t", l)
-            print(3 * "\t", l.cell(l._first_cell_id))
-            print(3 * "\t", l.cell(len(l.cells) - 1))
-    print(
-        "\t",
-        f"properties contained into cells: {st.super_layer(1).layer(1).cells[0].__dict__.keys()}",
-    )
-
-
-class StationsCache:
-    """Singleton cache for Station objects to avoid recreating expensive geometry."""
-    
-    _instance = None
-    _lock = threading.Lock()
-    
-    def __new__(cls):
-        if cls._instance is None:
-            with cls._lock:
-                # Double-check locking pattern
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
-                    cls._instance._cache = {}
-                    cls._instance._cache_lock = threading.Lock()
-        return cls._instance
-
-    def get(self, wh: int, sc: int, st: int, dt_info: Optional[Any] = None) -> Optional[Station]:
-        """The cached station of a chamber, or a per-event overlay of it.
-
-        The cached station is never mutated: when `dt_info` is given the
-        result is :meth:`Station.overlay`, which shares the geometry and owns
-        its cell attributes.
-        """
-        deprecated(
-            "StationsCache.get(...)",
-            "the (sl, l, w) cell-data table of ADR-024",
-        )
-        key = (wh, sc, st)
-        with self._cache_lock:
-            station = self._cache.get(key)
-            if station is None:
-                try:
-                    station = Station(wheel=wh, sector=sc, station=st)
-                    self._cache[key] = station
-                except ValueError:
-                    self._cache[key] = None
-                    return None
-            if dt_info is None:
-                return station
-            return station.overlay(dt_info)
-    
-    def clear(self):
-        """Clear the cache (useful for testing or memory management)."""
-        with self._cache_lock:
-            self._cache.clear()
-    
-    def size(self):
-        """Return the number of cached stations."""
-        with self._cache_lock:
-            return len(self._cache)
-
-STATION_CACHE = StationsCache()

@@ -15,10 +15,12 @@ and each object's own wins.
 
 .. code-block:: python
 
-    from mpldts.geometry import STATION_CACHE
+    from mpldts.geometry import Station
+    from mpldts.geometry.sources import CMSXMLSource
     from mpldts.patches import DTObjectsPatch
 
-    station = STATION_CACHE.get(0, 1, 1)
+    source = CMSXMLSource()                     # parsed once per process
+    station = Station.from_spec(source.station(0, 1, 1), 0, 1, 1)
     hit = (1.0, 2.0, 3.0)                       # Station coordinates
 
     DTObjectsPatch(

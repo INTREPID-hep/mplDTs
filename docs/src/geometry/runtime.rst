@@ -93,14 +93,12 @@ is chosen for the phi or the eta view by its orientation, not by its number.
 .. automethod:: mpldts.geometry.station.Station.from_spec
     :no-index:
 
-The CMS-only frames (`SectorRef` and `SL13Center`) live in
-:mod:`mpldts.geometry.presets.cms` and are added to CMS chambers only; a
-station built from a spec gets `StationNvPhi` and `StationNvEta` and
-nothing else. The face factor that orients the natural views comes from the
+A station view registers `StationNvPhi`, `StationNvEta` and `SL13Center`
+from its own node tree: the first two are the views the patches invert through,
+the third is the centre of the outermost super layers that `AMDTSegments`
+measures from by default. The face factor that orients them comes from the
 station pose, so a custom chamber inverts its views like a CMS one.
-
-.. automodule:: mpldts.geometry.presets.cms
-    :members:
+`SectorRef` was a CMS-sector frame and is gone (3.0).
 
 .. literalinclude:: ../../examples/custom_station.py
     :language: python
@@ -229,11 +227,11 @@ The CMS source
 --------------
 
 ``CMSXMLSource`` is the only reader of ``DTGeometry_v3.xml``. It parses the
-file once and answers with specs, or with the verbatim XML values the legacy
-classes expose.
+file once and answers with specs: one ``StationSpec`` per chamber, its honeycomb
+panel included.
 
 .. autoclass:: mpldts.geometry.sources.cms_xml.CMSXMLSource
-    :members: chamber_keys, number_of_chambers, station, detector, cell_centres
+    :members: chamber_keys, number_of_chambers, station, record, detector, cell_centres
 
 .. code-block:: python
 
@@ -249,8 +247,10 @@ Frames
 ------
 
 ``FrameGraph`` holds one edge per parent/child pose; ``FrameView`` exposes the
-scoped aliases (``Station``, ``SuperLayer``, ``SL2``, ``L1``, ``Cell``, ``CMS``,
-plus the plotting virtual frames) and transforms points between them.
+scoped aliases (``Station``, ``SL2``, ``L1``, ``Cell``, ``CMS``, plus the
+plotting virtual frames ``StationNvPhi``, ``StationNvEta`` and ``SL13Center``)
+and transforms points between them. The ``SuperLayer`` alias was a 2.x
+convenience and no longer exists: name the super layer, or use ``Layer``.
 
 .. autoclass:: mpldts.geometry.frames.FrameGraph
     :members: add_nodes, add_edge, add_virtual, transform, matrix, frames
@@ -258,28 +258,36 @@ plus the plotting virtual frames) and transforms points between them.
 .. autoclass:: mpldts.geometry.frames.FrameView
     :members: transform, get_transformation, add, remove
 
-Immutability and per-event data
--------------------------------
+Per-event data
+--------------
 
-A chamber is built once and every :class:`~mpldts.geometry.station.Station` is
-a view over that build, so the same object is shared by every caller. Per-event
-data therefore never goes on the shared geometry: use
-:meth:`Station.overlay <mpldts.geometry.station.Station.overlay>`, which clones
-the view, keeps the node tree and the graph, and applies the drift-cell
-attributes to the clone.
+A station is geometry and nothing else. The values a patch colours are the
+``(sl, l, w)`` cell-data table of ADR-024, handed to
+:class:`~mpldts.patches.dt_station_patch.DTStationPatch` as ``data``: a
+``DataFrame``, a ``list[dict]`` or one ``dict``, with ``sl``, ``l`` and ``w``
+in every row plus any number of value columns. A row with no matching cell is
+ignored, a cell with no row is drawn at 0, and the geometry is never written.
 
 .. code-block:: python
 
-    from mpldts.geometry import STATION_CACHE
+    from mpldts.geometry import Station
+    from mpldts.geometry.sources import CMSXMLSource
+    from mpldts.patches import DTStationPatch
 
-    station = STATION_CACHE.get(-2, 1, 2)              # shared geometry
-    event = STATION_CACHE.get(-2, 1, 2, dt_info=[{"sl": 1, "l": 1, "w": 1, "t": 12.5}])
-    station.super_layer(1).layer(1).cell(1).t          # unchanged
-    event.super_layer(1).layer(1).cell(1).t            # 12.5
+    chamber = (-2, 1, 2)
+    source = CMSXMLSource()                       # the XML is parsed once
+    station = Station.from_spec(source.station(*chamber), *chamber)
 
-Cost on a warm process: importing ``mpldts.geometry`` does not touch the XML,
-the first build of a chamber is tens of milliseconds, and later stations are a
-few milliseconds each.
+    rows = [{"sl": 1, "l": 1, "w": 1, "time": 12.5}]
+    DTStationPatch(station, ax, local=True, vmap="time", data=rows)
+
+The same station draws event after event and two patches built from it never see
+each other's data, so nothing is copied per event and nothing has to be cached.
+The identifiers are cast to ``int``: a column read from a ROOT branch arrives
+as a float and still finds its cell.
+
+Cost on a warm process: importing ``mpldts.geometry`` reads no XML, parsing it
+is a few seconds once, and a station view is tens of milliseconds.
 
 The downstream contract
 -----------------------
@@ -289,73 +297,79 @@ the names it imports are a contract: renaming any of them is a breaking change
 until 3.0 (ADR-025). ``test/downstream`` imports exactly this surface, with no
 ROOT and no Qt:
 
-- geometry: ``StationsCache`` (and ``STATION_CACHE``), ``Station``,
-  ``AMDTSegments``;
+- geometry: ``Station`` and ``AMDTSegments``;
 - patches: ``DTStationPatch``, ``MultiDTSegmentsPatch``, ``DTRelatedPatch``;
 - on the station: ``name``/``wheel``/``sector``/``number``,
   ``super_layer(sl).layer(l).cell(w)``, ``Cell.local_center`` and
   ``global_center``, ``Layer._first_cell_id``/``_last_cell_id`` and
   ``layer.cell(id)``;
-- on a patch: ``.station`` and ``._collections`` (the visualizer iterates the
-  collections to toggle its artists).
+- on a patch: ``.station``, ``._collections`` and ``.cells_collection`` (the
+  visualizer iterates the collections to toggle its artists).
 
-The per-event data dtpr sends is one row per hit, keyed by the cell:
+dtpr builds the chamber itself, caches the views, and hands the event to the
+patch:
 
 .. code-block:: python
 
+    from functools import lru_cache
+
+    from mpldts.geometry import Station
+    from mpldts.geometry.sources import CMSXMLSource
+
+    @lru_cache(maxsize=1)
+    def source():
+        return CMSXMLSource()
+
+    @lru_cache(maxsize=None)
+    def chamber(wheel, sector, station):
+        spec = source().station(wheel, sector, station)
+        return Station.from_spec(spec, wheel, sector, station)
+
     rows = [{"sl": 1, "l": 1, "w": 2, "time": 400.0}, ...]
-    event = STATION_CACHE.get(0, 1, 1, dt_info=rows)
+    DTStationPatch(chamber(0, 1, 1), ax, local=True, vmap="time", data=rows)
 
-``sl``, ``l`` and ``w`` are required; every other column becomes an
-attribute of that cell on the returned overlay (``time``, ``BX``, ...), which is
-what ``DTStationPatch(vmap=...)`` colours by. A ``dict``, a ``list[dict]`` and a
-``pandas.DataFrame`` are all accepted, and the station in the cache is never
-mutated.
+``Station.from_spec`` takes the chamber numbers because the plotter labels its
+window with them; a station that is not a CMS chamber passes none and they read
+``None``.
 
-Migrating to 3.0
+What 3.0 removed
 ----------------
 
-2.9.0 is the last minor release that carries the pre-refactor API, and it says
-so: every call below raises a ``DeprecationWarning`` that names its replacement.
-Nothing else changed; 3.0.0 only deletes. The content, the order and the gates
-of that release live in ``.agents/migration-3.0.md`` (ADR-026), and these
-warnings are the part a consumer meets first.
+2.9 carried the pre-refactor API and warned on every call that would go. 3.0
+deletes it; ``.agents/migration-3.0.md`` (ADR-026) is the plan, this table is
+the result.
 
 .. list-table::
    :header-rows: 1
    :widths: 42 58
 
-   * - What 3.0 removes
-     - What replaces it
+   * - Gone in 3.0
+     - What to use instead
    * - ``Station(wheel, sector, station)``
      - ``CMSXMLSource().station(wheel, sector, station)`` and
-       ``build_station(spec)``; ``Station.from_spec(spec)`` when a patch needs
-       a station view
+       ``Station.from_spec(spec, wheel, sector, number)``
    * - ``Station.set_cell_attrs(dt_info)``, ``Station.overlay(dt_info)``,
-       ``StationsCache.get(..., dt_info=...)``
-     - the ``(sl, l, w)`` cell-data table (ADR-024); the event model stays in
-       ``DTPatternRecognition``
+       ``StationsCache.get(..., dt_info=...)``, ``STATION_CACHE``
+     - the ``(sl, l, w)`` cell-data table passed to the patch (ADR-024); the
+       event model stays in ``DTPatternRecognition``
    * - ``DTGeometry(xml_file)``, ``DTGEOMETRY``
      - ``CMSXMLSource()``: one parse per process, specs instead of XML elements
    * - ``SuperLayer(rawId=...)``, ``Layer(rawId=...)``,
-       ``DriftCell(number=...)``
+       ``DriftCell(number=...)`` standalone
      - the node tree of ``build_station(spec)``: ``node.children`` is the same
        hierarchy and every pose is on the node
-   * - ``view.transform(..., "SuperLayer", ...)``
-     - the frame name ``"superlayer"``; the alias table goes with the views
-   * - ``TgSink(target, name_of=...)``
-     - nothing yet: 3.0 names every volume from the node tree, and the
-       simulator's decoders read those names in the same release (T-072)
+   * - the frame alias ``SuperLayer``
+     - ``SL2``, or ``Layer`` for the nearest layer
+   * - ``mpldts.geometry.presets.cms`` (``face_factor``, ``add_frames``,
+       ``with_attachments``)
+     - the pose states the face orientation, the honeycomb panel is part of
+       ``CMSXMLSource.station``, and ``SectorRef`` is gone
+   * - ``test/geometry/test_legacy.py`` and the 2.9 deprecation warnings
+     - nothing: the removed calls are gone, so there is nothing to warn about
 
-The alias table is the one exception: a dictionary lookup has no call site to
-warn on, so it is in the table above and not in the warnings.
-
-A consumer meets the whole list at once with::
-
-    python -W error::DeprecationWarning -m pytest
-
-``test/downstream`` pins what the two downstream packages import, so that test
-and this table are the two things that have to agree before 3.0.0 ships.
+``TgSink(target, name_of=...)`` stays: it is not compatibility but the live
+seam between the exporter and the simulator's C++ decoders, so the volume names
+are unchanged and 3.0 needs no Geant4 rebuild (T-057, T-072).
 
 Migrating from 2.2
 ------------------
@@ -384,9 +398,9 @@ Behaviour that did change, deliberately:
   by ``√2 . |SL_local_x|``;
 - a phi/eta view picks its super layer by orientation, not by ``number == 2``,
   so a custom chamber with a turned layer draws it where it is;
-- ``DTGEOMETRY`` parses the XML on first use, never at import;
-- per-event data goes through
-  :meth:`Station.overlay <mpldts.geometry.station.Station.overlay>` (or the
-  cache with ``dt_info``), which never mutates the shared chamber;
+- ``import mpldts.geometry`` reads no XML at all; the source parses when it is
+  constructed, once per process;
+- per-event data is a table handed to the patch, so the geometry is never
+  mutated (ADR-024);
 - a cell that is exported needs a material: ``CellGrid.material`` carries it,
   and a physical node without one is an error rather than ``G4_AIR``.

@@ -6,22 +6,27 @@ Layer
     :member-order: bysource
     :members:
     :special-members: __init__
-    :private-members: _build_layer, _setup_tranformer
     :inherited-members:
 
 .. rubric:: Example
 
-.. literalinclude:: ../../../mpldts/geometry/layer.py
-    :language: python
-    :dedent:
-    :lines: 106-111
+.. code-block:: python
 
+    from mpldts.geometry import Station
+    from mpldts.geometry.sources import CMSXMLSource
+
+    source = CMSXMLSource()
+    station = Station.from_spec(source.station(-2, 1, 2), -2, 1, 2)
+    layer = station.super_layer(1).layer(1)
+
+    print(layer.number, len(layer.cells), "cells")
+    print(layer._first_cell_id, layer._last_cell_id)
+    print(tuple(round(float(value), 2) for value in layer.local_center))
 
 .. rubric:: Output
 
 .. code-block:: text
 
-    id: 574923776 number: 1 local_center: (-1.6, 0.0, 13.7) global_center: (417.475, 37.52, -533.35) direction: None bounds: (205.929993, 1.14999998, 239.800003)
-        id: 1 number: 1 local_center: (-102.4, 0.0, 13.7) global_center: (417.475, -63.28, -533.35) direction: None bounds: (4.19999981, 1.29999995, 234.800003)
-        id: 48 number: 48 local_center: (95.0, 0.0, 13.7) global_center: (417.475, 134.12, -533.35) direction: None bounds: (4.19999981, 1.29999995, 234.800003)
-
+    1 59 cells
+    1 59
+    (2.35, 0.0, 13.7)

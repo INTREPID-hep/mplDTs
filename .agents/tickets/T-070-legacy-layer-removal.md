@@ -1,6 +1,6 @@
 # T-070 — Remove the legacy view layer
 
-- **Status:** deferred (the 3.0 window; see [`migration-3.0.md`](../migration-3.0.md))
+- **Status:** done (3.0.0, 2026-11-09)
 - **Phase:** 7
 - **Epic:** E7 Removal
 - **Depends on:** T-071 (dtpr on the new surface), T-073 (the deprecation release)
@@ -51,3 +51,11 @@ and three ways to build a station.
 
 - 2026-11-08: planned; deferred until both downstream packages are on the new
   surface.
+- 2026-11-09: **done in 3.0.0.** Deleted the XML-backed `Station`, the chamber
+  cache, `_geometry.py`, `_deprecation.py`, `presets/`,
+  `StationsCache`, `overlay`/`set_cell_attrs`/`dt_info`, the
+  standalone child constructors and the `"SuperLayer"` alias. The four view
+  modules stay as the patch surface (ADR-027). `test_legacy.py` and
+  `test_deprecations.py` are gone; the constructor, the frames and one patch
+  per view are pinned by `test/downstream` and
+  `test/geometry/test_views.py`.

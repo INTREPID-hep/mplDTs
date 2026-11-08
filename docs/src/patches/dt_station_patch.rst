@@ -13,8 +13,8 @@ It adds to the provided matplotlib axes the following artists:
 
 Since station and super layers bounds are a patch collection independent of the cells collection, any supported matplotlib
 rc parameters can be passed to customize the appearance of the bounds. The same applies to the cells collection, specially
-the patch array that allows to define the color map to represent any drift cell properties passed through
-the ``dt_info`` argument of the ``Station`` class.
+the patch array that allows to define the color map to represent the drift cell properties of the
+``data`` table, keyed by ``(sl, l, w)`` (ADR-024).
 
 The class supports plotting in both **local** and **global** DT CMS coordinate views. And it is possible 
 to draw the chamber in either the :math:`\phi` or :math:`\eta` orientation, displaying
@@ -40,7 +40,6 @@ The following example shows how to create ``DTStationPatch`` objects and plot th
 
 .. literalinclude:: ../../../docs/examples/cms_dt_local_wb.py
     :language: python
-    :lines: 1-57
     :linenos:
 
 
@@ -53,14 +52,12 @@ The following example shows how to create ``DTStationPatch`` objects and plot th
 
 
 Setting the ``bounds_kwargs`` and ``cells_kwargs`` arguments allows for customization of the
-appearance of the bounds and cells, respectively. And as mentioned before, the ``dt_info`` argument
-passed to the ``Station`` instance can be used to define a colormap based on any drift cell property as 
-shown in the following example.
+appearance of the bounds and cells, respectively. And as mentioned before, the ``data`` argument
+keyed by ``(sl, l, w)`` defines the colormap from any drift cell property, as shown in the following
+example.
 
 .. literalinclude:: ../../../docs/examples/cms_dt_local_c.py
     :language: python
-    :lines: 1-74
-    :emphasize-lines: 4, 9-11, 17-18, 21-44, 51, 56, 60, 64 
     :linenos:
 
 
@@ -76,7 +73,6 @@ or the whole DT system.
 
 .. literalinclude:: ../../../docs/examples/cms_dts_phi_zoomed.py
     :language: python
-    :lines: 1-73
     :linenos:
 
 .. image:: ../../_static/img/cms_dts_phi_zoomed.svg
@@ -89,7 +85,6 @@ And also in :math:`\eta` orientation, that means the longitudinal CMS view:
 
 .. literalinclude:: ../../../docs/examples/cms_dts_eta_zoomed.py
     :language: python
-    :lines: 1-71
     :linenos:
     
 
@@ -119,7 +114,6 @@ The following example shows how to do this:
 
 .. literalinclude:: ../../../docs/examples/cms_dt_local_inversion.py
     :language: python
-    :lines: 1-118
     :linenos:
 
 .. image:: ../../_static/img/cms_dt_local_inversion.svg

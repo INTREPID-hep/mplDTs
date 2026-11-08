@@ -1,6 +1,8 @@
 from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
 
-chamber = Station(wheel=-1, sector=3, station=1)
+source = CMSXMLSource()
+chamber = Station.from_spec(source.station(-1, 3, 1), -1, 3, 1)
 # the center of a cell ref to its own frame
 center_cell = (0, 0, 0)
 
@@ -12,7 +14,7 @@ print("Transform manager: ", transformer)
 
 Layer_center_cell = transformer.transform(center_cell, from_frame="Cell", to_frame="Layer")
 SuperLayer_center_cell = transformer.transform(
-    center_cell, from_frame="Cell", to_frame="SuperLayer"
+    center_cell, from_frame="Cell", to_frame="SL1"
 )
 Station_center_cell = transformer.transform(center_cell, from_frame="Cell", to_frame="Station")
 CMS_center_cell = transformer.transform(center_cell, from_frame="Cell", to_frame="CMS")

@@ -4,11 +4,9 @@ A Layer is a view over its node in the station tree (T-020): the cell nodes
 carry the cell grid, the graph carries the frames.
 """
 
-from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.drift_cell import DriftCell
 from mpldts.geometry.frames import FrameView
-from mpldts.geometry.sources.cms_xml import position
 
 
 class Layer(DTFrame):
@@ -37,16 +35,8 @@ class Layer(DTFrame):
             station holding the rawId is built for the standalone form.
         :type parent: SuperLayer, optional
         """
-        if rawId is None:
-            raise ValueError("Layer needs a rawId; build one from Station(wheel, sector, station).")
-        if parent is None:
-            from mpldts.geometry.station import station_for
-
-            deprecated(
-                "Layer(rawId=...) standalone",
-                "the node tree of build_station(spec)",
-            )
-            parent = station_for(rawId)
+        if rawId is None or parent is None:
+            raise ValueError("Layer needs a rawId and its super layer (Station.from_spec).")
 
         node, record = parent._legacy_part(rawId)
         self.id = int(rawId)
@@ -60,13 +50,7 @@ class Layer(DTFrame):
         self._last_cell_id = int(node.children[-1].name[1:]) if node.children else int(record["last"])
         self._node = node
         self._cells = {child.name: child for child in node.children}
-        # parsed once per chamber: every Station and overlay shares the record
-        cell_locals = record.get("cell_locals")
-        if cell_locals is None:
-            cell_locals = record["cell_locals"] = {
-                number: position(local_text) for number, _, local_text in record["cells"]
-            }
-        self._cell_local = cell_locals
+        self._cell_local = record["cell_locals"]
         self.transformer = FrameView(parent.transformer.graph, node)
         self._DriftCells = [DriftCell(number=int(child.name[1:]), parent=self) for child in node.children]
 
@@ -106,11 +90,3 @@ class Layer(DTFrame):
         if cell_number < self._first_cell_id or cell_number > self._last_cell_id:
             raise ValueError(f"Invalid cell number: {cell_number}")
         return next((c for c in self._DriftCells if c.id == cell_number), None)
-
-
-if __name__ == "__main__":
-    # This is to check that nothing fails
-    layer = Layer(574923776)
-    print(layer)
-    print("\t", layer.cell(layer._first_cell_id))
-    print("\t", layer.cell(len(layer.cells) - 1))

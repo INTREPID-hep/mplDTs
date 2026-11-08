@@ -214,11 +214,13 @@ def test_the_tg_places_every_cell_at_its_xml_centre():
         for layer in sl.layers
         for number in layer.cells.ids()
     ]
-    assert len(placements) == 1 + len(order)
+    cells = [name for name, _, _, _ in placements if name.startswith("DriftCell")]
+    assert len(cells) == len(order)
     for placement, key in zip(placements[1:], order):
         world = reference.apply(placement[3])
         np.testing.assert_allclose(world, centres[key], atol=1e-3)
-    assert len(volumes) == 4  # station plus one cell volume per super layer
+    # station, one cell volume per super layer, and the honeycomb panel
+    assert len(volumes) == 5
     assert len(rotations) == 2  # identity and the 90 degree super layer 2
 
 
@@ -226,13 +228,15 @@ def test_the_tg_places_every_cell_at_its_xml_centre():
 def test_the_tg_matches_the_current_generator():
     source = CMSXMLSource()
     spec = source.station(0, 1, 1)
-    exported = build_station(replace(spec, name="Station_W0_Sec1_St1", pose=Pose.identity()))
+    # the generator writes the chamber where the XML puts it, panel included
+    exported = build_station(replace(spec, name="Station_W0_Sec1_St1"))
 
     with open(REFERENCE) as handle:
         expected = _facts(*_parse(handle.read()))
     produced = _facts(*_parse(_tg(exported)))
 
-    assert len(produced) == len(expected) == 621
+    # 620 cells, the station and its honeycomb panel
+    assert len(produced) == len(expected) == 622
     for want, got in zip(expected, produced):
         assert got[0] == want[0] and got[1] == want[1] and got[2] == want[2]  # solid, material
         np.testing.assert_allclose(got[3], want[3], atol=1e-6)  # rotation

@@ -20,8 +20,12 @@ from mpldts.geometry.specs import (
 CHAMBER = (-2, 1, 2)
 
 
+def _cms_station(chamber=CHAMBER):
+    return Station.from_spec(CMSXMLSource().station(*chamber), *chamber)
+
+
 def test_a_cms_chamber_carries_its_honeycomb_panel():
-    station = Station(*CHAMBER)
+    station = _cms_station()
     panels = station._node.attachments
 
     assert [panel.name for panel in panels] == ["Honeycomb"]
@@ -42,7 +46,7 @@ def test_the_panel_sits_between_the_super_layers():
     top = members[1]["local"][2] - members[1]["bounds"][1] / 2.0
     bottom = members[2]["local"][2] + members[2]["bounds"][1] / 2.0
 
-    panel = Station(*CHAMBER)._node.attachments[0]
+    panel = _cms_station()._node.attachments[0]
 
     assert bottom < panel.pose.translation[2] < top
     assert panel.shape.dz < top - bottom
@@ -56,7 +60,7 @@ def test_an_mb4_chamber_takes_the_third_super_layer():
     members = {super_layer["number"]: super_layer for super_layer in record["super_layers"]}
     assert 2 not in members
 
-    panel = Station(*key)._node.attachments[0]
+    panel = _cms_station(key)._node.attachments[0]
     expected_z = (
         members[3]["local"][2]
         + members[3]["bounds"][1] / 2.0
@@ -67,7 +71,7 @@ def test_an_mb4_chamber_takes_the_third_super_layer():
 
 
 def test_the_panel_is_a_frame():
-    station = Station(*CHAMBER)
+    station = _cms_station()
 
     frame = station.transformer.transform((0.0, 0.0, 0.0), "Honeycomb", "Station")
     np.testing.assert_allclose(frame, (0.0, 0.0, 2.67499), atol=1e-3)

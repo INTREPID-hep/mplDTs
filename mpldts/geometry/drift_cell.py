@@ -12,7 +12,6 @@
 #         <------- 4.2 cm --------->
 
 
-from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameView
 
@@ -39,23 +38,15 @@ class DriftCell(DTFrame):
 
         :param number: Identifier of the drift cell (default is -1).
         :type number: int, optional
-        :param parent: Parent layer of the drift cell (default is None).
-        :type parent: Layer, optional
+        :param parent: Parent layer of the drift cell.
+        :type parent: Layer
         """
         self.parent = parent
         self.id = number
         self.number = number
 
         if parent is None:
-            deprecated(
-                "DriftCell(number=...) standalone",
-                "the cell nodes of build_station(spec)",
-            )
-            # detached cell, only useful as a placeholder
-            self.bounds = (4.2, 1.3, 235)
-            self.local_center = (0, 0, 0)
-            self.global_center = (0, 0, 0)
-            return
+            raise ValueError("DriftCell needs its layer (Station.from_spec).")
 
         node = parent._cells.get("C%d" % number)
         if node is None:
@@ -66,9 +57,3 @@ class DriftCell(DTFrame):
         self.global_center = tuple(float(value) for value in node.world_pose.translation)
         self._node = node
         self.transformer = FrameView(parent.transformer.graph, node)
-
-
-if __name__ == "__main__":
-    # This is to check that nothing fails
-    dc = DriftCell(number=1)
-    print(dc)

@@ -100,9 +100,9 @@ def test_aliases_resolve_in_scope():
     cell = sl1.children[0].children[0]
     view = FrameView(graph, cell)
 
-    np.testing.assert_allclose(
-        view.transform([0, 0, 0], 'SuperLayer', 'SL1'), np.zeros(3)
-    )
+    # "SuperLayer" was a 2.x alias for the nearest super layer; 3.0 drops it
+    with pytest.raises(ValueError, match='not a frame'):
+        view.transform([0, 0, 0], 'SuperLayer', 'SL1')
     np.testing.assert_allclose(
         view.get_transformation('Layer', 'SL1'),
         graph.get_transformation(cell.parent.frame_id, sl1.frame_id),
@@ -190,7 +190,10 @@ def test_available_frames_keeps_the_legacy_names():
     # view: the virtual frames live in the graph the constructor builds.
     from mpldts.geometry import Station
 
-    view = Station(*reference.REPRESENTATIVE[1]).transformer
+    from mpldts.geometry.sources import CMSXMLSource
+
+    chamber = reference.REPRESENTATIVE[1]
+    view = Station.from_spec(CMSXMLSource().station(*chamber), *chamber).transformer
     frames = view.available_frames
     for name in (
         "Station",
@@ -201,32 +204,40 @@ def test_available_frames_keeps_the_legacy_names():
         "SL3",
         "StationNvPhi",
         "StationNvEta",
-        "SectorRef",
         "SL13Center",
     ):
         assert name in frames, name
+    # SectorRef was a CMS-sector frame; 3.0 does not register it
+    assert "SectorRef" not in frames
     assert view.graph.root in frames
 
 
 def test_am_segments_build_from_the_legacy_reference_frames():
     from mpldts.geometry import AMDTSegments, Station
 
-    chamber = Station(*reference.REPRESENTATIVE[1])
+    from mpldts.geometry.sources import CMSXMLSource
+
+    chamber = reference.REPRESENTATIVE[1]
+    station = Station.from_spec(CMSXMLSource().station(*chamber), *chamber)
     for frame in ("Station", "SL13Center", "SL1"):
         segments = AMDTSegments(
-            [{"parent": chamber, "sl": 1, "position": 10.0, "angle": 5.0}],
+            [{"parent": station, "sl": 1, "position": 10.0, "angle": 5.0}],
             reference_frame=frame,
         )
         assert np.all(np.isfinite(segments[0].local_center)), frame
         assert np.all(np.isfinite(segments[0].global_center)), frame
 
 
-def test_the_legacy_station_chain_agrees():
+def test_the_station_frame_is_the_xml_global_position():
+    """One way to build a station: the graph and the view must agree on it."""
     from mpldts.geometry import Station
+    from mpldts.geometry.sources import CMSXMLSource
 
     chamber = (0, 5, 3)
     station, graph = _cached(chamber)
-    legacy = Station(*chamber).transformer.get_transformation('Station', 'CMS')
+    view = Station.from_spec(CMSXMLSource().station(*chamber), *chamber)
     np.testing.assert_allclose(
-        graph.get_transformation(station.frame_id, graph.root), legacy, atol=1e-5
+        graph.get_transformation(station.frame_id, graph.root)[0:3, 3],
+        view.global_center,
+        atol=1e-5,
     )

@@ -5,7 +5,6 @@ graph carries every frame, so nothing is copied per object and the SL2
 orientation comes from the source, not from a hand-written rotation matrix.
 """
 
-from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameView
 from mpldts.geometry.layer import Layer
@@ -33,22 +32,11 @@ class SuperLayer(DTFrame):
 
         :param rawId: Raw identifier of the super layer.
         :type rawId: int
-        :param parent: Parent station of the super layer. Default is None: the
-            station holding the rawId is built for the standalone form.
-        :type parent: Station, optional
+        :param parent: Parent station of the super layer.
+        :type parent: Station
         """
-        if rawId is None:
-            raise ValueError(
-                "SuperLayer needs a rawId; build one from Station(wheel, sector, station)."
-            )
-        if parent is None:
-            from mpldts.geometry.station import station_for
-
-            deprecated(
-                "SuperLayer(rawId=...) standalone",
-                "the node tree of build_station(spec)",
-            )
-            parent = station_for(rawId)
+        if rawId is None or parent is None:
+            raise ValueError("SuperLayer needs a rawId and its station (Station.from_spec).")
 
         node, record = parent._legacy_part(rawId)
         self.id = int(rawId)
@@ -101,11 +89,3 @@ class SuperLayer(DTFrame):
 
 
 # Example usage
-if __name__ == "__main__":
-    # This is to check that nothing fails
-    super_layer = SuperLayer(rawId=589357056)
-    print(super_layer)
-    for layer in super_layer.layers:
-        print("\t", layer)
-        print(2 * "\t", layer.cell(layer._first_cell_id))
-        print(2 * "\t", layer.cell(len(layer.cells) - 1))

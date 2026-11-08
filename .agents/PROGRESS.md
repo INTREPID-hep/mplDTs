@@ -1,10 +1,11 @@
 # PROGRESS — checkpoints and session log
 
 **Last updated:** 2026-11-08
-**Current checkpoint:** `CP-014 — the 2.9.0 deprecation release`
-**Implementation status:** every delivery ticket closed, `main` at `v2.9.0` and
-pushed; the 3.0 removal is planned and 2.9.0 already warns about it; Phase 6
-(pyg4ometry) and the removal itself are deferred
+**Current checkpoint:** `CP-014 — the deprecation release and the chain validated end to end`
+**Implementation status:** every delivery ticket closed, `main` at `v2.9.1` and
+pushed; 2.9.1 fixes the negative-wheel names, the simulator is on `destrada`
+with the exporter geometry and a Geant4 run decodes every cell; the 3.0 removal
+is planned and deferred
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md) Rev 5
 
 ---
@@ -14,14 +15,14 @@ pushed; the 3.0 removal is planned and 2.9.0 already warns about it; Phase 6
 | Item | Value |
 |---|---|
 | Phase | 0-5 complete (M0-M5 met); 6 and 7 planned, deferred |
-| Current milestone | `CP-014`: the deprecation release (2.9.0); the removal itself is planned |
-| Last completed | T-074 (the 2.9.0 deprecation release) |
-| Integration branch | `main`, tagged `v2.9.0` and pushed; the simulator lives on `feature/T-005-tg-exporter` |
+| Current milestone | `CP-014`: the deprecation release and the Geant4 chain validated; the removal itself is planned |
+| Last completed | T-074 (2.9.0, T-057 fix in 2.9.1); the simulator merged on `destrada` |
+| Integration branch | `main`, tagged `v2.9.1` and pushed; the simulator is on `destrada` (`2e397bb`) |
 | Next | nothing scheduled; the removal is gated in `migration-3.0.md` (ADR-026) and waits for the window |
-| Downstream | dtpr on `v2.6.0` (T-055); `DTG4Simulator` on `v2.7.0` (T-005) |
+| Downstream | dtpr on `v2.6.0` (T-055); `DTG4Simulator` on `v2.9.1` (T-005) |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
 `Station.from_spec` (T-030); `serialize.py`, `constructors.py` and `export/` (T-050...T-052); tests, benchmark, CI; `mpldts/_deprecation.py` and the 2.9.0 warnings (T-074) |
-| Library tests | `pytest -q`: 219 passed, 2 skipped, 3 deselected |
+| Library tests | `pytest -q`: 220 passed, 2 skipped, 3 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
@@ -77,6 +78,7 @@ the evidence is linked here.
 | 2026-11-08 | plan | read `DTPatternRecognition`: `Event` is a typed bag of config-declared `Particle` records (branches/expr/src, filters, sorters, cross-refs); the plotting bridge is a `(sl, l, w)` DataFrame into `StationsCache.get(dt_info=)`; artists are declared in YAML and composed by the PyQt visualizer. Phase 4 rescoped to the downstream contract (ADR-024/025); T-041/T-042 retired; T-053 back in scope | dtpr imports load against the `2.5.0` checkout; `AMDTSegments(reference_frame=...)` regression found (T-056) | `T-056` |
 | 2026-11-08 | merge | the maintainer merged 2.3.0 -> 2.4.0 -> 2.5.0 into `main` (`2eac105`); the three feature branches are ancestors of `main` and tag `v2.5.0` sits on its tip; `enhancement-segments` untouched | `git merge-base --is-ancestor` on the three branches; `git describe` = `v2.5.0`; `origin/main` still `c341e65` | `T-005` |
 | 2026-11-08 | T-055 | dtpr on `feature/T-055-dtpr-migration`: pin `v2.6.0`, `embed_simhits2axes_loc` and `embed_shower2axes_loc` build `DTObjectsPatch` objects instead of `scatter`/`plot`, env reinstalled from the tag | dtpr `pytest -q tests` 22 passed / 2 pre-existing failures (config include, particle hash); visualizer smoke green offscreen | `CP-009` (M4) met; `T-005` |
+| 2026-11-08 | T-074, T-057 fix | the deprecation release (2.9.0) and, found while validating the chain, the sanitiser that ate the minus of a negative wheel: `Station_W-1_Sec1_St1` became `Station_W_1_...`, so `StationSD`/`DriftCellSD` could not decode it and the yoke could not find its solids. 2.9.1 keeps the dash; the simulator merged the exporter on `destrada`, pin `v2.9.1`, and its entry point now generates the runnable 36-chamber build | `pytest` 220 passed / 2 skipped; dtpr 22 + 2 known; G4 run decodes wheel -1 | **nothing queued**: the removal waits for its window |
 | 2026-11-08 | T-043 | `DTObjectsPatch`: points and polylines in any frame the station graph resolves, projected on the cell grid, so the local/global and inverted views come from `DTRelatedPatch`; `DTRelatedPatch` adds `Line2D` artists; `length` on the segment mark | `pytest -q` 204 passed / 2 skipped; objects on the cell centres (0.0 in both views, three SLs); segment paths pinned to 2.5.x | 2.6.0 tagged; `T-055` |
 | 2026-11-08 | T-005, T-057 | the simulator generates stations through the exporter: `build_station` + `TgSink` with a `name_of` hook that keeps the names `StationSD`/`DriftCellSD` parse, and copy numbers that restart per volume; the yoke keeps the exporter's solid name and defines its own rotation; pin `v2.7.0` | smoke 621 placements against the installed tag; the 36 station files of the previous build match cell for cell (25896); all 250 chambers in 11.6 s; pytest 205 passed | `T-006`, `T-053` |
 | 2026-11-08 | T-006, T-053 | the benchmark measures the model path too, and the baseline is recorded on merged code; `mpldts/cli.py` (info / convert / plot) with a console script, 7 tests and a docs section; 2.8.0 | 2-8 ms per station (< 20 ms target); the CLI converts and plots headless; pytest 212 passed / 2 skipped | maintainer: 3.0 or 2.x |
@@ -171,6 +173,10 @@ No history was rewritten.
 | 2026-11-08 | `python -c "import mpldts; print(mpldts.__version__)"` (after T-074) | 2.9.0 |
 | 2026-11-08 | dtpr `pytest -q tests` on the 2.9.0 checkout | 22 passed / 2 pre-existing failures (config include, particle hash) |
 | 2026-11-08 | simulator `smoke_tg.py` against the working tree | 621 placements, 3 cell volumes, 620 cells; the `name_of` hook warns and the run is unchanged |
+| 2026-11-08 | `pytest -q` (after the 2.9.1 fix) | 220 passed, 2 skipped, 3 deselected, 59 s |
+| 2026-11-08 | generator, 36 chambers + yoke + honeycomb, CMS frame | 25896 cells in 10 s; the committed entry point reproduces the validated build byte for byte (38 files) |
+| 2026-11-08 | Geant4 `exampleDTSim`, 20 events at phi=0 | no `G4Exception`; 4 segments and 50-190 cell hits per event; `simHit_wheel` 0 and 1, stations 1-4, superlayers 1-3, layers 1-4 |
+| 2026-11-08 | Geant4 aimed at wheel -1, 5 events | `simHit_wheel` = -1, segments (-1, 1, 1...4), cells 7-79: the negative-wheel names decode (the 2.9.1 fix) |
 | 2026-11-08 | GitHub Actions `tests` on `feature/phase-5-authoring` | success (run 42487358163) |
 | 2026-11-08 | merge state (`git log`, `git describe`, `--is-ancestor`) | `main` `2eac105`; the three feature branches all ancestors; `origin/main` `c341e65` (not pushed) |
 | 2026-11-08 | dtpr imports against the `2.5.0` checkout | `mpldts 2.5.0`; `dt_plot_functions`, `artist_gui_manager`, `local_plotter`, `base` all import |

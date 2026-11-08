@@ -132,7 +132,9 @@ def test_the_derived_local_centres_agree_with_the_graph():
     )
     for super_layer in station.super_layers:
         np.testing.assert_allclose(
-            super_layer.transformer.transform((0.0, 0.0, 0.0), "SuperLayer", "Station"),
+            super_layer.transformer.transform(
+                (0.0, 0.0, 0.0), "SL%d" % super_layer.number, "Station"
+            ),
             super_layer.local_center,
             atol=1e-12,
         )
@@ -156,34 +158,6 @@ def test_a_five_super_layer_station_keeps_every_super_layer():
 
     assert [super_layer.number for super_layer in station.super_layers] == [1, 2, 3, 4, 5]
     assert station.super_layer(5).layer(4).cell(8) is not None
-
-    view = Station.from_spec(spec, dt_info=[{"sl": 5, "l": 4, "w": 8, "time": 12.5}])
-    assert view.super_layer(5).layer(4).cell(8).time == 12.5
-    assert not hasattr(station.super_layer(5).layer(4).cell(8), "time")
-
-
-def test_a_cms_chamber_through_from_spec_matches_the_cached_view():
-    chamber = (-2, 1, 2)
-    cached = Station(*chamber)
-    built = Station.from_spec(CMSXMLSource().station(*chamber))
-
-    assert [super_layer.number for super_layer in built.super_layers] == [
-        super_layer.number for super_layer in cached.super_layers
-    ]
-    for built_super_layer, cached_super_layer in zip(built.super_layers, cached.super_layers):
-        for built_layer, cached_layer in zip(built_super_layer.layers, cached_super_layer.layers):
-            assert len(built_layer.cells) == len(cached_layer.cells)
-            np.testing.assert_allclose(
-                [cell.global_center for cell in built_layer.cells],
-                [cell.global_center for cell in cached_layer.cells],
-                atol=1e-12,
-            )
-            # the XML states its positions in single precision
-            np.testing.assert_allclose(
-                [cell.local_center for cell in built_layer.cells],
-                [cell.local_center for cell in cached_layer.cells],
-                atol=1e-3,
-            )
 
 
 def test_the_detector_builder_rejects_an_invalid_spec():
@@ -217,8 +191,11 @@ def test_the_turned_super_layers_are_the_cms_ones():
     pytest.importorskip("matplotlib")
     from mpldts.patches.dt_station_patch import _is_turned
 
+    from mpldts.geometry.sources import CMSXMLSource
+
+    source = CMSXMLSource()
     for chamber in ((-2, 1, 2), (0, 5, 3), (2, 14, 4)):
-        station = Station(*chamber)
+        station = Station.from_spec(source.station(*chamber), *chamber)
         assert [_is_turned(super_layer) for super_layer in station.super_layers] == [
             super_layer.number == 2 for super_layer in station.super_layers
         ]

@@ -17,7 +17,6 @@ from mpldts.geometry.serialize import (
     to_json,
 )
 from mpldts.geometry.sources import CMSXMLSource
-from mpldts.geometry.presets import cms
 from mpldts.geometry.specs import (
     AttachmentSpec,
     Box,
@@ -108,7 +107,7 @@ def test_a_custom_detector_round_trips_through_json():
 
 def test_a_cms_station_round_trips_field_by_field():
     source = CMSXMLSource()
-    spec = cms.with_attachments(source.station(*CHAMBER), source.record(*CHAMBER))
+    spec = source.station(*CHAMBER)
 
     back = from_dict(json.loads(to_json(spec)))
 

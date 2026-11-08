@@ -1,20 +1,22 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-08 (Europe/Madrid)
-**Previous session:** `T-074`, the deprecation release: 2.9.0 warns on every
-call 3.0 removes and names its replacement.
-**Current state:** **`main` is tagged `v2.9.0` and pushed to
-`INTREPID-hep/mplDTs`; the simulator work is on
-`feature/T-005-tg-exporter` (pushed, not merged).**
+**Previous session:** `T-074` (2.9.0, the deprecation release) and the end-to-end
+validation that found one real bug: 2.9.1 keeps the minus of a negative wheel.
+**Current state:** **`main` is tagged `v2.9.1` and pushed to
+`INTREPID-hep/mplDTs`; the simulator is merged on `destrada`
+(`2e397bb`, pin `v2.9.1`) and a Geant4 run decodes every cell,
+negative wheels included.**
 **Current checkpoint:** `CP-014` — the deprecation release is shipped and
 the removal is planned (`migration-3.0.md`, ADR-026).
 **Next action:** nothing is queued. The removal is *planned* — content,
 sequence, gates and anti-patterns in `migration-3.0.md` (ADR-026, T-070, T-072,
-T-073) — and starts only when the maintainer opens the window. Meanwhile 2.9.0
+T-073) — and starts only when the maintainer opens the window. Meanwhile 2.9.1
 is what the consumers pin, and running their suites with
-`-W error::DeprecationWarning` shows exactly what they still use. If the
-simulator branch is merged, regenerate `build/geometry` from the exporter and
-run one Geant4 event to confirm the cell IDs still decode.
+`-W error::DeprecationWarning` shows exactly what they still use. The simulator
+side is done: `destrada` carries the exporter, `build/geometry` is
+regenerated (36 chambers, yoke, honeycomb) and one event decodes wheels -1, 0
+and 1; the simulator's own `main` is still the three-commit skeleton.
 
 Open questions for the maintainer:
 1. Merge `feature/T-005-tg-exporter` into the simulator's `main`? It sits on the

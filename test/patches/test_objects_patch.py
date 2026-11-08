@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-from mpldts.geometry import AMDTSegments, STATION_CACHE
+from mpldts.geometry import AMDTSegments, Station
+from mpldts.geometry.sources import CMSXMLSource
 from mpldts.patches import DTObjectsPatch, DTSegmentsPatch, DTStationPatch
 
 CHAMBER = (0, 1, 1)
@@ -16,7 +17,7 @@ CHAMBER = (0, 1, 1)
 
 @pytest.fixture(scope="module")
 def station():
-    return STATION_CACHE.get(*CHAMBER)
+    return Station.from_spec(CMSXMLSource().station(*CHAMBER), *CHAMBER)
 
 
 def _coordinates(line):

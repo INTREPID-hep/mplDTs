@@ -59,3 +59,10 @@ PYTHONPATH=/home/destrada/mplDTs pytest -q          # 205 passed, 2 skipped
 - 2026-11-08: proposed and done while migrating the simulator (T-005): the
   first `TgSink` output of `W0/Sec1/St1` renamed every cell volume, and the
   two lines of C++ that decode a hit showed why that could not ship.
+- 2026-11-08 (2.9.1): the sanitiser still ate the minus of a negative wheel, so
+  `Station_W-1_Sec1_St1` came out as `Station_W_1_Sec1_St1` and
+  `ExtractIntAfterToken` (`include/DTSimUtils.hh`) could not read the wheel.
+  Found by running one Geant4 event on the regenerated geometry: the first
+  `:SOLID Solid_Station_W-1_*` the yoke referenced did not exist. The dash is
+  legal in a `.tg` name and it is part of the contract, so `_clean` keeps it;
+  `test_a_negative_wheel_keeps_its_minus` pins it.
