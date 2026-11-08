@@ -106,6 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-downstream-contract">The downstream contract</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#migrating-from-2-2">Migrating from 2.2</a></li>
 </ul>
 </li>
@@ -928,6 +929,34 @@ attributes to the clone.</p>
 the first build of a chamber is tens of milliseconds, and later stations are a
 few milliseconds each.</p>
 </section>
+<section id="the-downstream-contract">
+<h2>The downstream contract<a class="headerlink" href="#the-downstream-contract" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DTPatternRecognition</span></code> (dtpr) plots one event on top of these classes, so
+the names it imports are a contract: renaming any of them is a breaking change
+until 3.0 (ADR-025). <code class="docutils literal notranslate"><span class="pre">test/downstream</span></code> imports exactly this surface, with no
+ROOT and no Qt:</p>
+<ul class="simple">
+<li><p>geometry: <code class="docutils literal notranslate"><span class="pre">StationsCache</span></code> (and <code class="docutils literal notranslate"><span class="pre">STATION_CACHE</span></code>), <code class="docutils literal notranslate"><span class="pre">Station</span></code>,
+<code class="docutils literal notranslate"><span class="pre">AMDTSegments</span></code>;</p></li>
+<li><p>patches: <code class="docutils literal notranslate"><span class="pre">DTStationPatch</span></code>, <code class="docutils literal notranslate"><span class="pre">MultiDTSegmentsPatch</span></code>, <code class="docutils literal notranslate"><span class="pre">DTRelatedPatch</span></code>;</p></li>
+<li><p>on the station: <code class="docutils literal notranslate"><span class="pre">name</span></code>/<code class="docutils literal notranslate"><span class="pre">wheel</span></code>/<code class="docutils literal notranslate"><span class="pre">sector</span></code>/<code class="docutils literal notranslate"><span class="pre">number</span></code>,
+<code class="docutils literal notranslate"><span class="pre">super_layer(sl).layer(l).cell(w)</span></code>, <code class="docutils literal notranslate"><span class="pre">Cell.local_center</span></code> and
+<code class="docutils literal notranslate"><span class="pre">global_center</span></code>, <code class="docutils literal notranslate"><span class="pre">Layer._first_cell_id</span></code>/<code class="docutils literal notranslate"><span class="pre">_last_cell_id</span></code> and
+<code class="docutils literal notranslate"><span class="pre">layer.cell(id)</span></code>;</p></li>
+<li><p>on a patch: <code class="docutils literal notranslate"><span class="pre">.station</span></code> and <code class="docutils literal notranslate"><span class="pre">._collections</span></code> (the visualizer iterates the
+collections to toggle its artists).</p></li>
+</ul>
+<p>The per-event data dtpr sends is one row per hit, keyed by the cell:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">400.0</span><span class="p">},</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">STATION_CACHE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dt_info</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">sl</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> and <code class="docutils literal notranslate"><span class="pre">w</span></code> are required; every other column becomes an
+attribute of that cell on the returned overlay (<code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">BX</span></code>, …), which is
+what <code class="docutils literal notranslate"><span class="pre">DTStationPatch(vmap=...)</span></code> colours by. A <code class="docutils literal notranslate"><span class="pre">dict</span></code>, a <code class="docutils literal notranslate"><span class="pre">list[dict]</span></code> and a
+<code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> are all accepted, and the station in the cache is never
+mutated.</p>
+</section>
 <section id="migrating-from-2-2">
 <h2>Migrating from 2.2<a class="headerlink" href="#migrating-from-2-2" title="Link to this heading"></a></h2>
 <p>Nothing a user of 2.2 had to change, and nothing is deprecated yet (ADR-018:
@@ -943,6 +972,10 @@ attributes (<code class="docutils literal notranslate"><span class="pre">local_c
 honeycomb as a station attachment, the yoke as detector structure data.</p></li>
 <li><p><strong>2.5:</strong> authoring and export: the short constructors, the JSON documents and
 <code class="docutils literal notranslate"><span class="pre">.tg</span></code> output through <a class="reference internal" href="#mpldts.export.tg.TgSink" title="mpldts.export.tg.TgSink"><code class="xref py py-class docutils literal notranslate"><span class="pre">TgSink</span></code></a>.</p></li>
+<li><p><strong>2.5.1:</strong> <code class="docutils literal notranslate"><span class="pre">FrameView.available_frames</span></code> lists the legacy names again
+(<code class="docutils literal notranslate"><span class="pre">Station</span></code>, <code class="docutils literal notranslate"><span class="pre">CMS</span></code>, <code class="docutils literal notranslate"><span class="pre">SL{n}</span></code>, the plotting virtual frames) next to the
+frame ids, so a reference frame given by name keeps resolving; the names are
+API until 3.0 (ADR-025).</p></li>
 </ul>
 <p>Behaviour that did change, deliberately:</p>
 <ul class="simple">
