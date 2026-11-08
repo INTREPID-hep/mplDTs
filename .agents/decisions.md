@@ -405,6 +405,31 @@ that tag.
 
 ---
 
+## ADR-026 — 3.0 is the compatibility removal, planned and gated but not scheduled
+
+**Context.** 2.x keeps the pre-refactor API alive on purpose (ADR-025): the
+downstream packages migrated one step at a time and the release gate is theirs
+too. The shims are cheap to carry and nothing is deprecated on a timer, but they
+are roughly 1.5k lines and a second way to build a station, so they cannot stay
+forever. Deciding "3.0 someday" without a defined content is how a shim becomes
+permanent.
+
+**Decision.** 3.0 is the removal release, with its content, sequence and gates
+written down now in `migration-3.0.md` (T-070...T-073): a deprecation release
+(2.9.0) that names every replacement, then the removal of the legacy view
+layer, `StationsCache`/`dt_info`, the `"SuperLayer"` alias and the
+`TgSink.name_of` hook, in one window shared with both downstream packages.
+Removing a shim before its replacement is exercised by `test/downstream` is
+not allowed, and the cell identity `(wheel, sector, station, sl, layer, wire)`
+must decode identically before and after the name change.
+
+**Consequences.** Nothing is scheduled and nothing rots: the plan is the
+contract for whenever the maintainer opens the window. Any 3.0 idea outside
+that list needs its own ADR, and "clean it while we are in there" is explicitly
+rejected.
+
+---
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |
@@ -425,7 +450,7 @@ None blocking the plan. The defaults were resolved in Rev 4 and recorded in
 
 | Id | Question | Resolution |
 |---|---|---|
-| O-01 | Compatibility horizon? | until 3.0 |
+| O-01 | Compatibility horizon? | until 3.0; what 3.0 removes is written down in `migration-3.0.md` (ADR-026) |
 | O-02 | Plotting: orientation-based phi/eta? | yes, keep `faceview` (ADR-021) |
 | O-03 | Event scope? | none in mplDTs (ADR-024); dtpr keeps Segment/Track/Jet |
 | O-04 | Yoke: keep in simulator or a `.tg` CSG sink? | keep in simulator until Phase 6 |

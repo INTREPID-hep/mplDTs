@@ -3,7 +3,7 @@
 **Last updated:** 2026-11-08
 **Design:** [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md) Rev 4 (amended by ADR-024/ADR-025)
 **Board:** [`TICKETS.md`](TICKETS.md) · **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
-**Status:** **Phases 0-3 and 5 done and merged into `main` (`2eac105`, `v2.5.0`); Phase 4 rescoped to the downstream contract (ADR-024); Phase 6 deferred**
+**Status:** **Phases 0-5 done, merged and released (`v2.9.0`, the deprecation release); Phase 4 is the downstream contract (ADR-024); Phase 6 (pyg4ometry) and the removal itself (Phase 7) are planned and deferred**
 
 Guiding rule: **each phase is shippable and ends with a green test suite.** Do
 not start a phase before the previous one meets its exit criteria.
@@ -23,6 +23,9 @@ Phase 2  runtime model + compatibility     7–10 days
                              │
                              ▼
                      Phase 6  FUTURE: pyg4ometry + GDML (deferred)
+                             |
+                             v
+                     Phase 7  3.0 removal (planned: migration-3.0.md)
 ```
 
 Phases 3, 4 and 5 can run in parallel **after Phase 2**. Phase 4 is now the
@@ -296,6 +299,20 @@ are revisited.
 - Yoke CSG via pyg4ometry.
 - GDML writer; `G4GDMLParser` in `DTG4Simulator`.
 - Rotation/AABB/overlap/GDML tests.
+
+---
+
+## Phase 7 — 3.0: the compatibility removal (planned) · M7
+
+Phase 7's first step is already shipped: 2.9.0 (`T-074`) warns on every call the
+removal takes and says what replaces it. The rest has no work scheduled: it is
+the plan for removing what 2.x keeps alive, written down so "3.0 someday"
+cannot quietly become never. The content, the sequence (deprecation release,
+downstream move, removal, the name contract, the yoke as CSG), the gates and
+the anti-patterns live in `migration-3.0.md`; the tickets are T-070, T-072 and
+T-073. Entry gate: both
+downstream packages can move in the same release window, the cell identity
+table is ready to be pinned, and the maintainer opens the window.
 
 ---
 

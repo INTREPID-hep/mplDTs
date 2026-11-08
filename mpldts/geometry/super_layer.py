@@ -5,6 +5,7 @@ graph carries every frame, so nothing is copied per object and the SL2
 orientation comes from the source, not from a hand-written rotation matrix.
 """
 
+from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameView
 from mpldts.geometry.layer import Layer
@@ -43,6 +44,10 @@ class SuperLayer(DTFrame):
         if parent is None:
             from mpldts.geometry.station import station_for
 
+            deprecated(
+                "SuperLayer(rawId=...) standalone",
+                "the node tree of build_station(spec)",
+            )
             parent = station_for(rawId)
 
         node, record = parent._legacy_part(rawId)

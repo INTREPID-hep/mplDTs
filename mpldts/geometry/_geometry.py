@@ -1,7 +1,10 @@
 import os
 import re
+import warnings
 import xml.etree.ElementTree as ET
 from functools import lru_cache
+
+from mpldts._deprecation import deprecated
 
 
 
@@ -22,6 +25,10 @@ class DTGeometry:
         :param xml_file: Path to the XML file containing the DT Geometry.
         :type xml_file: str
         """
+        deprecated(
+            "DTGeometry(xml_file)",
+            "CMSXMLSource() (mpldts.geometry.sources)",
+        )
         tree = ET.parse(xml_file)
         self.root = tree.getroot()
         self._rawid_index = {}
@@ -211,8 +218,12 @@ class _LazyDTGeometry:
         self._geometry = None
 
     def __getattr__(self, name):
+        deprecated("DTGEOMETRY", "CMSXMLSource() (mpldts.geometry.sources)")
         if self._geometry is None:
-            self._geometry = DTGeometry(self._path)
+            # the alias warned for both of them: report the touch, not the object
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", DeprecationWarning)
+                self._geometry = DTGeometry(self._path)
         return getattr(self._geometry, name)
 
 

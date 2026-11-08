@@ -4,6 +4,7 @@ A Layer is a view over its node in the station tree (T-020): the cell nodes
 carry the cell grid, the graph carries the frames.
 """
 
+from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.drift_cell import DriftCell
 from mpldts.geometry.frames import FrameView
@@ -41,6 +42,10 @@ class Layer(DTFrame):
         if parent is None:
             from mpldts.geometry.station import station_for
 
+            deprecated(
+                "Layer(rawId=...) standalone",
+                "the node tree of build_station(spec)",
+            )
             parent = station_for(rawId)
 
         node, record = parent._legacy_part(rawId)
