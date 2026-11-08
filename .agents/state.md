@@ -5,7 +5,7 @@
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-2 done — M2 released as 2.3.0; Phase 3 in progress (T-030 done)
+**Current phase:** Phases 0-2 done — M2 tagged `v2.3.0`; Phase 3 in progress (T-030, T-031 done)
 
 ---
 
@@ -19,13 +19,14 @@
 | `prototype/parametric_poc_v1.py` | **removed** | superseded; boxes only |
 | `prototype/custom_station.png` | done | box (top) and tube (bottom) stations, phi/eta |
 | `.agents/` | done | this operating workspace |
+| Release tag | done | `v2.3.0` on `refactor/v2-integration` (ADR-022); `main` still `c341e65` |
 | `.agents/pyg4ometry-readiness.md` | done | contract for the deferred backend |
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
-`build_detector` and `Station.from_spec` (T-030) |
-| pytest suite for geometry | **through Phase 3 (T-030)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples, assemblies; 134 pass, 2 skip |
+`build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031) |
+| pytest suite for geometry | **through Phase 3 (T-031)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples, assemblies, presets; 143 pass, 2 skip |
 
 The prototype verifies:
 
@@ -46,7 +47,6 @@ prototype has no wire fields either.
 
 ## 2. What does not exist yet
 
-- `mpldts/geometry/presets/`.
 - `SolidSpec` attachments (honeycomb) and `StructureSpec` (yoke) in the library.
 - `mpldts/events/` (segments refactor, tracks, jets).
 - A JSON loader or validation (CLI is out of scope).

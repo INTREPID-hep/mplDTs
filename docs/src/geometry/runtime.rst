@@ -79,6 +79,15 @@ is chosen for the phi or the eta view by its orientation, not by its number.
 .. automethod:: mpldts.geometry.station.Station.from_spec
     :no-index:
 
+The CMS-only frames (`SectorRef` and `SL13Center`) live in
+:mod:`mpldts.geometry.presets.cms` and are added to CMS chambers only; a
+station built from a spec gets `StationNvPhi` and `StationNvEta` and
+nothing else. The face factor that orients the natural views comes from the
+station pose, so a custom chamber inverts its views like a CMS one.
+
+.. automodule:: mpldts.geometry.presets.cms
+    :members:
+
 .. literalinclude:: ../../examples/custom_station.py
     :language: python
     :lines: 1-66

@@ -3,7 +3,8 @@
 **Last updated:** 2026-11-07
 **Current checkpoint:** `CP-007 — M2 runtime parity`
 **Implementation status:** Phases 0-2 complete on `refactor/v2-integration`
-(release 2.3.0); Phase 3 in progress on `feature/phase-3-assemblies` (T-030)
+(release 2.3.0, tag `v2.3.0`); Phase 3 in progress on
+`feature/phase-3-assemblies` (T-030, T-031 done)
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md)
 
 ---
@@ -14,12 +15,12 @@
 |---|---|
 | Phase | 3 in progress (T-030 done) |
 | Current milestone | M3 — Assemblies, custom stations, extras (in progress) |
-| Last completed | T-030 (assemblies, `Station.from_spec`, orientation-based phi/eta) |
+| Last completed | T-031 (CMS preset, face factor from the pose) |
 | Integration branch | `refactor/v2-integration` (T-025 + T-026); `main` untouched |
-| Next | `T-031` — CMS preset remainder and custom-station plotting |
+| Next | `T-032` — honeycomb attachment, then `T-033` (yoke hook) |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
 `Station.from_spec` (T-030); tests, benchmark, CI |
-| Library tests | `pytest -q`: 134 passed, 2 skipped, 2 deselected |
+| Library tests | `pytest -q`: 143 passed, 2 skipped, 3 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
@@ -38,7 +39,7 @@
 | CP-005 | M0 safety net | 2026-11-06 | done | `feature/phase-0-safety-net`: pytest 15/4xfail/2skip, all-250 oracle, 621-placement `.tg`, benchmark, CI |
 | CP-006 | M1 specs + source | 2026-11-06 | done | spec oracle: 250/250, worst 1.25e-3 cm |
 | CP-007 | M2 runtime parity | 2026-11-06 | done | public API oracle green; 6.1 / 2.1 / 3.0 ms per station (< 20 ms); no XML in the model; `test/` triaged (`docs/examples/` + headless smoke test) |
-| CP-008 | M3 assemblies + extras | 2026-11-07 | in progress | T-030 done (134 tests green); T-031…T-033 open |
+| CP-008 | M3 assemblies + extras | 2026-11-08 | in progress | T-030/T-031 done (143 tests green); T-032/T-033 open |
 | CP-009 | M4 event annotations (optional) | — | pending | T-040…T-042 |
 | CP-010 | M5 authoring + `.tg` | — | pending | T-050, T-051, T-052, T-054 |
 | CP-011 | M6 GDML (future) | — | deferred | T-060 |
@@ -64,6 +65,7 @@ the evidence is linked here.
 | 2026-11-06 | T-023 | Phase 2 immutability: `Station.overlay()` shares the node tree, the graph and the raw-id index and rebuilds only the legacy view objects; `StationsCache.get` returns an overlay instead of writing on the cached station (`BUG-02`); stale docs anchors fixed | `pytest` 102 passed / 2 skipped; slow sweeps green; overlay 7 ms + 5 ms for 704 attributes vs 32 ms for a full station | T-024 |
 | 2026-11-06 | T-024 | Phase 2 performance: `DTGEOMETRY` is a lazy proxy (no XML parse at import); one build per chamber shared by every `Station`; wire locals parsed once per chamber; `Bounds`/`Wires` read explicit attribute names (`BUG-03`); docs anchors refreshed | `pytest` 105 passed / 2 skipped; slow sweeps green; import 2.83 -> 0.96 s; station 6.1 / 2.1 / 3.0 ms | T-025 |
 | 2026-11-06 | T-025 | Phase 2 cleanup: six documented examples moved to `docs/examples/` (five patch demos plus the `TransformManager` one), seven demos + the debug script + a generated SVG deleted, both `test/`-relative `literalinclude` path sets updated, one headless smoke test for every example | `pytest` 111 passed / 2 skipped; `test_examples.py` 6 passed; Sphinx build succeeded | **M2 gate met**; Phase 3 |
+| 2026-11-08 | T-031 | CMS preset: `presets/cms.py` owns `face_factor` + `add_frames` (`SectorRef`, `SL13Center`); `_face_from_pose` gives any station its face factor, so a mirrored custom chamber inverts right and all 250 CMS chambers keep the wheel/sector value; docs and `test_presets.py` | `pytest` 143 passed / 2 skipped; slow 3 passed (250 chambers); CMS rectangles 0.0 deviation vs `v2.3.0` (60 collections); Sphinx warning-free | `T-032` |
 | 2026-11-07 | T-030 | Phase 3 starts: `build_detector` (the detector is the root node), `Station.from_spec` (the record is derived from the node tree, no CMS cache), shared `_add_natural_views`, specs no longer capped at the CMS counts, the patches pick the phi/eta super layers by orientation (`_is_turned`) instead of `number == 2`; custom 1-SL/5-SL tests and `docs/examples/custom_station.py` | `pytest` 134 passed / 2 skipped; slow 250-chamber oracle green; Sphinx warning-free | `T-031` |
 | 2026-11-07 | T-026 | Release prep: 2.3.0 in `pyproject.toml` and `mpldts.__version__`, `docs/conf.py` reads the package version, new `docs/src/geometry/runtime.rst` documenting XML -> specs -> nodes -> frames, the legacy pages point at it; the untracked printer script is deleted; `refactor/v2-integration` cut from T-025 (`main` untouched) | `pytest` 111 passed / 2 skipped; Sphinx build succeeded with no warnings; both metadata sources report 2.3.0 | **Phase 3 planning** |
 
@@ -131,6 +133,12 @@ No history was rewritten.
 | 2026-11-07 | `pytest -q -m slow` (250 chambers, after T-030) | 2 passed, 136 deselected, 77 s |
 | 2026-11-07 | `sphinx-build -b html docs` (after T-030) | build succeeded, no warnings; the runtime page carries `build_detector` and `Station.from_spec` |
 | 2026-11-07 | `_is_turned` vs `super_layer.number == 2` on 3 chambers | same super layer in all of them |
+| 2026-11-07 | GitHub Actions `tests` on `feature/phase-3-assemblies` (T-030) | success (run 42314584878) |
+| 2026-11-08 | `git tag v2.3.0` on `refactor/v2-integration` (`8997ad7`) | annotated tag created and pushed (ADR-022) |
+| 2026-11-08 | `pytest -q` (after T-031) | 143 passed, 2 skipped, 3 deselected, 62 s |
+| 2026-11-08 | `pytest -q -m slow` (after T-031) | 3 passed, 145 deselected, 145 s |
+| 2026-11-08 | patch rectangles, `v2.3.0` vs T-031 (60 collections) | worst vertex deviation 0.0 in display coordinates |
+| 2026-11-08 | `sphinx-build -b html docs` (after T-031) | build succeeded, no warnings; `presets.cms` documented |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.

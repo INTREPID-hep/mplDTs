@@ -1,12 +1,12 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-07 (Europe/Madrid)
-**Previous session:** T-030 (`build_detector`, `Station.from_spec`,
-orientation-based phi/eta) on `feature/phase-3-assemblies`.
+**Previous session:** T-031 (CMS preset, face factor from the pose) on
+`feature/phase-3-assemblies`.
 **Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
-merged); Phase 3 in progress on `feature/phase-3-assemblies` (T-030 done).**
+merged); Phase 3 in progress on `feature/phase-3-assemblies` (T-030, T-031 done).**
 **Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** `T-031` — CMS preset remainder and custom-station plotting.
+**Next action:** `T-032` — honeycomb as a station attachment, then `T-033` (yoke hook).
 
 ---
 
@@ -48,7 +48,9 @@ T-026 released 2.3.0 (one version string, new `docs/src/geometry/runtime.rst`)
 on `refactor/v2-integration`. T-030 is done on `feature/phase-3-assemblies`:
 `build_detector`, `Station.from_spec`, a custom 1-SL/5-SL test and example,
 and the phi/eta choice in the patches follows the super layer orientation.
-Remaining in Phase 3: `T-031` (CMS preset), `T-032` honeycomb, `T-033` yoke hook.
+T-031 moved the CMS-only frames (`SectorRef`, `SL13Center`) into
+`mpldts/geometry/presets/cms.py` and takes the face factor from the pose.
+Remaining in Phase 3: `T-032` honeycomb, `T-033` yoke hook.
 
 Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
 `refactor/v2-integration` (2.3.0) and Phase 3 works on
@@ -101,6 +103,9 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - `.tg` first, GDML later (ADR-015).
 - Event objects are annotations (ADR-016).
 - Honeycomb/yoke are data; CSG in a backend (ADR-017).
+- phi/eta follows the super layer orientation; `faceview` is kept (ADR-021).
+- Releases are tagged on the integration branch; `main` moves on approval
+  (ADR-022, `v2.3.0` at `8997ad7`).
 
 If you need to change one, write a superseding ADR and ask the maintainer.
 

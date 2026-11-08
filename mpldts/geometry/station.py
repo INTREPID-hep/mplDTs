@@ -26,6 +26,7 @@ from pandas import DataFrame
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameGraph, FrameView
 from mpldts.geometry.model import build_station
+from mpldts.geometry.presets import cms
 from mpldts.geometry.sources.cms_xml import CMSXMLSource
 from mpldts.geometry.specs import Pose
 from mpldts.geometry.super_layer import SuperLayer
@@ -54,11 +55,13 @@ def _unit(vector):
     return vector / np.linalg.norm(vector)
 
 
-def _face_factor(wheel, sector):
-    """-1 for negative wheels, 1 for positive; wheel 0 depends on the sector."""
-    return (
-        -1 if wheel < 0 else 1 if wheel > 0 else -1 if sector in [1, 4, 5, 8, 9, 12, 13] else 1
-    )
+def _face_from_pose(node):
+    """1 when the station length axis points up the detector z axis, else -1.
+
+    The legacy face factor of a CMS chamber is stated by its wheel and sector;
+    for any other station the pose is the only statement (T-031).
+    """
+    return 1.0 if node.world_pose.rotation[2, 1] >= 0.0 else -1.0
 
 
 def _add_natural_views(graph, node, face):
@@ -80,37 +83,6 @@ def _add_natural_views(graph, node, face):
     graph.add_virtual(
         station_frame + "/StationNvEta", station_frame, Pose(np.column_stack([ex, ey, ez]).T)
     )
-
-
-def _add_plotting_frames(graph, node, record, wheel, sector):
-    """Register the frames the plotting patches ask for: the natural views
-    StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
-    geometrical center of the super layers 1 and 3 (SL13Center)."""
-    station_frame = node.frame_id
-
-    def add(name, pose):
-        graph.add_virtual(station_frame + "/" + name, station_frame, pose)
-
-    face = _face_factor(wheel, sector)
-    _add_natural_views(graph, node, face)
-
-    # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
-    # divided into 13 and 14, hence the sign correction.
-    x, y, _ = record["global"]
-    correction = 1
-    if sector in [13, 14]:
-        correction = -1
-        sector = 4 if sector == 13 else 10
-    dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
-    dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
-    add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
-
-    # Geometrical center of the super layers 1 and 3
-    sl1 = next((sl for sl in record["super_layers"] if sl["number"] == 1), None)
-    sl3 = next((sl for sl in record["super_layers"] if sl["number"] == 3), None)
-    if sl1 is not None and sl3 is not None:
-        centre = (np.asarray(sl1["local"]) + np.asarray(sl3["local"])) / 2.0
-        add("SL13Center", Pose.translated(*centre))
 
 
 def _bounds(shape):
@@ -205,7 +177,8 @@ def _built(wheel, sector, station):
     node = build_station(source.station(wheel, sector, station))
     graph = FrameGraph()
     graph.add_nodes(node)
-    _add_plotting_frames(graph, node, record, wheel, sector)
+    _add_natural_views(graph, node, _face_from_pose(node))
+    cms.add_frames(graph, node, record, wheel, sector)
     built = _BUILT[key] = (record, node, graph)
     return built
 
@@ -282,7 +255,7 @@ class Station(DTFrame):
         node = build_station(spec)
         graph = FrameGraph()
         graph.add_nodes(node)
-        _add_natural_views(graph, node, 1.0)
+        _add_natural_views(graph, node, _face_from_pose(node))
 
         station = object.__new__(cls)
         station._wheel, station._sector, station._number = 0, 0, 0
@@ -372,7 +345,7 @@ class Station(DTFrame):
         :return: Face orientation factor.
         :rtype: int
         """
-        return _face_factor(self._wheel, self._sector)
+        return cms.face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """

@@ -1,13 +1,14 @@
 # T-031 — CMS preset remainder and custom-station plotting
 
-- **Status:** ready
+- **Status:** done
 - **Phase:** 3
 - **Epic:** E3 Assemblies and extras
 - **Depends on:** T-030 (done)
 - **Branch:** `feature/phase-3-assemblies`
-- **PR:** —
-- **Owner:** unassigned
+- **PR:** — (branch pushed; the maintainer merges)
+- **Owner:** —
 - **Labels:** model, plotting, cms
+- **Completed:** 2026-11-08
 
 ## Context
 
@@ -19,22 +20,26 @@ orientation (`dt_station_patch._is_turned`) instead of
 
 Still CMS-only and welded to the CMS constructor: `SectorRef` (the sector phi
 line, with the MB4 sectors 13/14 sign correction) and `SL13Center` (the
-geometrical centre of the super layers 1 and 3). They live in
-`station._add_plotting_frames`, which only the CMS path calls, so the frames
-are correct today but the CMS knowledge has no home. A station built from a spec
-gets the natural views with a face factor of 1.0 because there is no wheel and
-sector to derive it from.
+geometrical centre of the super layers 1 and 3), plus the face factor of the
+natural views, which a station built from a spec could only guess.
 
-## Scope
+## What was delivered
 
-- Move `SectorRef` and `SL13Center` out of `station.py` into a CMS preset
-  (a small function next to `mpldts/geometry/sources/cms_xml.py`) applied by
-  `_built` only; the generic path keeps `_add_natural_views`.
-- Derive the face factor of a station built from a spec from its pose (the sign
-  that makes the natural views look at the chamber front) instead of the
-  constant `1.0`; a CMS chamber keeps `_face_factor(wheel, sector)`.
-- Keep `faceview=` and the segment convention (`seg.sl == 2`) working;
-  document the segment rule as a rule of the segments, not of the station.
+- New package `mpldts/geometry/presets/` and `presets/cms.py` with
+  `face_factor(wheel, sector)` and `add_frames(graph, node, record, wheel, sector)`
+  (`SectorRef` + `SL13Center`). The module reads the record and the node
+  poses, imports no plotting and no XML parser, and reuses the source's
+  `NEGATIVE_FACE_SECTORS`.
+- `station.py` lost `_face_factor` and `_add_plotting_frames`; `_built`
+  registers the natural views and then `cms.add_frames`.
+  `Station.face_orientation_factor` now asks the preset, same values.
+- `_face_from_pose(node)`: the face factor of any station from its pose
+  (the z component of its length axis). `Station.from_spec` uses it, so a
+  mirrored custom chamber inverts its views the right way.
+- `test/geometry/test_presets.py`: the natural views of the representative
+  chambers follow `face_factor`, a custom station has the natural views and no
+  CMS frames, a mirrored station inverts, and a slow sweep checks all 250
+  chambers.
 
 ## Out of scope
 
@@ -44,25 +49,31 @@ sector to derive it from.
 
 ## Acceptance criteria
 
-- [ ] `StationNvPhi`, `StationNvEta`, `SectorRef` and `SL13Center`
+- [x] `StationNvPhi`, `StationNvEta`, `SectorRef` and `SL13Center`
       resolve exactly as before for all 250 CMS chambers (slow sweep).
-- [ ] A station built from a spec has the natural views and no `SectorRef` or
+- [x] A station built from a spec has the natural views and no `SectorRef` or
       `SL13Center`.
-- [ ] CMS patch rectangles are unchanged (compare `DTStationPatch` output on
-      several chambers before and after).
-- [ ] A mirrored custom station inverts its local view correctly.
+- [x] CMS patch rectangles are unchanged: 60 collections (5 chambers x 2 views x 3
+      local/inverted modes) against the `v2.3.0` tag, worst vertex deviation
+      **0.0** in display coordinates, transforms included.
+- [x] A mirrored custom station inverts its local view correctly.
 
 ## Verification
 
 ```bash
 cd /home/destrada/mplDTs
-PYTHONPATH=/home/destrada/mplDTs pytest -q
-PYTHONPATH=/home/destrada/mplDTs pytest -q -m slow
+PYTHONPATH=/home/destrada/mplDTs pytest -q          # 143 passed, 2 skipped
+PYTHONPATH=/home/destrada/mplDTs pytest -q -m slow  # 3 passed (250 chambers)
 ```
+
+The Sphinx build is warning-free and documents `mpldts.geometry.presets.cms`.
 
 ## Risks / notes
 
-- A wrong orientation rule is invisible in a smoke test; keep the
-  `_is_turned` equivalence test and compare rectangles, not just path counts.
-- The face factor of a custom chamber can only be guessed from its pose; record
-  the rule in the docstring and pin it with a mirrored station test.
+- The face factor is now derived from the pose for every station, including the
+  CMS ones; `test_the_face_factor_matches_the_pose_on_every_chamber` pins
+  that it equals the wheel/sector rule on all 250 chambers.
+- The preset imports `NEGATIVE_FACE_SECTORS` from the source (preset -> source
+  -> specs), so the CMS naming rule lives in one place.
+- `Station.face_orientation_factor` for a station built from a spec still
+  reports the CMS formula on wheel/sector 0; the views use the pose.
