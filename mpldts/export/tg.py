@@ -54,8 +54,12 @@ class TgFormatError(ValueError):
 
 
 def _clean(name: str) -> str:
-    """A Geant4 name: letters, digits and underscore, never starting with a digit."""
-    cleaned = re.sub(r"[^A-Za-z0-9_]", "_", str(name))
+    """A Geant4 name: letters, digits, dash and underscore, never starting with a digit.
+
+    The dash is part of the CMS naming contract: the simulator's decoders read
+    the wheel as "_W-1" (DTSimUtils.hh), so a negative wheel must keep its sign.
+    """
+    cleaned = re.sub(r"[^A-Za-z0-9_-]", "_", str(name))
     return "_" + cleaned if cleaned[:1].isdigit() else cleaned
 
 

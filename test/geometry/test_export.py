@@ -305,8 +305,27 @@ def test_names_are_safe_for_geant4_and_unique_per_file():
     station = _station(name="TB-2026 / station 1", material="GasMixture")
     text = _tg(build_station(station))
 
-    assert ":VOLU TB_2026___station_1 Solid_TB_2026___station_1 G4_AIR" in text
-    assert ":VOLU DriftCell_TB_2026___station_1_SL1 Solid_DriftCell_TB_2026___station_1_SL1 GasMixture" in text
+    assert ":VOLU TB-2026___station_1 Solid_TB-2026___station_1 G4_AIR" in text
+    assert ":VOLU DriftCell_TB-2026___station_1_SL1 Solid_DriftCell_TB-2026___station_1_SL1 GasMixture" in text
+
+
+def test_a_negative_wheel_keeps_its_minus():
+    """The simulator reads the wheel as "_W-1" (DTSimUtils.hh): the sign is API."""
+
+    def legacy(node):
+        if node.kind == "station":
+            return "Station_W-1_Sec12_St4"
+        if node.kind == "cell":
+            return "DriftCell_W-1_Sec12_St4_SL1"
+        return None
+
+    text = _tg(build_station(_station(material="GasMixture")), name_of=legacy)
+
+    assert ":VOLU Station_W-1_Sec12_St4 Solid_Station_W-1_Sec12_St4 G4_AIR" in text
+    assert (
+        ":VOLU DriftCell_W-1_Sec12_St4_SL1 Solid_DriftCell_W-1_Sec12_St4_SL1 GasMixture" in text
+    )
+    assert "W_1" not in text
 
 
 def test_the_world_volume_is_not_written():
