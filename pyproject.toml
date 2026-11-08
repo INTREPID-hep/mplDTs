@@ -1,6 +1,6 @@
 [project]
 name = "mplDTs"
-version = "2.6.0"
+version = "2.7.0"
 description = "Set of tools to produce CMS DTs matplotlib patches"
 authors = [
   { name = "Daniel Estrada", email = "destrada@cern.ch" }

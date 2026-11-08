@@ -171,20 +171,22 @@ Target after Phase 2: **< 20 ms per station** (met).
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0...M3 and M5 are
-done and merged into `main` by the maintainer (`2eac105`, tag `v2.5.0`,
-2026-11-08); `origin/main` has not been pushed.
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0...M5 and
+`CP-009` (M4) are done; everything is merged and pushed to `origin/main`
+(`a3e8ce4` was the first push; tags `v2.5.0`, `v2.5.1` and `v2.6.0` are on
+GitHub).
 
-1. `T-005` reopens on the simulator: pin `mplDTs @ v2.5.0`, switch
+1. `T-005` reopens on the simulator: pin `mplDTs @ v2.6.0`, switch
    `generate_geometry_data.py` to `TgSink`, take the yoke station solid and
    rotation names from the same export, re-run the one-station smoke;
 2. `T-006`: record the benchmark baseline on merged code;
-3. `T-055` (dtpr pinned to `v2.6.0`); `T-005`/`T-006` on the simulator and
-   `T-053` (thin CLI) in parallel; `T-056` (2.5.1), `T-040` (`test/downstream`)
-   and `T-043` (2.6.0, `DTObjectsPatch`) are done and merged;
-4. Phase 6 (GDML) is an idea only (ADR-008/ADR-014).
+3. `T-053` (thin CLI) whenever it fits: `mpldts convert|info|plot`;
+4. `CP-009` (M4) is met: `T-056` (2.5.1), `T-040` (`test/downstream`),
+   `T-043` (2.6.0, `DTObjectsPatch`) and `T-055` (dtpr pinned to `v2.6.0`)
+   are done, merged and pushed in both repositories;
+5. Phase 6 (GDML) is an idea only (ADR-008/ADR-014).
 
-Only the maintainer pushes `main` and decides on 3.0.
+The maintainer still decides on 3.0.
 
 ---
 

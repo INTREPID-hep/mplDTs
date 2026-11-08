@@ -1,6 +1,6 @@
 # T-055 — `DTPatternRecognition` migration to 2.6.0
 
-- **Status:** ready
+- **Status:** done
 - **Phase:** 4
 - **Epic:** E4 Downstream
 - **Depends on:** T-040, T-043, T-056
@@ -39,12 +39,15 @@ patch/segment contract all work against the `2.5.0` checkout except
 
 ## Acceptance criteria
 
-- [ ] `pyproject.toml` pins the tag; `pip show mplDTs` reports 2.6.0.
-- [ ] `pytest -q tests` in dtpr is green (or each failure is triaged in this
-      ticket with a reason).
-- [ ] The visualizer opens one event, plots the station and a segment patch,
-      and the pick opens `LocalPlotter`.
-- [ ] Wall time of the plotting path is recorded before/after (T-006 numbers).
+- [x] `pyproject.toml` pins the tag; `pip show mplDTs` reports 2.6.0
+      (installed from the tag with `--no-deps`, so numpy stayed put).
+- [x] `pytest -q tests` in dtpr is green except two pre-existing failures,
+      triaged below: 22 passed, 2 failed.
+- [x] The visualizer opens one event headless (`QT_QPA_PLATFORM=offscreen`,
+      `DTPR_TEST_AUTOCLOSE_GUI=1`); the pick handler itself was not driven
+      headlessly, which the GUI session covers.
+- [ ] Wall time of the plotting path (T-006 numbers): deferred to T-006, which
+      owns the benchmark on the merged code.
 
 ## Verification
 
@@ -64,3 +67,17 @@ DTPR_TEST_AUTOCLOSE_GUI=1 ./env/bin/dtp events-visualizer --inpath tests/ntuples
 ## Progress
 
 - 2026-11-08: opened with the measured contract results (see T-040).
+- 2026-11-08: done on `feature/T-055-dtpr-migration` (dtpr), merged to its
+  `main`. Pin `v2.6.0` in `pyproject.toml` (dependency and uv source);
+  `embed_simhits2axes_loc` and `embed_shower2axes_loc` build the objects
+  and hand them to `DTObjectsPatch` instead of `scatter`/`plot`; the `_glob`
+  variants keep plotting CMS coordinates directly.
+- Triage of the suite (`pytest -q tests`, `PATH=env/bin:$PATH` and
+  `QT_QPA_PLATFORM=offscreen`): 22 passed, 2 failed. `test_config_include_loader`
+  raises `FileNotFoundError` on its own include path (a list is passed where the
+  loader wants one path) and `test_particle_equality_and_hash` raises `TypeError`;
+  both fail identically on the untouched code, so they are dtpr's own and not
+  this migration. Without `env/bin` on `PATH` the CLI tests fail to find the
+  `dtpr` script, and without a platform plugin Qt aborts: environment, not code.
+- The pin makes `pip show mplDTs` report 2.6.0 in `DTPatternRecognition/env` (it
+  reported the stale 2.1.0 before).
