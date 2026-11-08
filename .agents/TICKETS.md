@@ -2,8 +2,8 @@
 
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-08
-**Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 5 done — M5 gate met 2026-11-08; Phase 4 (events) is optional
+**Plan:** [`plan.md`](plan.md) Rev 5
+**State:** Phases 0-3 and 5 merged into `main` (`2eac105`, `v2.5.0`); next `T-005`/`T-006`, then the downstream contract (`T-056`, `T-040`, `T-055`); `T-053` CLI in scope; Phase 6 deferred
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -46,11 +46,15 @@ Status legend:
 generator; no pyg4ometry dependency. M2 is done (`CP-007`, tag `v2.3.0` on
 `refactor/v2-integration`), M3 is done (`CP-008`, tag `v2.4.0` on
 `feature/phase-3-assemblies`), and M5 is done (`CP-010`, tag `v2.5.0` on
-`feature/phase-5-authoring`): T-050...T-054 landed. Phase 4 (events,
-`CP-009`) stays optional; Phase 6 (`CP-011`) is deferred.
+`feature/phase-5-authoring`): T-050...T-054 landed. All three are merged into
+`main` (`2eac105`, 2026-11-08). Phase 4 is no longer an event layer: it is
+the downstream contract with `DTPatternRecognition` (ADR-024), `CP-009`.
+Phase 6 (`CP-011`) is deferred.
 
-**Current checkpoint:** `CP-010 — M5 authoring + .tg` complete (2026-11-08).
-The next action is the maintainer's review and merge; Phase 4 only on request.
+**Current checkpoint:** `CP-010 — M5 authoring + .tg` complete and merged
+(2026-11-08). Next: `T-005` (simulator migration), `T-006` (baseline), then
+`T-040` -> `T-043` (object renderers) -> `T-055`; `T-053` (CLI) runs in
+parallel. `T-056` is done (2.5.1, tag `v2.5.1`).
 
 ---
 
@@ -60,8 +64,8 @@ The next action is the maintainer's review and merge; Phase 4 only on request.
 |---|---|---|---|---|---|
 | T-001 | pytest scaffolding | 0 | done | — | [T-001](tickets/T-001-pytest-scaffolding.md) |
 | T-003 | Transform invariant + oracle harness + node snapshot | 0 | done | T-001 | [T-003](tickets/T-003-cms-oracle.md) |
-| T-005 | Downstream pin + `.tg` smoke | 0 | proposed | T-001 | [T-005](tickets/T-005-downstream-pin-tg-smoke.md) |
-| T-006 | Benchmark harness | 0 | proposed | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
+| T-005 | Downstream migration to `v2.5.0` + `.tg` smoke | 0 | ready | T-001, T-052 | [T-005](tickets/T-005-downstream-pin-tg-smoke.md) |
+| T-006 | Benchmark harness | 0 | ready | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
 | T-010 | Geometry specs | 1 | done | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
 | T-011 | CMS XML source | 1 | done | T-010 | [T-011](tickets/T-011-cms-xml-source.md) |
@@ -81,17 +85,21 @@ The next action is the maintainer's review and merge; Phase 4 only on request.
 | T-051 | JSON documents + strict validation | 5 | done | T-030 | [T-051](tickets/T-051-json-schema.md) |
 | T-052 | `VolumeSink` + `TgSink` + `.tg` parity | 5 | done | T-030 | [T-052](tickets/T-052-tg-sink.md) |
 | T-054 | Docs, tutorial, migration note, 2.5.0 | 5 | done | T-050...T-052 | [T-054](tickets/T-054-docs-tutorial.md) |
+| T-040 | Downstream cell-data contract + `test/downstream` | 4 | ready | T-022, T-052 | [T-040](tickets/T-040-downstream-contract.md) |
+| T-043 | Object renderers (`DTObjectsPatch`) | 4 | ready | T-022, T-023 | [T-043](tickets/T-043-object-renderers.md) |
+| T-053 | Thin CLI (`convert`, `info`, `plot`) | 5 | ready | T-051, T-052 | [T-053](tickets/T-053-cli.md) |
+| T-055 | `DTPatternRecognition` migration to 2.5.1 | 4 | ready | T-040, T-043, T-056 | [T-055](tickets/T-055-dtpr-migration.md) |
+| T-056 | `FrameView.available_frames` accepts legacy aliases | 4 | done | T-021 | [T-056](tickets/T-056-frame-aliases.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
 doc §14–§15), and the old T-010 protocol (rewritten as the specs ticket).
 
-**M0 complete on `feature/phase-0-safety-net` (2026-11-06).** All six Phase 0
-tickets are `done`; the branch is not merged into `main` and waits for the
-maintainer. T-002 was folded into T-003. T-005 and T-006 stay `proposed` on
-purpose: the `SuperLayer` alias and the `.tg` smoke exist, but the
-downstream pin waits for the merge (ADR-022) and the benchmark baseline needs a
-committed number.
+**M0 complete on `feature/phase-0-safety-net` (2026-11-06)** and merged into
+`main` with the rest. T-002 was folded into T-003. `T-005` is reopened as
+`ready`: the 2.2.0-beta pin and the smoke test exist, and the merge unblocks
+the migration (pin `v2.5.0`, generator on `TgSink`). `T-006` is `ready` too,
+now that the baseline can be measured on merged code.
 
 ---
 
@@ -117,7 +125,7 @@ M0 is reached when T-001, T-003, T-005, T-006 and T-007 are `done`.
 | M1 Specs + source | spec oracle green for all 250 chambers | T-010, T-011, T-012 |
 | M2 Runtime parity | public API oracle green; `< 20 ms`; no XML in model; `test/` triaged | T-020…T-025 |
 | M3 Assemblies + extras | custom stations; honeycomb; yoke data hook | T-030…T-033 |
-| M4 Event annotations (optional) | segments/tracks/jets; legacy API | T-040…T-042 |
+| M4 Downstream contract | dtpr contract test green; dtpr pinned to a tag; objects drawn by mplDTs patches | T-040, T-043, T-055, T-056 |
 | M5 Authoring + `.tg` | JSON → build → plot → `.tg`; parity | T-050, T-051, T-052, T-054 |
 | M6 (future) GDML | pyg4ometry optional extra | T-060 |
 
@@ -131,14 +139,11 @@ and the maintainer approves.
 | ID | Phase | Summary |
 |---|---|---|
 
-| T-040 | 4 | Annotation base + `Segment` refactor |
-| T-041 | 4 | `Track` + `Jet`/`Cone` + collections |
-| T-042 | 4 | Event plotting adapters + event JSON |
-| T-053 | 5 | CLI (deferred: JSON + Python builders are enough) |
+*(empty — every remaining item is a refined ticket above, or retired below.)*
 
-**Deferred:** T-053 (CLI) — no user yet; add only on request. T-060
-(pyg4ometry + GDML) — deferred until M5 is merged and ADR-008/ADR-014 are
-revisited.
+**Deferred:** T-060 (pyg4ometry + GDML) — deferred until ADR-008/ADR-014 are
+revisited, and kept as an idea only. **Retired:** T-041 and T-042 — the event
+model lives in `DTPatternRecognition` (ADR-024).
 
 ---
 
@@ -147,14 +152,15 @@ revisited.
 The previous open questions are closed with defaults. Changing one requires an
 ADR, not a silent edit.
 
-1. **Order:** `0 → 1 → 2 → {3, 4, 5} → 6`. Phase 4 (events) is optional and
-   off the critical path.
+1. **Order:** `0 → 1 → 2 → {3, 4, 5} → 6`. Phase 4 is the downstream contract
+   (ADR-024) and is off the critical path.
 2. **Yoke:** stays in `DTG4Simulator` until the pyg4ometry phase; the model
    only carries a data hook.
-3. **Events:** Segment/Track/Jet only; no hits/digis until asked.
+3. **Events:** none in mplDTs; `DTPatternRecognition` owns the event model
+   (ADR-024).
 4. **Compatibility:** keep the old constructors and plotting API until 3.0.
 5. **Phase 0 granularity:** five tickets; T-004 and T-002 are folded into T-003.
-6. **CLI/YAML:** out of scope. JSON + Python builders only.
+6. **CLI/YAML:** YAML stays out; a thin JSON CLI is in scope (T-053).
 
 ---
 
@@ -180,8 +186,9 @@ ADR, not a silent edit.
 | T-004 | Transform invariant (separate) | Folded into T-003 |
 | T-008 | Event object design spike | Design doc §15 covers it |
 | T-009 | Physical extras design spike | Design doc §14 covers it |
-| T-053 | CLI | JSON + Python builders are enough for now |
-| T-060 | pyg4ometry backend + GDML | Deferred by ADR-008/ADR-014 |
+| T-041 | `Track`/`Jet`/`Cone` + collections | The event model lives in `DTPatternRecognition` (ADR-024) |
+| T-042 | Event plotting adapters + event JSON | Same; dtpr already has both |
+| T-060 | pyg4ometry backend + GDML | Deferred by ADR-008/ADR-014; kept as an idea (2026-11-08) |
 
 ---
 
@@ -191,8 +198,8 @@ ADR, not a silent edit.
 - `T-010…T-019`: Phase 1 (T-010 rewritten as specs; T-011/T-012 source/oracle).
 - `T-020…T-029`: Phase 2.
 - `T-030…T-039`: Phase 3.
-- `T-040…T-049`: Phase 4 (optional).
-- `T-050…T-059`: Phase 5 (T-053 deferred).
+- `T-040…T-049`: Phase 4 (downstream contract; T-041/T-042 retired).
+- `T-050…T-059`: Phase 5 (T-053 CLI, in scope).
 - `T-060…`: Phase 6 (future).
 - `D-0xx`: planning artefacts, not implementation.
 

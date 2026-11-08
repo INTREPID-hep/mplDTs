@@ -30,7 +30,13 @@ come first, the runtime model second; `VolumeSink` moves to the first exporter
 (Phase 5); CLI/YAML are dropped and the event layer is optional. The same
 revision also corrects the terminology: **the XML `<Wire>` is the cell entry;
 there is no separate wire object**. The delivery detail is in
-[`.agents/plan.md`](../../.agents/plan.md) Rev 4.
+[`.agents/plan.md`](../../.agents/plan.md) Rev 5.
+
+**Amendment (2026-11-08, ADR-024/ADR-025).** Phase 4 is not an event layer:
+`DTPatternRecognition` already owns the event model, so mplDTs keeps geometry,
+frames, patches and the segment views, and the contract between them is a
+table keyed by `(sl, l, w)`. A thin CLI is back in scope (T-053), and the
+downstream packages are part of the release gate (`test/downstream`).
 
 ---
 
@@ -63,9 +69,10 @@ The runtime pieces:
 - **Physical volumes are explicit:** station, cells, honeycomb and yoke are
   solids; super layers and layers are grouping frames. There is no separate
   wire volume because there is no separate wire object.
-- **Event objects are a separate layer:** segments (already implemented),
-  muon tracks and jets/cones are annotations on a frame, not detector solids.
-  They reuse the frame graph and are developed after the geometry core.
+- **No event layer in mplDTs** (ADR-024): segments stay as views over the
+  frame graph, and per-event data reaches the geometry as a `(sl, l, w)` table.
+  The event model (digis, segments, tps, showers, tracks) lives in
+  `DTPatternRecognition`.
 
 A prototype already demonstrates the model: box cells and tube cells in one
 detector, stagger, frame-graph round-trips, JSON round-trip and exporter pose
@@ -793,7 +800,7 @@ checkpoints are tracked in [`.agents/PROGRESS.md`](../../.agents/PROGRESS.md).
 | 1 | Specs + CMS source | spec oracle green for all 250 chambers | T-010, T-011, T-012 |
 | 2 | Runtime model + compatibility | public-API oracle green; `< 20 ms`; no XML in model | T-020…T-024 |
 | 3 | Assemblies + custom stations + extras | custom 1-SL/5-SL; honeycomb; yoke data hook | T-030…T-033 |
-| 4 | Event annotations (optional) | legacy `Segment` API + tracks/jets | T-040…T-042 |
+| 4 | Downstream contract + dtpr | dtpr contract test green; dtpr pinned to a tag; objects drawn by mplDTs patches | T-040, T-043, T-055, T-056 |
 | 5 | Authoring + JSON + `.tg` | JSON → build → plot → `.tg`; parity | T-050, T-051, T-052, T-054 |
 | 6 | Future: pyg4ometry + GDML | deferred; additive via `VolumeSink` | T-060 |
 
@@ -816,16 +823,17 @@ assemblies, custom 1-SL/5-SL stations, CMS preset remainder (virtual frames,
 MB4 13/14), plotting by orientation, honeycomb attachment. The yoke gets a
 data hook only; it remains in `DTG4Simulator` until a CSG backend exists.
 
-**Phase 4 — event annotations (3–5 days, optional).** Refactor
-`Segment`/`Segments` onto a generic annotation layer; add `Track` and
-`Jet`/`Cone`; collections and plotting adapters. It depends on Phase 2
-(frames), not on Phases 3/5. It can be deferred without affecting the geometry
-delivery.
+**Phase 4 — downstream contract (1–2 days).** No event layer (ADR-024):
+`test/downstream` pins the surface `DTPatternRecognition` uses, the cell-data
+contract is documented, `FrameView.available_frames` accepts the legacy aliases
+again (T-056, released as 2.5.1), and dtpr moves its pin from `v2.2.0-beta` to
+that tag (T-055).
 
 **Phase 5 — authoring and `.tg` (4–6 days).** Convenience builders, JSON schema
 `mpldts.detector/2`, validation, and `VolumeSink` + `RecordingSink` +
 `TgSink` that proves the exporter seam without pyg4ometry. `DTG4Simulator`
-switches to the spec path when the output matches. No CLI in this revision.
+switches to the spec path when the output matches. A thin CLI
+(`mpldts convert|info|plot`) is in scope again as T-053.
 
 **Phase 6 — future (deferred, 5–8 days).** `mpldts/export/pyg4ometry.py`, GDML,
 `G4GDMLParser`. Entry criteria: Phases 0–5 merged and an explicit ADR update.
@@ -872,10 +880,14 @@ use the repository template and link the ticket. Details in
 - Future (Phase 6): pyg4ometry rotation round-trip, solid AABB vs
   `shape.aabb()`, GDML load, overlap check.
 
-**Event objects**
-- `Segment` legacy fields and transforms; `AMDTSegment` unchanged.
-- `Track` polyline, `Jet` cone, collection filter/groupby, JSON round-trip.
-- Annotations never enter the detector spec or the geometry exporter.
+**Downstream contract**
+- `test/downstream` imports and exercises the dtpr surface (no ROOT, no Qt).
+- Cell data as `dict | list[dict] | DataFrame` keyed by `(sl, l, w)`.
+- `AMDTSegments(reference_frame=...)` resolves `Station` and `SL13Center`.
+- Objects (simhits, tracks, showers) are drawn by `DTObjectsPatch` from points
+  or polylines given in any graph frame, not by ad-hoc `scatter`/`plot` calls
+  downstream (T-043).
+- No `Track`, `Jet`, collection or event JSON in mplDTs (ADR-024).
 
 **Performance**
 - One station < 50 ms after Phase 1, < 20 ms after Phase 2; full CMS < 10 s;
@@ -897,7 +909,7 @@ use the repository template and link the ticket. Details in
 | Cache mutation | medium | immutable specs; per-event overlay |
 | Scope creep into CSG | high | boundary: primitives only; CSG via pyg4ometry |
 | Yoke CSG blocks the geometry pipeline | medium | keep yoke in the simulator until a CSG backend; `StructureSpec` hook only |
-| Event layer becomes a full event model | medium | annotation bag + three types only; separate schema; Phase 4 |
+| Scope creep into an event model | medium | no event layer in mplDTs (ADR-024); dtpr owns it; the contract is a table |
 | `.tg` parity regression | high | golden station output; switch the generator only after parity |
 | Two sources of truth | high | spec is the only input; retire the old generator path |
 
@@ -925,7 +937,7 @@ The questions from revision 2 are now answered. The corresponding ADRs are in
 
 - compatibility horizon: until 3.0;
 - plotting: orientation-based phi/eta, `faceview` kept;
-- event scope: Segment/Track/Jet only; no hits/digis;
+- event scope: none in mplDTs; dtpr owns the event model (ADR-024);
 - yoke: stays in the simulator until Phase 6;
 - CLI/YAML: out of scope;
 - Phase 0: six tickets (T-004 folded into T-003).
@@ -975,12 +987,20 @@ explicitly, while still exporting stations/cells/honeycomb.
 
 ## 15. Beyond geometry: segments, tracks and jets
 
+**Amended 2026-11-08 (ADR-024) — the event layer below was not built and will
+not be.** `DTPatternRecognition` already has a richer, config-declared event
+model (`Event` as a typed bag of `Particle` records built from ROOT branches,
+with filters, sorters and cross-references), so mplDTs keeps geometry, frames,
+patches and the segment classes as views over the frame graph. The only
+contract is a table keyed by `(sl, l, w)` per chamber. The rest of this section
+is kept as the record of the rejected alternative.
+
 `mplDTs` already has `Segment`, `Segments`, `AMDTSegment` and `AMDTSegments`.
 They are **event-level annotations**, not detector solids: they describe a
 particle path or a trigger primitive in a frame, and they must not enter the
 Geant4 geometry.
 
-The right structure is a second layer that reuses the geometry's frames:
+The rejected structure was a second layer reusing the geometry's frames:
 
 ```
 mpldts/
@@ -1018,8 +1038,8 @@ polyline). The risks are scope creep (do not build a full event data model) and
 coupling annotations to the immutable detector. Keep attributes as an opaque
 bag and keep event serialization separate (`mpldts.event/1`).
 
-**Order.** Phase 4 is optional, after the geometry core (Phase 2). It does not block the
-geometry refactor and can run in parallel with assemblies/authoring.
+**Order. (superseded by ADR-024)** nothing of this is built; the survivor is
+`AMDTSegments` as a view over the frame graph.
 
 ---
 
@@ -1066,8 +1086,8 @@ until the pyg4ometry backend can take it over.
 | `SuperLayer(rawId)` / `Layer(rawId)` / `DriftCell(number)` | `from_spec(...)` + legacy wrappers |
 | `<Wire>` XML element | cell entry → `CellGrid`; there is no separate wire object |
 | station/cell/honeycomb/yoke | physical nodes/attachments/structures; SL/layer grouping |
-| `Segment`/`Segments` | Phase 4 annotation layer; backward-compatible |
-| tracks / jets | Phase 4 annotations (`Track` polyline, `Jet` cone); not solids |
+| `Segment`/`Segments` | kept as views over the frame graph (ADR-024) |
+| tracks / jets | dtpr particles (`(sl, l, w)` rows); not mplDTs objects |
 | `if number == 2: Rz(90°)` | SL2 spec has a rotated pose |
 | `face_orientation_factor`, `SectorRef`, `SL13Center` | `presets/cms.py` + virtual frames |
 | per-cell `TransformManager` | `Pose` tree + shared `FrameGraph` |

@@ -220,13 +220,15 @@ once in `CMSXMLSource`, and never let the name leak into the model.
 - `VolumeSink` must receive station, cell, attachment and structure
   placements; there is no wire object to emit.
 
-### Event objects
+### Per-event data
 
-- Segments, tracks and jets are **annotations**, not detector solids. They
-  live in `mpldts/events/` (Phase 4), reuse the `FrameGraph`, and never enter
-  `StationSpec` or the geometry exporter.
-- `Segment`: endpoints or centre + direction + length.
-- `Track`: ordered polyline + per-point attributes.
-- `Jet`/`Cone`: apex + axis + half-angle + attributes.
-- Attributes are an opaque bag; do not build a full event data model.
-- Keep the current `Segment`/`AMDTSegment` API working (compatibility).
+- No event model in mplDTs (ADR-024). Events belong to the consumer
+  (`DTPatternRecognition`), which sends a table keyed by `(sl, l, w)` per
+  chamber; mplDTs maps it onto the immutable station as an overlay.
+- `Segment`/`AMDTSegment` stay as views over the `FrameGraph`, not solids, and
+  never enter `StationSpec` or the geometry exporter. Keep their API working
+  (compatibility).
+- Do not add `Track`, `Jet`, `Cone`, collections or event JSON here.
+- Anything a consumer imports (`StationsCache`, the patches, `AMDTSegments`,
+  `available_frames`) is API until 3.0 and is covered by `test/downstream`
+  (ADR-025).

@@ -53,8 +53,9 @@ cannot disagree with the model.
 
 - A JSON Schema file for editors and CI linting: the strict reader is the
   contract; add the schema file when an editor asks for it.
-- Event documents (`mpldts.event/1`): Phase 4.
-- The CLI (T-053, deferred).
+- Event documents: not planned (ADR-024); the event model is in
+  `DTPatternRecognition`.
+- The CLI (T-053).
 - Convenience builders that make hand-written Python shorter: T-050.
 
 ## Acceptance criteria

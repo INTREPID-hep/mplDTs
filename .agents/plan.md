@@ -1,9 +1,9 @@
-# Plan — phased delivery (revision 4)
+# Plan — phased delivery (revision 5)
 
 **Last updated:** 2026-11-08
-**Design:** [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md) Rev 4
+**Design:** [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md) Rev 4 (amended by ADR-024/ADR-025)
 **Board:** [`TICKETS.md`](TICKETS.md) · **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
-**Status:** **Phases 0-3 and 5 done — `v2.3.0`, `v2.4.0`, `v2.5.0` tagged on the integration/feature branches; `main` not merged; Phase 4 optional, Phase 6 deferred**
+**Status:** **Phases 0-3 and 5 done and merged into `main` (`2eac105`, `v2.5.0`); Phase 4 rescoped to the downstream contract (ADR-024); Phase 6 deferred**
 
 Guiding rule: **each phase is shippable and ends with a green test suite.** Do
 not start a phase before the previous one meets its exit criteria.
@@ -18,15 +18,35 @@ Phase 1  specs + CMS source                4–6 days
 Phase 2  runtime model + compatibility     7–10 days
       │
       ├──────────────► Phase 3  assemblies + custom stations + extras
-      ├──────────────► Phase 4  event annotations (optional)
+      ├──────────────► Phase 4  downstream contract + dtpr migration
       └──────────────► Phase 5  authoring + JSON + .tg sink
                              │
                              ▼
                      Phase 6  FUTURE: pyg4ometry + GDML (deferred)
 ```
 
-Phases 3, 4 and 5 can run in parallel **after Phase 2**. Phase 4 is optional
-and may be dropped without affecting the geometry delivery.
+Phases 3, 4 and 5 can run in parallel **after Phase 2**. Phase 4 is now the
+cross-repo contract with `DTPatternRecognition` (ADR-024): small, and it adds
+no event model to mplDTs.
+
+---
+
+## What changed in revision 5 (2026-11-08)
+
+1. **Phase 4 is not an event layer.** `DTPatternRecognition` already owns a
+   richer, config-declared event model, so mplDTs keeps geometry, frames,
+   patches and the segment views; the contract is a `(sl, l, w)` table
+   (ADR-024, T-040). T-041/T-042 are retired.
+2. **The downstream packages are part of the gate.** A `test/downstream`
+   suite pins the surface dtpr imports, and `FrameView.available_frames`
+   carries the legacy aliases again (T-056, patch release 2.5.1); dtpr then
+   pins that tag instead of `v2.2.0-beta` (T-055).
+3. **The CLI is back in scope** as a thin argparse tool (`mpldts convert|info|
+   plot`), not the YAML-driven CLI of the deferred plan (T-053).
+4. **The renderers are the missing half of the contract.** mplDTs draws the
+   objects dtpr already has: one primitive for points and polylines that
+   inherits the cell projection, replacing dtpr's ad-hoc `scatter`/`plot`
+   calls (T-043).
 
 ---
 
@@ -197,30 +217,42 @@ API, and the old classes delegate to it.
 
 ---
 
-## Phase 4 — Event annotations (3–5 days) · M4 · **optional**
+## Phase 4 — Downstream contract and `DTPatternRecognition` (1–2 days) · M4
 
-**Goal:** generalize segments and add tracks/jets without touching geometry.
+**Goal:** mplDTs stays a geometry + patches package, and the packages that
+consume it are pinned to a tag and verified against it. No event model in
+mplDTs (ADR-024).
 
-**Tickets:** T-040, T-041, T-042.
+**Tickets:** T-040, T-043, T-055, T-056 (T-041 retired, T-042 folded into
+T-055).
 
 **Deliverables**
 
-- `Annotation` base (frame reference, attributes, style).
-- `Segment` refactor; current `AMDTSegment` behaviour preserved.
-- `Track` (polyline + per-point attributes) and `Jet`/`Cone` (apex + axis +
-  half-angle).
-- Collections (`filter`, `groupby`, `to_dataframe`), plotting adapters, event
-  JSON schema (`mpldts.event/1`).
-- Annotations never enter `StationSpec` or the geometry exporter.
+- `test/downstream/`: the exact surface dtpr imports, exercised without ROOT
+  or Qt — `StationsCache.get(..., dt_info=)` with a `(sl, l, w)` table,
+  `DTStationPatch`/`MultiDTSegmentsPatch` (`.station`, `._collections`),
+  `AMDTSegments`, `super_layer().layer().cell()` and the layer id bounds.
+- The cell-data contract documented: `dict | list[dict] | DataFrame`, keyed by
+  `(sl, l, w)` per chamber, mapped onto the immutable node (an overlay).
+- `FrameView.available_frames` carries the legacy alias names again, as the
+  design promised and 2.2.0-beta did (T-056); patch release 2.5.1.
+- `DTPatternRecognition` moves its pin from `v2.2.0-beta` to that tag and stops
+  using the copy installed in its env (T-055).
+- `DTObjectsPatch`: points and polylines given in any frame the graph knows,
+  drawn in Station-local coordinates and projected exactly like the cells, so
+  simhits, tracks and showers stop being ad-hoc `scatter`/`plot` calls in dtpr
+  (T-043).
 
 **Exit criteria (M4)**
 
-- Legacy `Segment`/`Segments`/`AMDTSegment` API works.
-- A muon track and a jet render in phi/eta.
-- JSON round-trip.
-- The geometry path is unaffected; this phase can be deferred.
+- `test/downstream` runs in the normal suite: no ROOT, no Qt.
+- dtpr imports and plots one event against the checkout: station, cells with a
+  colormap, one segment patch, one pick.
+- dtpr's pin is a tag, and its own suite is green on it.
+- No `Track`, `Jet`, `Cone`, collection or event JSON in mplDTs.
+- Every non-cell object in the dtpr plots is drawn by an mplDTs patch.
 
-**Dependency:** Phase 2 (frames). Can run in parallel with 3/5.
+**Dependency:** Phases 2 and 5 (the overlay and the patches).
 
 ---
 
@@ -228,7 +260,8 @@ API, and the old classes delegate to it.
 
 **Goal:** a user can define and export a detector without touching internals.
 
-**Tickets:** T-050, T-051, T-052, T-054. (T-053 CLI is deferred.)
+**Tickets:** T-050, T-051, T-052, T-054; T-053 (a thin CLI) is in scope now
+— `mpldts convert|info|plot`, argparse only.
 
 **Deliverables**
 
@@ -245,7 +278,7 @@ API, and the old classes delegate to it.
 
 - JSON → validate → build → plot → `.tg` works end to end.
 - One CMS station `.tg` matches the current generator (content/geometry).
-- No pyg4ometry dependency; no CLI required.
+- No pyg4ometry dependency.
 - The yoke is still handled by the simulator's `.tg` path.
 
 ---
@@ -274,7 +307,7 @@ are revisited.
 | 1 | 4–6 days |
 | 2 | 7–10 days |
 | 3 | 4–6 days |
-| 4 (optional) | 3–5 days |
+| 4 | 1–2 days |
 | 5 | 4–6 days |
 | **0–2 (critical path)** | **~2–3 weeks** |
 | **0–5 total** | **~4–6 weeks** |

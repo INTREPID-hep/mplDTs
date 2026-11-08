@@ -21,8 +21,8 @@ small and the board honest.
 - `T-010…T-019`: Phase 1 (T-010 rewritten as specs; T-011/T-012 source/oracle).
 - `T-020…T-029`: Phase 2.
 - `T-030…T-039`: Phase 3.
-- `T-040…T-049`: Phase 4 (optional).
-- `T-050…T-059`: Phase 5 (T-053 deferred).
+- `T-040…T-049`: Phase 4 (downstream contract; T-041/T-042 retired).
+- `T-050…T-059`: Phase 5 (T-053 CLI, in scope).
 - `T-060…`: Phase 6 (future).
 - `D-0xx`: planning artefacts (not implementation).
 
