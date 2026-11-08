@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runtime model &mdash; mplDTs 2.7.0 documentation</title>
+  <title>Runtime model &mdash; mplDTs 2.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=dfec817d"></script>
+      <script src="../../_static/documentation_options.js?v=69ff2ef9"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -96,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#the-command-line">The command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-cms-source">The CMS source</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
 </ul>
@@ -818,6 +819,18 @@ the document, plot the chamber with the legacy patches and export the volumes.</
 <span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./testbeam_station.svg"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">DPI</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="the-command-line">
+<h2>The command line<a class="headerlink" href="#the-command-line" title="Link to this heading"></a></h2>
+<p>The three conversions that are not worth a script of their own (T-053):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpldts<span class="w"> </span>info<span class="w">    </span>station.json<span class="w">          </span><span class="c1"># counts, bounds, materials, cells</span>
+mpldts<span class="w"> </span>convert<span class="w"> </span>station.json<span class="w"> </span>out.tg<span class="w">   </span><span class="c1"># the .tg through TgSink</span>
+mpldts<span class="w"> </span>plot<span class="w">    </span>station.json<span class="w"> </span>out.svg<span class="w">  </span><span class="c1"># one phi and one eta figure</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--station</span> <span class="pre">N</span></code> picks one station out of a detector document; without it
+<code class="docutils literal notranslate"><span class="pre">convert</span></code> writes the whole detector and <code class="docutils literal notranslate"><span class="pre">plot</span></code> needs a single station. A bad path
+or a bad document is one line on stderr and exit code 2, never a traceback.</p>
 </section>
 <section id="the-cms-source">
 <h2>The CMS source<a class="headerlink" href="#the-cms-source" title="Link to this heading"></a></h2>
