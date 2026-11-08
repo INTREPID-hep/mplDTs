@@ -238,6 +238,7 @@ class CMSXMLSource:
                             shape=Box(width, length, thickness),
                             first_id=first_id,
                             offset=offset,
+                            material="GasMixture",
                         ),
                     )
                 )

@@ -185,6 +185,7 @@ class CellGrid:
     shape: Shape
     first_id: int = 1
     offset: float = 0.0
+    material: Optional[str] = None
 
     def x_positions(self):
         """Cell centres along x, in the layer frame."""
@@ -308,6 +309,10 @@ def _check_grid(grid, layer_shape, where):
     if not np.isfinite(grid.offset):
         raise ValueError("%s: offset must be finite, got %r" % (where, grid.offset))
     _check_shape(grid.shape, where + " cell")
+    if grid.material is not None and not isinstance(grid.material, str):
+        raise ValueError(
+            "%s: cell material must be a string, got %r" % (where, type(grid.material).__name__)
+        )
     if grid.shape.aabb()[0] > grid.pitch + ROTATION_TOLERANCE:
         raise ValueError(
             "%s: cell is wider than the pitch (%.4g > %.4g)" % (where, grid.shape.aabb()[0], grid.pitch)
