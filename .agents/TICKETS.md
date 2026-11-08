@@ -3,7 +3,7 @@
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-08
 **Plan:** [`plan.md`](plan.md) Rev 5
-**State:** Phases 0-3 and 5 merged into `main` (`2eac105`, `v2.5.0`); next `T-005`/`T-006`, then the downstream contract (`T-056`, `T-040`, `T-055`); `T-053` CLI in scope; Phase 6 deferred
+**State:** Phases 0-3 and 5 merged into `main` and pushed; the downstream packages, the simulator and the CLI are on `v2.7.0`/`v2.8.0` (`T-005`, `T-053`, `T-055`, `T-057`); all tickets closed except `T-060` (deferred)
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -51,12 +51,12 @@ generator; no pyg4ometry dependency. M2 is done (`CP-007`, tag `v2.3.0` on
 the downstream contract with `DTPatternRecognition` (ADR-024), `CP-009`.
 Phase 6 (`CP-011`) is deferred.
 
-**Current checkpoint:** `CP-009 — M4 downstream contract` complete
-(2026-11-08); `CP-010 — M5 authoring + .tg` complete and merged
-(2026-11-08). Next: `T-005` (simulator pin + `.tg` smoke), `T-006`
-(benchmark) and `T-053` (thin CLI) in parallel. `T-056` (2.5.1), `T-040` (the
-contract test), `T-043` (2.6.0) and `T-055` (dtpr on `v2.6.0`) are done, so
-`CP-009` (M4) is met.
+**Current checkpoint:** `CP-012 — close-out` (2026-11-08): `T-005` (the
+simulator on the exporter), `T-057` (the `.tg` naming seam, 2.7.0), `T-006`
+(the baseline on merged code) and `T-053` (the thin CLI, 2.8.0) are done.
+Every ticket in §3 is closed except `T-060`, which stays deferred. The
+next decision is the maintainer's: 3.0 (drop the legacy classes and the
+`Station_W.._Sec..` names) or keep 2.x.
 
 ---
 
@@ -66,8 +66,8 @@ contract test), `T-043` (2.6.0) and `T-055` (dtpr on `v2.6.0`) are done, so
 |---|---|---|---|---|---|
 | T-001 | pytest scaffolding | 0 | done | — | [T-001](tickets/T-001-pytest-scaffolding.md) |
 | T-003 | Transform invariant + oracle harness + node snapshot | 0 | done | T-001 | [T-003](tickets/T-003-cms-oracle.md) |
-| T-005 | Downstream migration to `v2.5.0` + `.tg` smoke | 0 | ready | T-001, T-052 | [T-005](tickets/T-005-downstream-pin-tg-smoke.md) |
-| T-006 | Benchmark harness | 0 | ready | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
+| T-005 | Downstream migration + `.tg` smoke | 0 | done | T-001, T-052, T-057 | [T-005](tickets/T-005-downstream-pin-tg-smoke.md) |
+| T-006 | Benchmark harness + merged-code baseline | 0 | done | T-001 | [T-006](tickets/T-006-benchmark-harness.md) |
 | T-007 | Branch baseline + CI | 0 | done | — | [T-007](tickets/T-007-branch-baseline-ci.md) |
 | T-010 | Geometry specs | 1 | done | T-003 | [T-010](tickets/T-010-geometry-specs.md) |
 | T-011 | CMS XML source | 1 | done | T-010 | [T-011](tickets/T-011-cms-xml-source.md) |
@@ -89,19 +89,20 @@ contract test), `T-043` (2.6.0) and `T-055` (dtpr on `v2.6.0`) are done, so
 | T-054 | Docs, tutorial, migration note, 2.5.0 | 5 | done | T-050...T-052 | [T-054](tickets/T-054-docs-tutorial.md) |
 | T-040 | Downstream cell-data contract + `test/downstream` | 4 | done | T-022, T-052 | [T-040](tickets/T-040-downstream-contract.md) |
 | T-043 | Object renderers (`DTObjectsPatch`) | 4 | done | T-022, T-023 | [T-043](tickets/T-043-object-renderers.md) |
-| T-053 | Thin CLI (`convert`, `info`, `plot`) | 5 | ready | T-051, T-052 | [T-053](tickets/T-053-cli.md) |
+| T-053 | Thin CLI (`convert`, `info`, `plot`) | 5 | done | T-051, T-052 | [T-053](tickets/T-053-cli.md) |
 | T-055 | `DTPatternRecognition` migration to 2.6.0 | 4 | done | T-040, T-043, T-056 | [T-055](tickets/T-055-dtpr-migration.md) |
 | T-056 | `FrameView.available_frames` accepts legacy aliases | 4 | done | T-021 | [T-056](tickets/T-056-frame-aliases.md) |
+| T-057 | The `.tg` naming seam (`TgSink.name_of`, copy numbers) | 5 | done | T-052 | [T-057](tickets/T-057-tg-names.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
 doc §14–§15), and the old T-010 protocol (rewritten as the specs ticket).
 
 **M0 complete on `feature/phase-0-safety-net` (2026-11-06)** and merged into
-`main` with the rest. T-002 was folded into T-003. `T-005` is reopened as
-`ready`: the 2.2.0-beta pin and the smoke test exist, and the merge unblocks
-the migration (pin `v2.5.0`, generator on `TgSink`). `T-006` is `ready` too,
-now that the baseline can be measured on merged code.
+`main` with the rest. T-002 was folded into T-003. T-005 and T-006 closed
+on 2026-11-08 on merged code (2.7.0 / 2.8.0), so M0 is fully closed: pytest,
+the oracle, an invariant, the `.tg` smoke in the downstream repository and
+a benchmark that reproduces.
 
 ---
 
