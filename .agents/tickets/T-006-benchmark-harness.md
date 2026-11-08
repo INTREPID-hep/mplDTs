@@ -59,3 +59,21 @@ PYTHONPATH=/home/destrada/mplDTs python test/benchmarks/bench_station.py --compa
 - 2026-11-05: proposed, awaiting review.
 - 2026-11-06: done. `test/benchmarks/bench_station.py`; measured on the
   checkout: import 1.32 s, XML parse 0.53 s, stations 0.65 / 0.46 / 0.57 s.
+- 2026-11-08: baseline re-measured on the merged code (2.8.0) and the model
+  path added. The script now measures, per chamber, the legacy view
+  (`Station(*key)`) **and** `build_station(source.station(*key))` with the XML
+  parsed once, so the number the < 20 ms target refers to is in the table
+  itself.
+
+| Case | 2.8.0, checkout, median of 3 |
+|---|---|
+| import | 0.3 s |
+| XML parse (`DTGeometry`) | 0.3 s |
+| `Station(-2, 1, 2)` | 2-3 ms |
+| `Station(2, 14, 4)` | 1.6-3.3 ms |
+| `Station(0, 1, 1)` | 1.8-2.5 ms |
+| model path (same chambers) | 3.7-8.4 ms |
+
+The millisecond cases move up to 50% between runs on WSL, so the docstring
+states them as an order of magnitude; `--compare` prints the delta between
+two JSON runs and never fails the run.

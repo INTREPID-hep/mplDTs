@@ -1,11 +1,12 @@
 # T-053 — Thin CLI (`convert`, `info`, `plot`)
 
-- **Status:** ready
+- **Status:** done
 - **Phase:** 5
 - **Epic:** E5 Authoring
 - **Depends on:** T-051, T-052
 - **Branch:** `feature/T-053-cli`
-- **PR:** —
+- **PR:** — (branch `feature/T-053-cli`)
+- **Completed:** 2026-11-08
 - **Owner:** unassigned
 - **Labels:** cli, authoring
 
@@ -38,13 +39,27 @@ functions; mplDTs has three. Do not port it.
 - YAML, config files, plugin discovery, an `events` command.
 - A GUI.
 
+## What was delivered
+
+- `mpldts/cli.py` (170 lines): `main(argv=None)` and the three commands.
+  `info` prints the document summary, `convert` writes the `.tg` through
+  `TgSink`, `plot` writes a phi/eta SVG through `Station.from_spec` and
+  `DTStationPatch`. `--station N` picks one station out of a detector document;
+  without it `convert` exports the whole detector and `plot` needs a single
+  station (it draws one chamber).
+- A `mpldts` console script in `pyproject.toml`; `python -m mpldts.cli` works
+  too. matplotlib is imported inside `plot` only, so the other two commands do
+  not pay for it.
+- `test/geometry/test_cli.py` (7 tests): the three commands, a detector
+  document (whole and `--station`), and the two error paths.
+- A "The command line" section in `docs/src/geometry/runtime.rst`.
+
 ## Acceptance criteria
 
-- [ ] `mpldts convert station.json out.tg` produces a file `TgSink` accepts
-      (parsed by the existing test helper).
-- [ ] `mpldts plot station.json -o out.svg` writes a non-empty SVG headless.
-- [ ] Bad input exits non-zero with a readable message.
-- [ ] One test covers the three commands (`test/geometry/test_cli.py`).
+- [x] `mpldts convert station.json out.tg` produces a file `TgSink` accepts.
+- [x] `mpldts plot station.json -o out.svg` writes a non-empty SVG headless.
+- [x] Bad input exits non-zero (2) with a readable one-line message.
+- [x] Tests cover the three commands (`test/geometry/test_cli.py`).
 
 ## Verification
 
@@ -64,3 +79,5 @@ PYTHONPATH=/home/destrada/mplDTs \
 
 - 2026-11-08: reopened; was deferred in Rev 4 because JSON + builders covered
   the workflow. The maintainer asked for it (2026-11-08).
+- 2026-11-08: done. `mpldts/cli.py`, the console script, 7 tests, the docs
+  section; version 2.8.0.

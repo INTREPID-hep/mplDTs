@@ -1,12 +1,17 @@
 """T-006: station build benchmark.
 
-Baseline (2026-11-06, WSL2, checkout, median of 3):
-    import + XML parse   ~3.4 s
-    (-2, 1, 2) MB2        1.00 s
-    (2, 14, 4) MB4        0.71 s
-    (0, 1, 1) MB1         0.87 s
-Installed 2.2.0b0 package: 1.25 / 2.26 / 1.66 s.
-Target after Phase 2: < 20 ms per station.
+Baseline (2026-11-08, 2.7.0, WSL2, checkout, median of 3; the millisecond
+cases move 50% between runs on WSL, so read them as an order of magnitude):
+    import               0.3 s
+    XML parse            0.3 s
+    Station(-2, 1, 2)    ~3 ms
+    Station(2, 14, 4)    ~2 ms
+    Station(0, 1, 1)     ~2 ms
+    model (build_station on a parsed source) 4-8 ms
+Target after Phase 2 (< 20 ms per station): met with room to spare.
+
+Historical baseline (2026-11-06, pre-refactor checkout): import + parse 3.4 s,
+stations 1.00 / 0.71 / 0.87 s (installed 2.2.0b0: 1.25 / 2.26 / 1.66 s).
 
 Usage:
     PYTHONPATH=/home/destrada/mplDTs python test/benchmarks/bench_station.py
@@ -43,7 +48,8 @@ def measure(all_chambers=False):
     import mpldts
     import mpldts.geometry as geometry
     from mpldts.geometry._geometry import DTGeometry
-    from mpldts.geometry import Station
+    from mpldts.geometry import Station, build_station
+    from mpldts.geometry.sources import CMSXMLSource
 
     meta = {
         "package": mpldts.__file__,
@@ -62,8 +68,14 @@ def measure(all_chambers=False):
     stations = list(STATIONS)
     if all_chambers:
         stations += [key for key in sorted(geometry.DTGEOMETRY._chamber_key_index) if key not in stations]
+    # the source parses the XML once, so the model case is the build alone
+    source = CMSXMLSource()
     for key in stations:
+        # the legacy view over the node tree, and the model path underneath it
         cases["station %s" % (key,)] = _best(lambda key=key: Station(*key))
+        cases["model %s" % (key,)] = _best(
+            lambda key=key: build_station(source.station(*key))
+        )
 
     return meta, cases
 

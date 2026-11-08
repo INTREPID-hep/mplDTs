@@ -1,6 +1,6 @@
 # Commands and paths
 
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-08
 **Shell:** WSL Ubuntu 24.04, bash
 **Repo:** `/home/destrada/mplDTs`
 
@@ -8,9 +8,10 @@
 
 ## 0. Status
 
-**Plan Rev 5 approved 2026-11-06; Phases 0-3 and 5 merged into `main`
-(`2eac105`, `v2.5.0`).** `pytest` is the test entry point. Next: `T-005`
-(simulator), `T-006`, then the downstream contract (`T-056`, `T-040`, `T-055`).
+**Phases 0-3 and 5 are merged into `main`; the downstream packages are on 2.7.0
+(`T-005`, `T-055`) and the CLI is in (`T-053`, 2.8.0).** `pytest` is the test
+entry point. Remaining: the `T-006` baseline on the merged code, then 3.0
+whenever the maintainer drops the legacy classes.
 
 ## 0b. The downstream package (DTPatternRecognition)
 
@@ -23,9 +24,10 @@ PYTHONPATH=/home/destrada/mplDTs ./env/bin/python -c \
 ./env/bin/python -m pytest -q tests
 ```
 
-The dtpr env has `mpldts` 2.2.0-beta installed and `pyproject.toml` pins
-`v2.2.0-beta`; `PYTHONPATH=/home/destrada/mplDTs` overrides the installed copy.
-T-055 moves the pin to `v2.5.1`.
+The dtpr env has `mpldts` 2.6.0 installed and `pyproject.toml` pins `v2.6.0`
+(T-055, done); `PYTHONPATH=/home/destrada/mplDTs` overrides the installed copy.
+Two failures are pre-existing there: `test_config_include.py` and
+`test_particle.py`.
 
 ---
 
@@ -74,22 +76,18 @@ alignment `R_x(-90)`.
 
 ---
 
-## 3. Current baseline benchmark
+## 3. Benchmark (T-006)
 
 ```bash
-cd /home/destrada/Geant4/DTG4Simulator
-source env/bin/activate
-PYTHONPATH=/home/destrada/mplDTs python - <<'PY'
-import time
-from mpldts.geometry import Station
-
-t = time.time()
-st = Station(-2, 1, 2)
-print("one station: %.3f s" % (time.time() - t))
-print("SLs:", [s.number for s in st.super_layers])
-print("frames:", sorted(st.transformer.available_frames))
-PY
+cd /home/destrada/mplDTs
+PYTHONPATH=/home/destrada/mplDTs /home/destrada/Geant4/DTG4Simulator/env/bin/python   test/benchmarks/bench_station.py --json /tmp/bench.json
+# later, compare against a saved run:
+PYTHONPATH=/home/destrada/mplDTs /home/destrada/Geant4/DTG4Simulator/env/bin/python   test/benchmarks/bench_station.py --compare /tmp/bench.json
 ```
+
+2.8.0 numbers: import 0.3 s, XML parse 0.3 s, one station 2-3 ms, the model
+path (`build_station` on a parsed source) 4-8 ms. The target is < 20 ms; the
+millisecond cases move a lot on WSL, so read them as an order of magnitude.
 
 SL2 diagnosis:
 
@@ -140,8 +138,8 @@ cd /home/destrada/mplDTs
 PYTHONPATH=/home/destrada/mplDTs /home/destrada/Geant4/DTG4Simulator/env/bin/python -m pytest -q
 ```
 
-- Default: six representative chambers, ~30 s; the `slow` marker is deselected
-  by `addopts`.
+- Default: six representative chambers plus the downstream, patch and CLI
+  tests, ~35 s; the `slow` marker is deselected by `addopts`.
 - Full 250-chamber oracle (minutes): `pytest -q -m slow test/geometry/test_oracle.py`.
 - The SL2 comparison is a plain test (`test_sl2_cell_centres`) since T-022; a
   regression fails the suite.
@@ -167,8 +165,15 @@ cd /home/destrada/Geant4/DTG4Simulator/geometry
 PYTHONPATH=/home/destrada/mplDTs ../env/bin/python smoke_tg.py
 ```
 
-Expected: `ok: 621 placements, SL2 rotation present`. The validated `mplDTs`
-revision is pinned in `/home/destrada/Geant4/DTG4Simulator/requirements.txt`.
+Expected: `ok: 621 placements, 3 cell volumes, SL2 rotation present`. The
+validated `mplDTs` revision (`v2.7.0`) is pinned in
+`/home/destrada/Geant4/DTG4Simulator/requirements.txt`; drop the `PYTHONPATH`
+to run it against the installed package.
+
+The station files are the node tree through `TgSink`: the names the sensitive
+detectors parse (`Station_W.._Sec.._St..`, `DriftCell_.._SL<n>_<encoding>`)
+come from the generator's `name_of` hook, the copy numbers restart per volume,
+and the yoke defines its own `RM_Yoke_Station_*` rotation.
 
 Build/run:
 
@@ -180,6 +185,19 @@ cmake .. && make -j"$(nproc)"
 ```
 
 ---
+
+## 6b. The CLI (T-053)
+
+```bash
+cd /home/destrada/mplDTs
+mpldts info    docs/examples/testbeam_station.json
+mpldts convert docs/examples/testbeam_station.json /tmp/station.tg
+mpldts plot    docs/examples/testbeam_station.json /tmp/station.svg
+```
+
+Without the console script, prefix `PYTHONPATH=/home/destrada/mplDTs python -m
+mpldts.cli`; prepend `MPLBACKEND=Agg` when there is no display. The example
+document is written by `python docs/examples/export_tg.py` (it also plots).
 
 ## 7. Git and tickets
 

@@ -87,6 +87,11 @@ The reference-file test skips when the simulator checkout is absent; set
   included in one `.tg` document without redefining a volume or a rotation.
 - A .tg file is a flat list of placements: the hierarchy (super layer, layer)
   is lost on purpose, exactly as in the current generator.
+- ~~Copy numbers are counted per mother~~ (superseded by T-057: they restart
+  per volume, because the simulator's cell decoder reads the copy number of the
+  cell volume).
 - The yoke's `SUBTRACTION` lines reference the station solid and rotation
-  names. When the simulator switches to the sink (T-005), the yoke script has to
-  take those names from the same export instead of hardcoding `RM_Station_*`.
+  names. When the simulator switches to the sink (T-005), the yoke script takes
+  the solid name from the same export (the exporter's `name_of` hook, T-057)
+  and defines its own `RM_Yoke_Station_*` rotation, so the two files no longer
+  share a rotation name.

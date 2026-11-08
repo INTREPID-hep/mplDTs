@@ -1,11 +1,11 @@
 # State — dated snapshot
 
 **Last updated:** 2026-11-08 (Europe/Madrid)
-**Branch:** `main` — merged by the maintainer at `2eac105` (tag `v2.5.0`); `origin/main` is still `c341e65`, unpushed
+**Branch:** `main` — tagged `v2.8.0` and pushed to `INTREPID-hep/mplDTs`
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 5
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-3 and 5 merged into `main` — M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`; Phase 4 optional, Phase 6 deferred
+**Current phase:** every ticket closed (M0-M5 met); 2.8.0 is the last 2.x release: M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`, the alias fix `v2.5.1`, objects `v2.6.0`, the naming seam `v2.7.0`, the CLI `v2.8.0`; Phase 6 (pyg4ometry) deferred
 
 ---
 
@@ -19,7 +19,7 @@
 | `prototype/parametric_poc_v1.py` | **removed** | superseded; boxes only |
 | `prototype/custom_station.png` | done | box (top) and tube (bottom) stations, phi/eta |
 | `.agents/` | done | this operating workspace |
-| Release tags | done | `v2.3.0`, `v2.4.0`, `v2.5.0` per ADR-022; `main` carries all three now (`2eac105`, `v2.5.0`) |
+| Release tags | done | `v2.3.0` ... `v2.8.0` per ADR-022, all on `main`; `v2.7.0` is the `.tg` naming seam (T-057), `v2.8.0` the CLI (T-053) |
 | `.agents/pyg4ometry-readiness.md` | done | contract for the deferred backend |
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
@@ -27,7 +27,7 @@
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
 `build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
 `serialize.py` (JSON documents), `constructors.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
-| pytest suite for geometry | **through Phase 5 (T-054)** | `test/geometry/`: the Phase 0-3 suites plus builders, serialize and export (parity); 183 pass, 2 skip |
+| pytest suite | **all of it** | `test/geometry/` + `test/downstream/` + `test/patches/`: 212 passed, 2 skipped, 3 deselected |
 
 The prototype verifies:
 
@@ -52,10 +52,11 @@ prototype has no wire fields either.
   lives in `DTPatternRecognition`; mplDTs exposes geometry, patches and a
   cell-data contract keyed by `(sl, l, w)` instead.
 - pyg4ometry anywhere (intentionally).
-- A CLI (T-053) and YAML: JSON documents plus the Python builders are enough.
-- The simulator switch to `TgSink`: T-005 (reopened 2026-11-08, unblocked by
-  the merge); the yoke takes its station solid and rotation names from the
-  same export.
+- YAML: JSON documents, the Python builders and the CLI are enough.
+- The simulator switch to `TgSink` in the simulator's `main`: done on
+  `feature/T-005-tg-smoke` (T-005) and pushed; that branch sits on the
+  `destrada` lineage, which is far ahead of the simulator's `main` (`43b1057`),
+  so merging it is the maintainer's call.
 
 ---
 

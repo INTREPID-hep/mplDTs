@@ -1,17 +1,25 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-08 (Europe/Madrid)
-**Previous session:** T-050...T-054 on `feature/phase-5-authoring`: the
-authoring path (builders, JSON) and the `.tg` export with parity; 2.5.0.
-**Current state:** **Phases 0-3 and 5 merged into `main` by the maintainer
-(`2eac105`, tag `v2.5.0`); `origin/main` is still `c341e65`, not pushed.**
-**Current checkpoint:** `CP-010` (M5) complete and merged.
-**Next action:** `T-005` on the simulator — pin `mplDTs @ v2.5.0` and switch
-`generate_geometry_data.py` to `TgSink`; then `T-006` (baseline). After that:
-`T-005` (simulator pin `v2.6.0` + `.tg` smoke), `T-006` (benchmark) and
-`T-053` (thin CLI) in parallel. M4 is met: `T-056` (2.5.1), `T-040`
-(`test/downstream`), `T-043` (2.6.0) and `T-055` (dtpr on `v2.6.0`) are done,
-merged and pushed in both repositories; tags `v2.5.1` and `v2.6.0` are on `main`.
+**Previous session:** `T-005`, `T-057`, `T-006` and `T-053`: the simulator
+on the exporter (pinned `v2.7.0`), the `.tg` naming seam, the merged-code
+baseline and the CLI; tags `v2.7.0` and `v2.8.0`.
+**Current state:** **`main` is tagged `v2.8.0` and pushed to
+`INTREPID-hep/mplDTs`; the simulator work is on
+`feature/T-005-tg-smoke` (pushed, not merged).**
+**Current checkpoint:** `CP-012` (close-out) — every ticket is closed
+except `T-060` (pyg4ometry, deferred).
+**Next action:** nothing is queued: the maintainer decides between 3.0 (drop the
+legacy classes and the legacy `.tg` names) and staying on 2.x. If the
+simulator branch is merged, regenerate @build/geometry@ from the exporter and
+run one Geant4 event to confirm the cell IDs still decode.
+
+Open questions for the maintainer:
+1. Merge `feature/T-005-tg-smoke` into the simulator's `main`? It sits on the
+   `destrada` lineage (`76ab8a4`), far ahead of that `main` (`43b1057`).
+2. 3.0 or stay on 2.x? Nothing in 2.x is deprecated-on-a-timer; the legacy
+   classes and the `Station_W.._Sec.._St..` / `DriftCell_.._<encoding>` names
+   are the 3.0 removals (ADR-025).
 
 ---
 

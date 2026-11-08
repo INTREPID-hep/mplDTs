@@ -1,9 +1,9 @@
 # PROGRESS — checkpoints and session log
 
 **Last updated:** 2026-11-08
-**Current checkpoint:** `CP-010 — M5 authoring + .tg`
-**Implementation status:** Phases 0-3 and 5 complete and merged into `main`
-(`2eac105`, tag `v2.5.0`). M4 is optional, Phase 6 deferred
+**Current checkpoint:** `CP-012 — close-out`
+**Implementation status:** every ticket closed, `main` at `v2.8.0` and pushed;
+Phase 6 (pyg4ometry) is the only thing left and it stays deferred
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md) Rev 5
 
 ---
@@ -12,11 +12,12 @@
 
 | Item | Value |
 |---|---|
-| Phase | 5 complete (T-050...T-054 done) |
-| Current milestone | M5 — Authoring, JSON, `.tg` sink (gate met 2026-11-08) |
-| Last completed | T-054 (docs, tutorial, 2.5.0), after T-050...T-052 |
-| Integration branch | merged into `main` (`2eac105`, tag `v2.5.0`); `origin/main` still `c341e65` |
-| Next | `T-005` on `DTG4Simulator` (pin `v2.5.0`, generator on `TgSink`), then `T-006` baseline |
+| Phase | 0-5 complete; M0-M5 met |
+| Current milestone | close-out — every ticket closed except T-060 (deferred) |
+| Last completed | T-053 (CLI, 2.8.0), after T-006, T-057, T-005 |
+| Integration branch | `main`, tagged `v2.8.0` and pushed; the simulator lives on `feature/T-005-tg-smoke` |
+| Next | maintainer decision: 3.0 (drop the legacy classes and the legacy `.tg` names) or stay on 2.x |
+| Downstream | dtpr on `v2.6.0` (T-055); `DTG4Simulator` on `v2.7.0` (T-005) |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
 `Station.from_spec` (T-030); `serialize.py`, `constructors.py` and `export/` (T-050...T-052); tests, benchmark, CI |
 | Library tests | `pytest -q`: 183 passed, 2 skipped, 3 deselected |
@@ -42,6 +43,7 @@
 | CP-009 | M4 downstream contract | 2026-11-08 | done | `test/downstream` 7 tests; dtpr pinned to `v2.6.0` and drawing through `DTObjectsPatch`; dtpr suite 22 passed / 2 pre-existing failures; 2.6.0 tagged |
 | CP-010 | M5 authoring + `.tg` | 2026-11-08 | done | builders + JSON round trip; `.tg` parity: the same 621 placements, solids and rotations as the generator (0.0 cm); docs warning-free; 183 passed / 2 skipped |
 | CP-011 | M6 GDML (future) | — | deferred | T-060 |
+| CP-012 | Close-out: simulator, naming seam, baseline, CLI | 2026-11-08 | done | `T-005`: 621 placements and 25896 cells unchanged, all 250 chambers in 11.6 s; `T-057`: `.tg` 2.7.0; `T-006`: 2-8 ms per station; `T-053`: CLI + 7 tests; 212 passed / 2 skipped; docs warning-free |
 
 A checkpoint is complete only when its gate (in `TICKETS.md` §5) is met and
 the evidence is linked here.
@@ -73,6 +75,8 @@ the evidence is linked here.
 | 2026-11-08 | merge | the maintainer merged 2.3.0 -> 2.4.0 -> 2.5.0 into `main` (`2eac105`); the three feature branches are ancestors of `main` and tag `v2.5.0` sits on its tip; `enhancement-segments` untouched | `git merge-base --is-ancestor` on the three branches; `git describe` = `v2.5.0`; `origin/main` still `c341e65` | `T-005` |
 | 2026-11-08 | T-055 | dtpr on `feature/T-055-dtpr-migration`: pin `v2.6.0`, `embed_simhits2axes_loc` and `embed_shower2axes_loc` build `DTObjectsPatch` objects instead of `scatter`/`plot`, env reinstalled from the tag | dtpr `pytest -q tests` 22 passed / 2 pre-existing failures (config include, particle hash); visualizer smoke green offscreen | `CP-009` (M4) met; `T-005` |
 | 2026-11-08 | T-043 | `DTObjectsPatch`: points and polylines in any frame the station graph resolves, projected on the cell grid, so the local/global and inverted views come from `DTRelatedPatch`; `DTRelatedPatch` adds `Line2D` artists; `length` on the segment mark | `pytest -q` 204 passed / 2 skipped; objects on the cell centres (0.0 in both views, three SLs); segment paths pinned to 2.5.x | 2.6.0 tagged; `T-055` |
+| 2026-11-08 | T-005, T-057 | the simulator generates stations through the exporter: `build_station` + `TgSink` with a `name_of` hook that keeps the names `StationSD`/`DriftCellSD` parse, and copy numbers that restart per volume; the yoke keeps the exporter's solid name and defines its own rotation; pin `v2.7.0` | smoke 621 placements against the installed tag; the 36 station files of the previous build match cell for cell (25896); all 250 chambers in 11.6 s; pytest 205 passed | `T-006`, `T-053` |
+| 2026-11-08 | T-006, T-053 | the benchmark measures the model path too, and the baseline is recorded on merged code; `mpldts/cli.py` (info / convert / plot) with a console script, 7 tests and a docs section; 2.8.0 | 2-8 ms per station (< 20 ms target); the CLI converts and plots headless; pytest 212 passed / 2 skipped | maintainer: 3.0 or 2.x |
 | 2026-11-08 | T-040 | `test/downstream/test_dtpr_contract.py`: the surface dtpr imports (geometry + patches) exercised without ROOT or Qt, plus the cell-data contract documented on the runtime page | 7 tests, 2.1 s; `pytest -q` green; docs warning-free | `T-043` |
 | 2026-11-08 | T-056 | `FrameView.available_frames` is the graph ids plus every name `_alias` accepts, derived from the frame basenames (0.13 ms per call); the legacy `AMDTSegments` reference frames resolve again; release 2.5.1 | `pytest -q` 185 passed / 2 skipped; the dtpr check that raised on 2.5.0 prints `Station`, `SL13Center` and `SL1` centres; dtpr plotting imports against the checkout | 2.5.1 tagged; `T-040` |
 | 2026-11-08 | T-043 | opened the object-renderer ticket: `DTObjectsPatch` draws points and polylines given in any graph frame, projecting them like the cells, so dtpr drops its ad-hoc `scatter`/`plot`; `AMDTSegment.length` removes the fixed 20/40 mark; the dtpr side lands in T-055 | ticket + board only, no code yet | `T-056` |
