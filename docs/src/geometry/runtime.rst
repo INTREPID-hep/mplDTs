@@ -210,6 +210,21 @@ the document, plot the chamber with the legacy patches and export the volumes.
 .. literalinclude:: ../../examples/export_tg.py
     :language: python
 
+The command line
+----------------
+
+The three conversions that are not worth a script of their own (T-053):
+
+.. code-block:: bash
+
+    mpldts info    station.json          # counts, bounds, materials, cells
+    mpldts convert station.json out.tg   # the .tg through TgSink
+    mpldts plot    station.json out.svg  # one phi and one eta figure
+
+``--station N`` picks one station out of a detector document; without it
+``convert`` writes the whole detector and ``plot`` needs a single station. A bad path
+or a bad document is one line on stderr and exit code 2, never a traceback.
+
 The CMS source
 --------------
 
