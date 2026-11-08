@@ -51,12 +51,14 @@ generator; no pyg4ometry dependency. M2 is done (`CP-007`, tag `v2.3.0` on
 the downstream contract with `DTPatternRecognition` (ADR-024), `CP-009`.
 Phase 6 (`CP-011`) is deferred.
 
-**Current checkpoint:** `CP-012 — close-out` (2026-11-08): `T-005` (the
-simulator on the exporter), `T-057` (the `.tg` naming seam, 2.7.0), `T-006`
-(the baseline on merged code) and `T-053` (the thin CLI, 2.8.0) are done.
-Every ticket in §3 is closed except `T-060`, which stays deferred. The
-next decision is the maintainer's: 3.0 (drop the legacy classes and the
-`Station_W.._Sec..` names) or keep 2.x.
+**Current checkpoint:** `CP-014 — the deprecation release` (2026-11-08):
+`T-074` (2.9.0) on top of `T-005` (the simulator on the exporter), `T-057` (the
+`.tg` naming seam, 2.7.0), `T-006` (the baseline on merged code) and `T-053` (the
+thin CLI, 2.8.0). Every delivery ticket in §3 is closed: the removal is now
+visible in a consumer's test run, one warning at a time. Two things stay planned and deferred: `T-060`
+(pyg4ometry + GDML) and the removal itself, which has content, a sequence and
+gates in `migration-3.0.md` (ADR-026, `T-070`, `T-072`, `T-073`). Nothing runs
+until the maintainer opens that window.
 
 ---
 
@@ -94,6 +96,11 @@ next decision is the maintainer's: 3.0 (drop the legacy classes and the
 | T-056 | `FrameView.available_frames` accepts legacy aliases | 4 | done | T-021 | [T-056](tickets/T-056-frame-aliases.md) |
 | T-057 | The `.tg` naming seam (`TgSink.name_of`, copy numbers) | 5 | done | T-052 | [T-057](tickets/T-057-tg-names.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
+| T-070 | Remove the legacy view layer | 7 | deferred | T-071, T-073 | [T-070](tickets/T-070-legacy-layer-removal.md) |
+| T-071 | The per-event contract replaces `StationsCache.get(dt_info=...)` | 7 | deferred | T-040 | [T-071](tickets/T-071-event-contract.md) |
+| T-072 | The volume names stop being the C++ API | 7 | deferred | T-005, T-073 | [T-072](tickets/T-072-volume-names.md) |
+| T-073 | The 3.0.0 release and the downstream lockstep | 7 | deferred | T-070...T-072 | [T-073](tickets/T-073-release-3.0.md) |
+| T-074 | The 2.9.0 deprecation release | 7 | done | — | [T-074](tickets/T-074-deprecations-2.9.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
 doc §14–§15), and the old T-010 protocol (rewritten as the specs ticket).
@@ -131,6 +138,7 @@ M0 is reached when T-001, T-003, T-005, T-006 and T-007 are `done`.
 | M4 Downstream contract | dtpr contract test green; dtpr pinned to a tag; objects drawn by mplDTs patches | T-040, T-043, T-055, T-056 |
 | M5 Authoring + `.tg` | JSON → build → plot → `.tg`; parity | T-050, T-051, T-052, T-054 |
 | M6 (future) GDML | pyg4ometry optional extra | T-060 |
+| M7 (planned) 3.0 removal | no legacy API left; both downstream packages on 3.0; the cell identity table matches | T-070...T-073 ([plan](migration-3.0.md)) |
 
 ---
 
@@ -145,7 +153,9 @@ and the maintainer approves.
 *(empty — every remaining item is a refined ticket above, or retired below.)*
 
 **Deferred:** T-060 (pyg4ometry + GDML) — deferred until ADR-008/ADR-014 are
-revisited, and kept as an idea only. **Retired:** T-041 and T-042 — the event
+revisited, and kept as an idea only; T-070...T-073 — the 3.0 removal, fully
+planned in `migration-3.0.md` (ADR-026) and started only when both downstream
+packages can move in the same window. **Retired:** T-041 and T-042 — the event
 model lives in `DTPatternRecognition` (ADR-024).
 
 ---

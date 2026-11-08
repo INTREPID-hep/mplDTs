@@ -1,9 +1,10 @@
 # PROGRESS — checkpoints and session log
 
 **Last updated:** 2026-11-08
-**Current checkpoint:** `CP-012 — close-out`
-**Implementation status:** every ticket closed, `main` at `v2.8.0` and pushed;
-Phase 6 (pyg4ometry) is the only thing left and it stays deferred
+**Current checkpoint:** `CP-014 — the 2.9.0 deprecation release`
+**Implementation status:** every delivery ticket closed, `main` at `v2.9.0` and
+pushed; the 3.0 removal is planned and 2.9.0 already warns about it; Phase 6
+(pyg4ometry) and the removal itself are deferred
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md) Rev 5
 
 ---
@@ -12,15 +13,15 @@ Phase 6 (pyg4ometry) is the only thing left and it stays deferred
 
 | Item | Value |
 |---|---|
-| Phase | 0-5 complete; M0-M5 met |
-| Current milestone | close-out — every ticket closed except T-060 (deferred) |
-| Last completed | T-053 (CLI, 2.8.0), after T-006, T-057, T-005 |
-| Integration branch | `main`, tagged `v2.8.0` and pushed; the simulator lives on `feature/T-005-tg-smoke` |
-| Next | maintainer decision: 3.0 (drop the legacy classes and the legacy `.tg` names) or stay on 2.x |
+| Phase | 0-5 complete (M0-M5 met); 6 and 7 planned, deferred |
+| Current milestone | `CP-014`: the deprecation release (2.9.0); the removal itself is planned |
+| Last completed | T-074 (the 2.9.0 deprecation release) |
+| Integration branch | `main`, tagged `v2.9.0` and pushed; the simulator lives on `feature/T-005-tg-exporter` |
+| Next | nothing scheduled; the removal is gated in `migration-3.0.md` (ADR-026) and waits for the window |
 | Downstream | dtpr on `v2.6.0` (T-055); `DTG4Simulator` on `v2.7.0` (T-005) |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
-`Station.from_spec` (T-030); `serialize.py`, `constructors.py` and `export/` (T-050...T-052); tests, benchmark, CI |
-| Library tests | `pytest -q`: 183 passed, 2 skipped, 3 deselected |
+`Station.from_spec` (T-030); `serialize.py`, `constructors.py` and `export/` (T-050...T-052); tests, benchmark, CI; `mpldts/_deprecation.py` and the 2.9.0 warnings (T-074) |
+| Library tests | `pytest -q`: 219 passed, 2 skipped, 3 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
@@ -43,7 +44,9 @@ Phase 6 (pyg4ometry) is the only thing left and it stays deferred
 | CP-009 | M4 downstream contract | 2026-11-08 | done | `test/downstream` 7 tests; dtpr pinned to `v2.6.0` and drawing through `DTObjectsPatch`; dtpr suite 22 passed / 2 pre-existing failures; 2.6.0 tagged |
 | CP-010 | M5 authoring + `.tg` | 2026-11-08 | done | builders + JSON round trip; `.tg` parity: the same 621 placements, solids and rotations as the generator (0.0 cm); docs warning-free; 183 passed / 2 skipped |
 | CP-011 | M6 GDML (future) | — | deferred | T-060 |
+| CP-013 | The 3.0 removal plan recorded | 2026-11-08 | done | `migration-3.0.md` + ADR-026 + T-070...T-073; the inventory (~1.2-1.5k lines), the sequence, gates G1-G5 (the cell identity table included) and the anti-patterns |
 | CP-012 | Close-out: simulator, naming seam, baseline, CLI | 2026-11-08 | done | `T-005`: 621 placements and 25896 cells unchanged, all 250 chambers in 11.6 s; `T-057`: `.tg` 2.7.0; `T-006`: 2-8 ms per station; `T-053`: CLI + 7 tests; 212 passed / 2 skipped; docs warning-free |
+| CP-014 | The 2.9.0 deprecation release | 2026-11-08 | done | `T-074`: 9 legacy entry points warn and name their replacement, `Station.from_spec` and the `CMSXMLSource` pipeline stay silent; "Migrating to 3.0" in `runtime.rst`; 219 passed / 2 skipped; dtpr 22 + the 2 known failures; simulator smoke 621 placements; docs 0 warnings |
 
 A checkpoint is complete only when its gate (in `TICKETS.md` §5) is met and
 the evidence is linked here.
@@ -77,6 +80,7 @@ the evidence is linked here.
 | 2026-11-08 | T-043 | `DTObjectsPatch`: points and polylines in any frame the station graph resolves, projected on the cell grid, so the local/global and inverted views come from `DTRelatedPatch`; `DTRelatedPatch` adds `Line2D` artists; `length` on the segment mark | `pytest -q` 204 passed / 2 skipped; objects on the cell centres (0.0 in both views, three SLs); segment paths pinned to 2.5.x | 2.6.0 tagged; `T-055` |
 | 2026-11-08 | T-005, T-057 | the simulator generates stations through the exporter: `build_station` + `TgSink` with a `name_of` hook that keeps the names `StationSD`/`DriftCellSD` parse, and copy numbers that restart per volume; the yoke keeps the exporter's solid name and defines its own rotation; pin `v2.7.0` | smoke 621 placements against the installed tag; the 36 station files of the previous build match cell for cell (25896); all 250 chambers in 11.6 s; pytest 205 passed | `T-006`, `T-053` |
 | 2026-11-08 | T-006, T-053 | the benchmark measures the model path too, and the baseline is recorded on merged code; `mpldts/cli.py` (info / convert / plot) with a console script, 7 tests and a docs section; 2.8.0 | 2-8 ms per station (< 20 ms target); the CLI converts and plots headless; pytest 212 passed / 2 skipped | maintainer: 3.0 or 2.x |
+| 2026-11-08 | CP-013 | the 3.0 removal is planned instead of left as "someday": `migration-3.0.md` (inventory ~1.2-1.5k lines, sequence S1-S5, gates G1-G5 with the cell identity table, anti-patterns), ADR-026, and T-070...T-073 as deferred tickets | documentation only; the suite is untouched (212 passed) | the maintainer opens the 3.0 window |
 | 2026-11-08 | T-040 | `test/downstream/test_dtpr_contract.py`: the surface dtpr imports (geometry + patches) exercised without ROOT or Qt, plus the cell-data contract documented on the runtime page | 7 tests, 2.1 s; `pytest -q` green; docs warning-free | `T-043` |
 | 2026-11-08 | T-056 | `FrameView.available_frames` is the graph ids plus every name `_alias` accepts, derived from the frame basenames (0.13 ms per call); the legacy `AMDTSegments` reference frames resolve again; release 2.5.1 | `pytest -q` 185 passed / 2 skipped; the dtpr check that raised on 2.5.0 prints `Station`, `SL13Center` and `SL1` centres; dtpr plotting imports against the checkout | 2.5.1 tagged; `T-040` |
 | 2026-11-08 | T-043 | opened the object-renderer ticket: `DTObjectsPatch` draws points and polylines given in any graph frame, projecting them like the cells, so dtpr drops its ad-hoc `scatter`/`plot`; `AMDTSegment.length` removes the fixed 20/40 mark; the dtpr side lands in T-055 | ticket + board only, no code yet | `T-056` |
@@ -162,6 +166,11 @@ No history was rewritten.
 | 2026-11-08 | JSON round trip, CMS chamber -2/1/MB2 with honeycomb | `to_dict(from_dict(document)) == document`; 13 kB per chamber |
 | 2026-11-08 | `sphinx-build -E -b html docs` (after T-054) | build succeeded, no warnings |
 | 2026-11-08 | `python -c "import mpldts; print(mpldts.__version__)"` | 2.5.0 |
+| 2026-11-08 | `pytest -q` (after T-074) | 219 passed, 2 skipped, 3 deselected, 57 s |
+| 2026-11-08 | `sphinx-build -E -b html docs` (after T-074) | build succeeded, no warnings |
+| 2026-11-08 | `python -c "import mpldts; print(mpldts.__version__)"` (after T-074) | 2.9.0 |
+| 2026-11-08 | dtpr `pytest -q tests` on the 2.9.0 checkout | 22 passed / 2 pre-existing failures (config include, particle hash) |
+| 2026-11-08 | simulator `smoke_tg.py` against the working tree | 621 placements, 3 cell volumes, 620 cells; the `name_of` hook warns and the run is unchanged |
 | 2026-11-08 | GitHub Actions `tests` on `feature/phase-5-authoring` | success (run 42487358163) |
 | 2026-11-08 | merge state (`git log`, `git describe`, `--is-ancestor`) | `main` `2eac105`; the three feature branches all ancestors; `origin/main` `c341e65` (not pushed) |
 | 2026-11-08 | dtpr imports against the `2.5.0` checkout | `mpldts 2.5.0`; `dt_plot_functions`, `artist_gui_manager`, `local_plotter`, `base` all import |

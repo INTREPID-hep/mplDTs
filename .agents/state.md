@@ -1,11 +1,11 @@
 # State — dated snapshot
 
 **Last updated:** 2026-11-08 (Europe/Madrid)
-**Branch:** `main` — tagged `v2.8.0` and pushed to `INTREPID-hep/mplDTs`
+**Branch:** `main` — tagged `v2.9.0` and pushed to `INTREPID-hep/mplDTs`
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 5
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** every ticket closed (M0-M5 met); 2.8.0 is the last 2.x release: M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`, the alias fix `v2.5.1`, objects `v2.6.0`, the naming seam `v2.7.0`, the CLI `v2.8.0`; Phase 6 (pyg4ometry) deferred
+**Current phase:** every delivery ticket closed (M0-M5 met); 2.9.0 is the last 2.x release and it deprecates everything 3.0 removes (T-074): M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`, the alias fix `v2.5.1`, objects `v2.6.0`, the naming seam `v2.7.0`, the CLI `v2.8.0`, the deprecations `v2.9.0`. Phase 6 (pyg4ometry) and the removal itself are planned and deferred
 
 ---
 
@@ -19,7 +19,7 @@
 | `prototype/parametric_poc_v1.py` | **removed** | superseded; boxes only |
 | `prototype/custom_station.png` | done | box (top) and tube (bottom) stations, phi/eta |
 | `.agents/` | done | this operating workspace |
-| Release tags | done | `v2.3.0` ... `v2.8.0` per ADR-022, all on `main`; `v2.7.0` is the `.tg` naming seam (T-057), `v2.8.0` the CLI (T-053) |
+| Release tags | done | `v2.3.0` ... `v2.9.0` per ADR-022, all on `main`; `v2.7.0` is the `.tg` naming seam (T-057), `v2.8.0` the CLI (T-053), `v2.9.0` the deprecation release (T-074) |
 | `.agents/pyg4ometry-readiness.md` | done | contract for the deferred backend |
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
@@ -27,7 +27,9 @@
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
 `build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
 `serialize.py` (JSON documents), `constructors.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
-| pytest suite | **all of it** | `test/geometry/` + `test/downstream/` + `test/patches/`: 212 passed, 2 skipped, 3 deselected |
+| pytest suite | **all of it** | `test/geometry/` + `test/downstream/` + `test/patches/`: 219 passed, 2 skipped, 3 deselected |
+| The 2.9.0 deprecations | done | `mpldts/_deprecation.py` (T-074): 9 legacy entry points warn with the replacement named, the surviving pipeline stays silent, "Migrating to 3.0" in `docs/src/geometry/runtime.rst` |
+| 3.0 removal plan | planned, not scheduled | `.agents/migration-3.0.md` + ADR-026 + T-070, T-072, T-073: what goes, the sequence (2.9 deprecation DONE -> downstream move -> removal -> names -> yoke as CSG) and gates G1-G5 |
 
 The prototype verifies:
 
@@ -54,7 +56,7 @@ prototype has no wire fields either.
 - pyg4ometry anywhere (intentionally).
 - YAML: JSON documents, the Python builders and the CLI are enough.
 - The simulator switch to `TgSink` in the simulator's `main`: done on
-  `feature/T-005-tg-smoke` (T-005) and pushed; that branch sits on the
+  `feature/T-005-tg-exporter` (T-005) and pushed; that branch sits on the
   `destrada` lineage, which is far ahead of the simulator's `main` (`43b1057`),
   so merging it is the maintainer's call.
 

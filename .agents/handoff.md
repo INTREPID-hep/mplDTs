@@ -1,25 +1,26 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-08 (Europe/Madrid)
-**Previous session:** `T-005`, `T-057`, `T-006` and `T-053`: the simulator
-on the exporter (pinned `v2.7.0`), the `.tg` naming seam, the merged-code
-baseline and the CLI; tags `v2.7.0` and `v2.8.0`.
-**Current state:** **`main` is tagged `v2.8.0` and pushed to
+**Previous session:** `T-074`, the deprecation release: 2.9.0 warns on every
+call 3.0 removes and names its replacement.
+**Current state:** **`main` is tagged `v2.9.0` and pushed to
 `INTREPID-hep/mplDTs`; the simulator work is on
-`feature/T-005-tg-smoke` (pushed, not merged).**
-**Current checkpoint:** `CP-012` (close-out) — every ticket is closed
-except `T-060` (pyg4ometry, deferred).
-**Next action:** nothing is queued: the maintainer decides between 3.0 (drop the
-legacy classes and the legacy `.tg` names) and staying on 2.x. If the
-simulator branch is merged, regenerate @build/geometry@ from the exporter and
+`feature/T-005-tg-exporter` (pushed, not merged).**
+**Current checkpoint:** `CP-014` — the deprecation release is shipped and
+the removal is planned (`migration-3.0.md`, ADR-026).
+**Next action:** nothing is queued. The removal is *planned* — content,
+sequence, gates and anti-patterns in `migration-3.0.md` (ADR-026, T-070, T-072,
+T-073) — and starts only when the maintainer opens the window. Meanwhile 2.9.0
+is what the consumers pin, and running their suites with
+`-W error::DeprecationWarning` shows exactly what they still use. If the
+simulator branch is merged, regenerate `build/geometry` from the exporter and
 run one Geant4 event to confirm the cell IDs still decode.
 
 Open questions for the maintainer:
-1. Merge `feature/T-005-tg-smoke` into the simulator's `main`? It sits on the
+1. Merge `feature/T-005-tg-exporter` into the simulator's `main`? It sits on the
    `destrada` lineage (`76ab8a4`), far ahead of that `main` (`43b1057`).
-2. 3.0 or stay on 2.x? Nothing in 2.x is deprecated-on-a-timer; the legacy
-   classes and the `Station_W.._Sec.._St..` / `DriftCell_.._<encoding>` names
-   are the 3.0 removals (ADR-025).
+2. When to open the 3.0 window? The plan is ready (`migration-3.0.md`); it
+   needs dtpr and the simulator free at the same time, nothing else.
 
 ---
 

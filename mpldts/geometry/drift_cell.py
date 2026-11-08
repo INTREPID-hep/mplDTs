@@ -12,6 +12,7 @@
 #         <------- 4.2 cm --------->
 
 
+from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameView
 
@@ -46,6 +47,10 @@ class DriftCell(DTFrame):
         self.number = number
 
         if parent is None:
+            deprecated(
+                "DriftCell(number=...) standalone",
+                "the cell nodes of build_station(spec)",
+            )
             # detached cell, only useful as a placeholder
             self.bounds = (4.2, 1.3, 235)
             self.local_center = (0, 0, 0)

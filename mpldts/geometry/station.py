@@ -23,6 +23,7 @@ from typing import Any, Optional
 import numpy as np
 from pandas import DataFrame
 
+from mpldts._deprecation import deprecated
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameGraph, FrameView
 from mpldts.geometry.model import build_station
@@ -219,6 +220,12 @@ class Station(DTFrame):
                 layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
         :type dt_info: dict, list of dict, or pandas.DataFrame.
         """
+        deprecated(
+            "Station(wheel, sector, station)",
+            "CMSXMLSource().station(wheel, sector, station) and build_station(spec), "
+            "or Station.from_spec(spec)",
+        )
+
         # == Chamber related parameters
         self.wheel = wheel
         self.sector = sector
@@ -263,7 +270,7 @@ class Station(DTFrame):
         station._name = spec.name
         station._bind(_record_for(node), node, graph)
         if dt_info is not None:
-            station.set_cell_attrs(dt_info)
+            station._set_cell_attrs(dt_info)
         return station
 
     def _bind(self, record, node, graph):
@@ -414,6 +421,20 @@ class Station(DTFrame):
         """
         Set the attributes for the drift cells in the station.
 
+        .. deprecated:: 2.9
+           3.0 removes it. The per-event data is the (sl, l, w) cell-data
+           table of ADR-024; the event model lives in DTPatternRecognition.
+        """
+        deprecated(
+            "Station.set_cell_attrs(dt_info)",
+            "the (sl, l, w) cell-data table of ADR-024",
+        )
+        self._set_cell_attrs(dt_info)
+
+    def _set_cell_attrs(self, dt_info):
+        """
+        Set the attributes for the drift cells in the station.
+
         :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,
                 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
                 layer, and cell. e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`
@@ -468,12 +489,16 @@ class Station(DTFrame):
         :return: The overlay station.
         :rtype: Station
         """
+        deprecated(
+            "Station.overlay(dt_info)",
+            "the (sl, l, w) cell-data table of ADR-024",
+        )
         view = object.__new__(type(self))
         view.__dict__.update(self.__dict__)
         view.transformer = FrameView(self._graph, self._node)
         view._super_layers = [SuperLayer(rawId=sl.id, parent=view) for sl in self._super_layers]
         if dt_info is not None:
-            view.set_cell_attrs(dt_info)
+            view._set_cell_attrs(dt_info)
         return view
 
 
@@ -530,6 +555,10 @@ class StationsCache:
         result is :meth:`Station.overlay`, which shares the geometry and owns
         its cell attributes.
         """
+        deprecated(
+            "StationsCache.get(...)",
+            "the (sl, l, w) cell-data table of ADR-024",
+        )
         key = (wh, sc, st)
         with self._cache_lock:
             station = self._cache.get(key)
