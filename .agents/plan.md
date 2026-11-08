@@ -1,9 +1,9 @@
 # Plan — phased delivery (revision 4)
 
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-08
 **Design:** [`../docs/design/generalization-plan.md`](../docs/design/generalization-plan.md) Rev 4
 **Board:** [`TICKETS.md`](TICKETS.md) · **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
-**Status:** **M0 (Phase 0) done on `feature/phase-0-safety-net` — not merged; Phase 1 next**
+**Status:** **Phases 0-3 and 5 done — `v2.3.0`, `v2.4.0`, `v2.5.0` tagged on the integration/feature branches; `main` not merged; Phase 4 optional, Phase 6 deferred**
 
 Guiding rule: **each phase is shippable and ends with a green test suite.** Do
 not start a phase before the previous one meets its exit criteria.

@@ -3,7 +3,7 @@
 **Project:** mplDTs geometry refactor
 **Last updated:** 2026-11-08
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 3 done — M3 gate met 2026-11-08; Phase 5 is next (Phase 4 optional)
+**State:** Phase 5 done — M5 gate met 2026-11-08; Phase 4 (events) is optional
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -41,19 +41,16 @@ Status legend:
 
 ## 2. Current milestone
 
-**M2 — Runtime parity.** Gate: public-API oracle green, `< 20 ms/station`,
-no XML in the model, `test/` triaged. T-020 (topology + `build_station`),
-T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
-**M3 — Assemblies, custom stations, physical extras.** Gate: custom 1-SL/5-SL
-stations build and plot; a two-station assembly builds, transforms and plots;
-CMS plots unchanged; honeycomb data is pinned to a reference chamber; the yoke
-hook is data-only. M2 is done (`CP-007`, release 2.3.0 on
-`refactor/v2-integration`, tag `v2.3.0`); T-030...T-033 are done
-(2026-11-08), the M3 gate is met and the branch is tagged `v2.4.0`. Next: M5
-(Phase 4 events stay optional).
+**M5 — Authoring, JSON and the `.tg` sink.** Gate: JSON -> validate -> build
+-> plot -> `.tg` works end to end; one CMS station `.tg` matches the current
+generator; no pyg4ometry dependency. M2 is done (`CP-007`, tag `v2.3.0` on
+`refactor/v2-integration`), M3 is done (`CP-008`, tag `v2.4.0` on
+`feature/phase-3-assemblies`), and M5 is done (`CP-010`, tag `v2.5.0` on
+`feature/phase-5-authoring`): T-050...T-054 landed. Phase 4 (events,
+`CP-009`) stays optional; Phase 6 (`CP-011`) is deferred.
 
-**Current checkpoint:** `CP-008 — M3 assemblies` complete (2026-11-08); M5
-(`CP-010`) is next, M4 (`CP-009`) is optional.
+**Current checkpoint:** `CP-010 — M5 authoring + .tg` complete (2026-11-08).
+The next action is the maintainer's review and merge; Phase 4 only on request.
 
 ---
 
@@ -80,6 +77,10 @@ hook is data-only. M2 is done (`CP-007`, release 2.3.0 on
 | T-031 | CMS preset remainder + custom-station plotting | 3 | done | T-030 | [T-031](tickets/T-031-cms-preset-plotting.md) |
 | T-032 | Honeycomb as a station attachment | 3 | done | T-030 | [T-032](tickets/T-032-honeycomb.md) |
 | T-033 | Yoke `StructureSpec` data hook | 3 | done | T-030 | [T-033](tickets/T-033-yoke-hook.md) |
+| T-050 | Short constructors for specs | 5 | done | T-030 | [T-050](tickets/T-050-constructors.md) |
+| T-051 | JSON documents + strict validation | 5 | done | T-030 | [T-051](tickets/T-051-json-schema.md) |
+| T-052 | `VolumeSink` + `TgSink` + `.tg` parity | 5 | done | T-030 | [T-052](tickets/T-052-tg-sink.md) |
+| T-054 | Docs, tutorial, migration note, 2.5.0 | 5 | done | T-050...T-052 | [T-054](tickets/T-054-docs-tutorial.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
@@ -133,13 +134,11 @@ and the maintainer approves.
 | T-040 | 4 | Annotation base + `Segment` refactor |
 | T-041 | 4 | `Track` + `Jet`/`Cone` + collections |
 | T-042 | 4 | Event plotting adapters + event JSON |
-| T-050 | 5 | Convenience builders |
-| T-051 | 5 | JSON schema + validation (JSON only) |
-| T-052 | 5 | `VolumeSink` + `TgSink` + `.tg` parity |
-| T-054 | 5 | Docs, tutorial, migration note |
+| T-053 | 5 | CLI (deferred: JSON + Python builders are enough) |
 
 **Deferred:** T-053 (CLI) — no user yet; add only on request. T-060
-(pyg4ometry + GDML) — deferred until M5.
+(pyg4ometry + GDML) — deferred until M5 is merged and ADR-008/ADR-014 are
+revisited.
 
 ---
 

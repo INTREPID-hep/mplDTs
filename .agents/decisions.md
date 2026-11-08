@@ -332,6 +332,35 @@ commit is an ancestor of `main` after the merge, so no history is rewritten.
 
 ---
 
+## ADR-023 — A document is the spec, an export is placements, names are not geometry
+
+**Status:** accepted · 2026-11-08
+**Context:** Phase 5 writes a detector down (JSON) and out (``.tg``). Both
+tempt a serializer to store or depend on derived values: a JSON file could carry
+cell centres and world poses, and a ``.tg`` writer could inherit the CMS
+generator's names, the layer-encoding suffix, the ``Station_W0_Sec1_St1``
+convention and the hardcoded ``GasMixture``.
+**Decision:**
+1. A JSON document holds poses, shapes and names only; centres and world poses
+   are rebuilt, so a file cannot disagree with the model. The reader is strict
+   (unknown keys, wrong types, mismatched rotations are errors) because a typo
+   in a detector description is a detector that is silently wrong.
+2. An exporter sees placements, not the tree: ``VolumeSink.begin/place/end``
+   and a walk that folds the grouping frames. The backend owns its names; the
+   ``.tg`` sink derives them from the node tree, qualifies them by the
+   exported root, writes no world volume and no ``R0``, and refuses a solid node
+   without a material instead of defaulting to air.
+3. Names are not part of the geometry contract: parity with the current
+   generator is judged on the placements (solid, material, dimensions, rotation,
+   position), not on the identifiers.
+**Consequences:** the cell material moved to ``CellGrid.material`` (the CMS
+source sets ``GasMixture``); ``station_W0_Sec1_St1.tg`` from the sink differs
+from the generator's file only in comments, cell volume names and the honeycomb
+copy number; a new backend is a new module implementing three methods, and the
+core still imports no backend.
+
+---
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |

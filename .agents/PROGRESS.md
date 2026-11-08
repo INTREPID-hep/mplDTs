@@ -1,10 +1,10 @@
 # PROGRESS — checkpoints and session log
 
-**Last updated:** 2026-11-07
-**Current checkpoint:** `CP-007 — M2 runtime parity`
-**Implementation status:** Phases 0-3 complete; 2.3.0 is tagged `v2.3.0` on
-`refactor/v2-integration`, Phase 3 is tagged `v2.4.0` on
-`feature/phase-3-assemblies`. M5 is next, M4 is optional
+**Last updated:** 2026-11-08
+**Current checkpoint:** `CP-010 — M5 authoring + .tg`
+**Implementation status:** Phases 0-3 and 5 complete; `v2.3.0` on
+`refactor/v2-integration`, `v2.4.0` on `feature/phase-3-assemblies`,
+`v2.5.0` on `feature/phase-5-authoring`. M4 is optional, Phase 6 deferred
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md)
 
 ---
@@ -13,14 +13,14 @@
 
 | Item | Value |
 |---|---|
-| Phase | 3 complete (T-030...T-033 done) |
-| Current milestone | M3 — Assemblies, custom stations, extras (gate met 2026-11-08) |
-| Last completed | T-033 (yoke `StructureSpec`), with T-032 (honeycomb attachment) |
-| Integration branch | `refactor/v2-integration` (T-025 + T-026); `main` untouched |
-| Next | Phase 5: `T-051` (JSON schema) and `T-052` (`.tg` parity) |
+| Phase | 5 complete (T-050...T-054 done) |
+| Current milestone | M5 — Authoring, JSON, `.tg` sink (gate met 2026-11-08) |
+| Last completed | T-054 (docs, tutorial, 2.5.0), after T-050...T-052 |
+| Integration branch | `refactor/v2-integration` (2.3.0), `feature/phase-3-assemblies` (2.4.0), `feature/phase-5-authoring` (2.5.0); `main` untouched |
+| Next | maintainer review and merge; `T-005` switches the simulator to the exported `.tg` after it |
 | Code changes | `super_layer.py` alias (T-005); `specs.py`, `sources/cms_xml.py` (T-010/T-011/T-022); `model.py` (T-020); `frames.py` (T-021); the legacy classes as views (T-022); `Station.overlay` + cache isolation (T-023); one build per chamber + lazy `DTGEOMETRY` (T-024); `build_detector` +
-`Station.from_spec` (T-030); tests, benchmark, CI |
-| Library tests | `pytest -q`: 154 passed, 2 skipped, 3 deselected |
+`Station.from_spec` (T-030); `serialize.py`, `builders.py` and `export/` (T-050...T-052); tests, benchmark, CI |
+| Library tests | `pytest -q`: 183 passed, 2 skipped, 3 deselected |
 | Builder cost | 7.5 ms/station (spec -> `Node` tree); a legacy `Station` is 2-6 ms/station (first build per chamber 22-63 ms, then cached) |
 | pyg4ometry | deferred, not installed |
 | Open blocker | none — plan Rev 4 approved 2026-11-06 |
@@ -41,7 +41,7 @@
 | CP-007 | M2 runtime parity | 2026-11-06 | done | public API oracle green; 6.1 / 2.1 / 3.0 ms per station (< 20 ms); no XML in the model; `test/` triaged (`docs/examples/` + headless smoke test) |
 | CP-008 | M3 assemblies + extras | 2026-11-08 | done | custom 1-SL/5-SL stations plot; two-station assembly builds; CMS rectangles 0.0 vs `v2.3.0`; honeycomb pinned to W-2/S1/MB2; yoke hook data only |
 | CP-009 | M4 event annotations (optional) | — | pending | T-040…T-042 |
-| CP-010 | M5 authoring + `.tg` | — | pending | T-050, T-051, T-052, T-054 |
+| CP-010 | M5 authoring + `.tg` | 2026-11-08 | done | builders + JSON round trip; `.tg` parity: the same 621 placements, solids and rotations as the generator (0.0 cm); docs warning-free; 183 passed / 2 skipped |
 | CP-011 | M6 GDML (future) | — | deferred | T-060 |
 
 A checkpoint is complete only when its gate (in `TICKETS.md` §5) is met and
@@ -70,6 +70,7 @@ the evidence is linked here.
 | 2026-11-08 | T-031 | CMS preset: `presets/cms.py` owns `face_factor` + `add_frames` (`SectorRef`, `SL13Center`); `_face_from_pose` gives any station its face factor, so a mirrored custom chamber inverts right and all 250 CMS chambers keep the wheel/sector value; docs and `test_presets.py` | `pytest` 143 passed / 2 skipped; slow 3 passed (250 chambers); CMS rectangles 0.0 deviation vs `v2.3.0` (60 collections); Sphinx warning-free | `T-032` |
 | 2026-11-07 | T-030 | Phase 3 starts: `build_detector` (the detector is the root node), `Station.from_spec` (the record is derived from the node tree, no CMS cache), shared `_add_natural_views`, specs no longer capped at the CMS counts, the patches pick the phi/eta super layers by orientation (`_is_turned`) instead of `number == 2`; custom 1-SL/5-SL tests and `docs/examples/custom_station.py` | `pytest` 134 passed / 2 skipped; slow 250-chamber oracle green; Sphinx warning-free | `T-031` |
 | 2026-11-07 | T-026 | Release prep: 2.3.0 in `pyproject.toml` and `mpldts.__version__`, `docs/conf.py` reads the package version, new `docs/src/geometry/runtime.rst` documenting XML -> specs -> nodes -> frames, the legacy pages point at it; the untracked printer script is deleted; `refactor/v2-integration` cut from T-025 (`main` untouched) | `pytest` 111 passed / 2 skipped; Sphinx build succeeded with no warnings; both metadata sources report 2.3.0 | **Phase 3 planning** |
+| 2026-11-08 | T-050...T-054 | M5: `builders.py` (four short constructors), `serialize.py` (JSON documents, strict reader), `export/` (`VolumeSink`, placement walk, `RecordingSink`, `TgSink`), cell material on the `CellGrid`, the tutorial example and the migration note; 2.5.0 | `pytest` 183 passed / 2 skipped; slow 3 passed; `.tg` parity 621 placements / 0.0 cm; Sphinx warning-free | **M5 gate met**, tag `v2.5.0` |
 
 Add a row for every session. Keep it short; details belong in the ticket file.
 

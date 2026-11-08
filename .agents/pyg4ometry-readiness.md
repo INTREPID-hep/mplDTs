@@ -44,13 +44,15 @@ refactor of the model.
 | `iter_volume_placements` (folding) | prototype §6 | done |
 | `Shape` + `symmetry_axis` | prototype §2 | done |
 | `g4_alignment` adapter (z→y) | prototype §6 | done |
-| `SolidSpec` attachment / `StructureSpec` hook | design doc §14 | design |
-| `.tg` sink (`TgSink`) | design doc §16; T-054 | planned (Phase 5) |
+| `AttachmentSpec` / `StructureSpec` hook | design doc §14 | done (T-032, T-033) |
+| `.tg` sink (`TgSink`) | design doc §16; T-052 | done (2.5.0, parity with the generator) |
 | 4×4 `Pose.matrix` | prototype §1 | done |
-| JSON with shape/material | prototype §7 | prototype done |
+| JSON with shape/material | prototype §7; `mpldts/geometry/serialize.py` | done (T-051) |
 | CMS 49/50/49/48 + stagger | prototype §8 | done |
 
-The library does **not** have these yet; the model pieces move in Phase 2 and the seam in Phase 5.
+The library has the seam (`mpldts/export/base.py`), the recording sink and
+the `.tg` backend. What is missing is only the pyg4ometry sink (T-060) and the
+GDML writer, both behind the optional `mplDTs[g4]` extra.
 
 ---
 

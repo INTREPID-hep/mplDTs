@@ -178,6 +178,14 @@ def test_a_wrong_type_is_rejected():
         from_dict(document)
 
 
+def test_a_shape_does_not_take_the_fields_of_another_kind():
+    document = to_dict(_station())
+    document["super_layers"][0]["layers"][0]["cells"]["shape"]["radius"] = 2.2
+
+    with pytest.raises(ValueError, match="does not take 'radius'"):
+        from_dict(document)
+
+
 def test_a_sheared_rotation_is_rejected():
     document = to_dict(_station())
     document["pose"]["rotation"] = [[1.0, 0.1, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]

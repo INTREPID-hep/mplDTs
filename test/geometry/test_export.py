@@ -14,7 +14,7 @@ from mpldts.export import (
     export_volumes,
     iter_volume_placements,
 )
-from mpldts.geometry import Station, build_detector, build_station
+from mpldts.geometry import build_detector, build_station
 from mpldts.geometry.sources import CMSXMLSource
 from mpldts.geometry.specs import (
     AttachmentSpec,
@@ -35,7 +35,7 @@ REFERENCE = os.environ.get(
     "/home/destrada/Geant4/DTG4Simulator/geometry/stations/station_W0_Sec1_St1.tg",
 )
 
-_SOLID_KINDS = {"BOX", "TUBE", "TUBS", "TRD1", "TRD2", "TRAP", "ORB", "TUBE"}
+_SOLID_KINDS = {"BOX", "TUBE", "TUBS", "TRD1", "TRD2", "TRAP", "ORB"}
 
 
 def _parse(text):

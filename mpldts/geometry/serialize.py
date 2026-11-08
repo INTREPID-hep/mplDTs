@@ -20,8 +20,6 @@ from __future__ import annotations
 
 import json
 
-import numpy as np
-
 from mpldts.geometry.specs import (
     AttachmentSpec,
     Box,
@@ -29,7 +27,6 @@ from mpldts.geometry.specs import (
     DetectorSpec,
     LayerSpec,
     Pose,
-    Shape,
     StationSpec,
     StructureSpec,
     SuperLayerSpec,
@@ -225,6 +222,15 @@ def _shape_from(value, where):
         ("dx", "dy", "dz", "radius", "length", "axis", "inner_radius"),
     )
     kind = document["kind"]
+    fields = {
+        "box": ("dx", "dy", "dz"),
+        "tube": ("radius", "length", "axis", "inner_radius"),
+    }
+    extra = sorted(set(document) - {"kind"} - set(fields.get(kind, ())))
+    if extra:
+        raise ValueError(
+            "%s: %s does not take %s" % (where, kind, ", ".join(repr(key) for key in extra))
+        )
     if kind == "box":
         return Box(
             _number(document.get("dx", _OPTIONAL), where + " dx"),
@@ -343,6 +349,8 @@ def from_dict(document):
     schema = document["schema"]
     if schema == SCHEMA_DETECTOR:
         _mapping(document, "detector", ("schema", "name", "pose", "stations"), ("shape", "material", "structure"))
+        if not isinstance(document["stations"], list):
+            raise ValueError("detector: stations must be a list")
         structure = document.get("structure", [])
         if not isinstance(structure, list):
             raise ValueError("detector: structure must be a list")

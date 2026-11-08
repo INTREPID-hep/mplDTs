@@ -1,11 +1,11 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-08 02:10 (Europe/Madrid)
-**Branch:** `feature/phase-3-assemblies` (2.4.0)
+**Last updated:** 2026-11-08 (Europe/Madrid)
+**Branch:** `feature/phase-5-authoring` (2.5.0)
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 4
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
-**Current phase:** Phases 0-3 done — M2 tagged `v2.3.0`, M3 tagged `v2.4.0`; Phase 5 next
+**Current phase:** Phases 0-3 and 5 done — M2 `v2.3.0`, M3 `v2.4.0`, M5 `v2.5.0`; Phase 4 optional, Phase 6 deferred
 
 ---
 
@@ -25,8 +25,9 @@
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
 | `.agents/PROGRESS.md` | done | checkpoints and session log |
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
-`build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033) |
-| pytest suite for geometry | **through Phase 3 (T-033)** | `test/geometry/`: smoke, reference, specs, source, spec oracle, nodes, frames, legacy, runtime, examples, assemblies, presets, attachments, structure; 154 pass, 2 skip |
+`build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
+`serialize.py` (JSON documents), `builders.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
+| pytest suite for geometry | **through Phase 5 (T-054)** | `test/geometry/`: the Phase 0-3 suites plus builders, serialize and export (parity); 183 pass, 2 skip |
 
 The prototype verifies:
 
@@ -48,9 +49,11 @@ prototype has no wire fields either.
 ## 2. What does not exist yet
 
 - `mpldts/events/` (segments refactor, tracks, jets).
-- A JSON loader or validation (CLI is out of scope).
-- Any change to the `.tg` generator or a `TgSink`.
 - pyg4ometry anywhere (intentionally).
+- A CLI (T-053) and YAML: JSON documents plus the Python builders are enough.
+- A change to `DTG4Simulator/geometry/generate_geometry_data.py`: T-005 switches
+  it to `TgSink` after the merge, and the yoke takes the station names from
+  the same export.
 
 ---
 
@@ -61,7 +64,7 @@ prototype has no wire fields either.
 | `BUG-01` | ~~SL2 transform off by `√2·|SL_local_x|`~~ **fixed in T-022** | was 2.4749 cm (W−2/S1/MB2), 0.7071 cm (W0/S1/MB1); the frame chain is the node poses now and the cell centres match the XML |
 | `BUG-02` | ~~shared cache mutates cell data across events~~ **fixed in T-023** | was `StationsCache.get` writing on shared cells; the cache returns `Station.overlay()` now and `test_cache_overlays_isolate_cell_attributes` pins it |
 | `BUG-03` | ~~attribute-order-dependent XML parsing~~ **fixed in T-024** | was `element.attrib.values()` in `_geometry.py`; `Bounds`/`Wires` read explicit names and `test_bounds_and_wires_do_not_depend_on_attribute_order` pins it |
-| `BUG-04` | `bounds`/`width/height/length` assume a box | `dt_frame.py`; G4 generator reorders at `generate_geometry_data.py:68` |
+| `BUG-04` | ~~the generator reorders `bounds` as if every cell were a box~~ **fixed for the export path in T-052** | `TgSink` reads the shape (`dx/dy/dz`) and handles `Box` and `Tube`; the legacy `bounds` attribute keeps its historical meaning |
 | `BUG-05` | frame-name divergence breaks the generator | legacy `SuperLayer` alias added in Phase 0 (T-005); the generator uses it |
 | `BUG-06` | ~~version metadata drift~~ **fixed in T-026** | was `pyproject.toml` 2.1.0 vs `__version__` 2.2.0-beta; both are 2.3.0 now and `docs/conf.py` reads the package version |
 
@@ -82,8 +85,8 @@ was fixed in T-026: one version string, and the docs read it from the package.
 | Python | 3.12.3 |
 | Env used for runs | `/home/destrada/Geant4/DTG4Simulator/env` |
 | Installed `mpldts` | 2.2.0-beta in that env (`site-packages`); no XML indexes |
-| Source checkout | branch `refactor/v2-integration`, package `__version__` 2.3.0; indexed XML |
-| `pyproject.toml` version | 2.3.0 (matches `__version__` since T-026) |
+| Source checkout | branch `feature/phase-5-authoring`, package `__version__` 2.5.0; indexed XML |
+| `pyproject.toml` version | 2.5.0 (matches `__version__` since T-026) |
 | pyg4ometry | **not installed**; deferred |
 | pytest | 9.2.0 in the env; `test` extra in `pyproject.toml` |
 | Dependencies available | numpy, pandas, matplotlib, pytransform3d, mplhep |
@@ -118,6 +121,15 @@ Target after Phase 2: **< 20 ms per station** (met).
 
 ## 6. Last verification
 
+- `pytest -q` (2026-11-08, after T-054): 183 passed, 2 skipped, 3 deselected,
+  41 s.
+- `pytest -q -m slow` (2026-11-08): 3 passed, 184 deselected, 110 s.
+- `.tg` parity (T-052): `station_W0_Sec1_St1.tg` from the generator and from
+  `TgSink` have the same 621 placements, solids, materials and rotation
+  matrices; the worst position difference is 0.0 cm at 1e-4 cm precision.
+- `sphinx-build -E -b html docs` (Sphinx 9.1.1): build succeeded, no warnings
+  (builders, JSON, the export seam and the migration note documented).
+- `import mpldts` reports 2.5.0; `docs/conf.py` reads the package version.
 - `python prototype/parametric_poc.py` after removing the wire object → all
   checks pass, 0.0 errors, 193 placements.
 - `python -m py_compile prototype/parametric_poc.py` → OK.
@@ -145,12 +157,16 @@ Target after Phase 2: **< 20 ms per station** (met).
 
 ## 7. Immediate next actions
 
-Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0, M1 and M2 are
-done on `refactor/v2-integration` (2.3.0, `main` untouched):
+Plan Rev 4 and `TICKETS.md` were approved on 2026-11-06. M0...M3 and M5 are
+done (`main` untouched):
 
-1. the maintainer reviews `refactor/v2-integration`;
-2. Phase 3 starts on `feature/phase-3-assemblies` with `T-030` (assemblies and
-   custom 1-SL/5-SL stations); T-031...T-033 are planned behind it.
+1. the maintainer reviews `refactor/v2-integration` (2.3.0),
+   `feature/phase-3-assemblies` (2.4.0) and `feature/phase-5-authoring`
+   (2.5.0) and merges them in that order;
+2. `T-005` (downstream pin + `.tg` smoke) switches `DTG4Simulator` to the
+   exported `.tg` after the merge, and the yoke takes its station solid and
+   rotation names from the same export;
+3. Phase 4 (events) only if it is asked for; Phase 6 (GDML) is deferred.
 
 Nothing merges into `main` until the maintainer approves it.
 
@@ -171,6 +187,9 @@ Nothing merges into `main` until the maintainer approves it.
   backend concern. (ADR-017)
 - **Plan Rev 4:** specs-first, `VolumeSink` at the first exporter, CLI/YAML
   out, events optional. (ADR-018)
+- **Documents and exports:** a JSON document stores the spec only and is read
+  strictly; an exporter is a `VolumeSink` and owns its names; a solid needs a
+  material. (ADR-023)
 
 **Open:** none blocking the plan. Compatibility horizon 3.0, plotting
 orientation-based, event scope Segment/Track/Jet, yoke in simulator until
