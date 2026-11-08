@@ -1,12 +1,12 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-07 (Europe/Madrid)
-**Previous session:** T-031 (CMS preset, face factor from the pose) on
-`feature/phase-3-assemblies`.
+**Previous session:** T-031...T-033 on `feature/phase-3-assemblies`: the M3
+gate is met and the branch is tagged `v2.4.0`.
 **Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
-merged); Phase 3 in progress on `feature/phase-3-assemblies` (T-030, T-031 done).**
+merged); Phase 3 done on `feature/phase-3-assemblies` (2.4.0, tag `v2.4.0`).**
 **Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** `T-032` — honeycomb as a station attachment, then `T-033` (yoke hook).
+**Next action:** Phase 5 — `T-051` (JSON schema) and `T-052` (`VolumeSink`/`TgSink`, `.tg` parity); Phase 4 events only on request.
 
 ---
 
@@ -50,7 +50,9 @@ on `refactor/v2-integration`. T-030 is done on `feature/phase-3-assemblies`:
 and the phi/eta choice in the patches follows the super layer orientation.
 T-031 moved the CMS-only frames (`SectorRef`, `SL13Center`) into
 `mpldts/geometry/presets/cms.py` and takes the face factor from the pose.
-Remaining in Phase 3: `T-032` honeycomb, `T-033` yoke hook.
+T-032 added honeycomb as an attachment (`AttachmentSpec`, `Node.attachments`,
+the panel derived by the CMS preset) and T-033 added `StructureSpec` as
+detector-structure data. Phase 3 is complete; M5 (authoring + exporters) is next.
 
 Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
 `refactor/v2-integration` (2.3.0) and Phase 3 works on

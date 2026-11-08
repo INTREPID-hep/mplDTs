@@ -3,6 +3,7 @@
 build_station turns a StationSpec into a node tree:
 
     station
+    └── attachment       Box panel bolted to the station (honeycomb)
     └── super layer      grouping frame, shape=None
         └── layer        grouping frame, shape=None
             └── cell     Box or Tube, from the layer CellGrid
@@ -39,6 +40,8 @@ class Node:
     material: Optional[str] = None
     parent: Optional["Node"] = None
     children: List["Node"] = field(default_factory=list)
+    #: panels bolted to the node, kept apart from the geometry children
+    attachments: List["Node"] = field(default_factory=list)
 
 
 def _make(parent, name, kind, pose, shape, material):
@@ -51,6 +54,17 @@ def build_station(spec, parent=None):
     """Build the node tree of a StationSpec, hanging it under parent if given."""
     validate(spec)
     station = _make(parent, spec.name, "station", spec.pose, spec.shape, spec.material)
+    for attachment_spec in spec.attachments:
+        station.attachments.append(
+            _make(
+                station,
+                attachment_spec.name,
+                "attachment",
+                attachment_spec.pose,
+                attachment_spec.shape,
+                attachment_spec.material,
+            )
+        )
     for super_layer_spec in spec.super_layers:
         super_layer = _make(
             station,

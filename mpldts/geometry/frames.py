@@ -77,6 +77,8 @@ class FrameGraph:
         self.add_edge(root.frame_id, parent_frame, root.pose)
         for child in root.children:
             self.add_nodes(child, root.frame_id)
+        for attachment in root.attachments:
+            self.add_nodes(attachment, root.frame_id)
 
     def frames(self):
         """Every frame name in the graph."""

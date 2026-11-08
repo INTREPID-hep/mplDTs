@@ -52,7 +52,21 @@ knows about: no XML, no raw ids, no plotting.
 
 .. autoclass:: mpldts.geometry.specs.StationSpec
 
+.. autoclass:: mpldts.geometry.specs.AttachmentSpec
+
+A station may carry attachments: passive panels bolted to it, such as the
+aluminium honeycomb spacer. The builder emits one node per attachment beside the
+geometry children, so an exporter can turn it into a volume while plotting and
+the frame queries ignore it. The CMS preset derives the honeycomb panel from the
+super layer records, because the XML carries none.
+
 .. autoclass:: mpldts.geometry.specs.DetectorSpec
+
+.. autoclass:: mpldts.geometry.specs.StructureSpec
+
+Detector structure (the yoke) is a spec-level list and stays data: the builder
+creates no node for it and no exporter sees it until a backend can do the boolean
+solids.
 
 Building the node tree
 ----------------------

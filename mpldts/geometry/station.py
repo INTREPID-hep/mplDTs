@@ -174,7 +174,8 @@ def _built(wheel, sector, station):
         return built
     source = _source()
     record = source.record(wheel, sector, station)
-    node = build_station(source.station(wheel, sector, station))
+    spec = cms.with_attachments(source.station(wheel, sector, station), record)
+    node = build_station(spec)
     graph = FrameGraph()
     graph.add_nodes(node)
     _add_natural_views(graph, node, _face_from_pose(node))

@@ -1,26 +1,31 @@
 # T-033 — Yoke `StructureSpec` data hook
 
-- **Status:** proposed
+- **Status:** done
 - **Phase:** 3
 - **Epic:** E3 Assemblies and extras
-- **Depends on:** T-030
+- **Depends on:** T-030 (done)
 - **Branch:** `feature/phase-3-assemblies`
-- **PR:** —
-- **Owner:** unassigned
+- **PR:** — (branch pushed; the maintainer merges)
+- **Owner:** —
 - **Labels:** model, physical-extras
+- **Completed:** 2026-11-08
 
 ## Context
 
 The yoke is detector structure, not a chamber: it stays in the simulator until
-the pyg4ometry phase (ADR-011, O-04). Phase 3 needs a data placeholder so a
+the pyg4ometry phase (ADR-011, O-04). Phase 3 needed a data placeholder so a
 detector description can state it without dragging CSG into the core.
 
-## Scope
+## What was delivered
 
-- `StructureSpec` in `specs.py`: name, pose, material and an optional shape,
-  validated like the rest.
-- An optional `structure` list on `DetectorSpec`.
-- No nodes, no exporter, no backend import.
+- `specs.StructureSpec` (name, pose, optional shape, material `G4_Fe`)
+  and an optional `structure` list on `DetectorSpec`.
+- Validation: one entry type, non-empty unique names, a Pose and an optional
+  positive shape.
+- No node, no exporter, no backend import: `build_detector` ignores the list.
+- `test/geometry/test_structure.py` (4 tests): a structure entry validates and
+  builds no node, an entry may have no shape, duplicates and bad poses raise, a
+  detector without structure is unchanged.
 
 ## Out of scope
 
@@ -29,10 +34,10 @@ detector description can state it without dragging CSG into the core.
 
 ## Acceptance criteria
 
-- [ ] A `DetectorSpec` with structure entries validates and a detector with
+- [x] A `DetectorSpec` with structure entries validates and a detector with
       stations still builds unchanged.
-- [ ] No node is created for structure data and no exporter sees it.
-- [ ] `mpldts` imports without any backend dependency.
+- [x] No node is created for structure data and no exporter sees it.
+- [x] `mpldts` imports without any backend dependency.
 
 ## Verification
 
@@ -43,4 +48,5 @@ PYTHONPATH=/home/destrada/mplDTs pytest -q
 
 ## Risks / notes
 
-- The hook must stay data-only: a shape here is a description, not a solid.
+- The hook is data only: a shape here is a description, not a solid. The yoke
+  export is T-052/T-060 territory.

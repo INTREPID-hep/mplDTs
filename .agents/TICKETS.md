@@ -1,9 +1,9 @@
 # TICKETS — internal issue tracker
 
 **Project:** mplDTs geometry refactor
-**Last updated:** 2026-11-07
+**Last updated:** 2026-11-08
 **Plan:** [`plan.md`](plan.md) Rev 4
-**State:** Phase 3 in progress — T-030 done 2026-11-07; T-031...T-033 ready
+**State:** Phase 3 done — M3 gate met 2026-11-08; Phase 5 is next (Phase 4 optional)
 **Canonical backlog:** this file + `tickets/T-0xx-*.md` for refined tickets
 **Checkpoints:** [`PROGRESS.md`](PROGRESS.md)
 **Workflow:** [`workflow.md`](workflow.md)
@@ -48,11 +48,12 @@ T-021 (`FrameGraph`/`FrameView`), T-022 (legacy delegation, `BUG-01`),
 stations build and plot; a two-station assembly builds, transforms and plots;
 CMS plots unchanged; honeycomb data is pinned to a reference chamber; the yoke
 hook is data-only. M2 is done (`CP-007`, release 2.3.0 on
-`refactor/v2-integration`, tag `v2.3.0`); T-030 (2026-11-07) and T-031
-(2026-11-08) are done, T-032/T-033 are ready. Phase 3 ships as 2.4.0.
+`refactor/v2-integration`, tag `v2.3.0`); T-030...T-033 are done
+(2026-11-08), the M3 gate is met and the branch is tagged `v2.4.0`. Next: M5
+(Phase 4 events stay optional).
 
-**Current checkpoint:** `CP-007 — M2 runtime parity` complete; CP-008 (M3) in
-progress (T-030 done).
+**Current checkpoint:** `CP-008 — M3 assemblies` complete (2026-11-08); M5
+(`CP-010`) is next, M4 (`CP-009`) is optional.
 
 ---
 
@@ -77,8 +78,8 @@ progress (T-030 done).
 | T-026 | Release 2.3: version metadata + runtime docs | 2 | done | T-022...T-025 | [T-026](tickets/T-026-release-2.3.md) |
 | T-030 | `DetectorSpec` assemblies + custom 1-SL/5-SL stations | 3 | done | T-020, T-021, T-022, T-026 | [T-030](tickets/T-030-assemblies.md) |
 | T-031 | CMS preset remainder + custom-station plotting | 3 | done | T-030 | [T-031](tickets/T-031-cms-preset-plotting.md) |
-| T-032 | Honeycomb as a station attachment | 3 | proposed | T-030 | [T-032](tickets/T-032-honeycomb.md) |
-| T-033 | Yoke `StructureSpec` data hook | 3 | proposed | T-030 | [T-033](tickets/T-033-yoke-hook.md) |
+| T-032 | Honeycomb as a station attachment | 3 | done | T-030 | [T-032](tickets/T-032-honeycomb.md) |
+| T-033 | Yoke `StructureSpec` data hook | 3 | done | T-030 | [T-033](tickets/T-033-yoke-hook.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design
