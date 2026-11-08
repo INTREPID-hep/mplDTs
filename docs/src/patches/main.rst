@@ -15,3 +15,4 @@ in both local and global coordinate systems. Future extensions will include supp
 
     dt_patch_base
     dt_station_patch
+    objects_patch

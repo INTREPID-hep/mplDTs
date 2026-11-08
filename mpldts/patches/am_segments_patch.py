@@ -112,7 +112,11 @@ class DTSegmentsPatch(DTRelatedPatch):
             x, y = -y, x  # Invert x and y for eta view
             dx, dy = -dy, dx  # Invert direction for eta view
 
-        size = 20 if seg.sl != 0 else 40  # Use a smaller size for segments not correlated
+        # `length` is the physical span when the caller knows it; the default
+        # is a mark, not the length of the segment (T-043)
+        size = getattr(seg, "length", None)
+        if size is None:
+            size = 20 if seg.sl != 0 else 40
 
         x_start = x - dx * size * 0.5
         z_start = z - dz * size * 0.5

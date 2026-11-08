@@ -258,6 +258,37 @@ Cost on a warm process: importing ``mpldts.geometry`` does not touch the XML,
 the first build of a chamber is tens of milliseconds, and later stations are a
 few milliseconds each.
 
+The downstream contract
+-----------------------
+
+``DTPatternRecognition`` (dtpr) plots one event on top of these classes, so
+the names it imports are a contract: renaming any of them is a breaking change
+until 3.0 (ADR-025). ``test/downstream`` imports exactly this surface, with no
+ROOT and no Qt:
+
+- geometry: ``StationsCache`` (and ``STATION_CACHE``), ``Station``,
+  ``AMDTSegments``;
+- patches: ``DTStationPatch``, ``MultiDTSegmentsPatch``, ``DTRelatedPatch``;
+- on the station: ``name``/``wheel``/``sector``/``number``,
+  ``super_layer(sl).layer(l).cell(w)``, ``Cell.local_center`` and
+  ``global_center``, ``Layer._first_cell_id``/``_last_cell_id`` and
+  ``layer.cell(id)``;
+- on a patch: ``.station`` and ``._collections`` (the visualizer iterates the
+  collections to toggle its artists).
+
+The per-event data dtpr sends is one row per hit, keyed by the cell:
+
+.. code-block:: python
+
+    rows = [{"sl": 1, "l": 1, "w": 2, "time": 400.0}, ...]
+    event = STATION_CACHE.get(0, 1, 1, dt_info=rows)
+
+``sl``, ``l`` and ``w`` are required; every other column becomes an
+attribute of that cell on the returned overlay (``time``, ``BX``, ...), which is
+what ``DTStationPatch(vmap=...)`` colours by. A ``dict``, a ``list[dict]`` and a
+``pandas.DataFrame`` are all accepted, and the station in the cache is never
+mutated.
+
 Migrating from 2.2
 ------------------
 
@@ -274,6 +305,10 @@ the legacy API stays until 3.0). What arrived, in order:
   honeycomb as a station attachment, the yoke as detector structure data.
 - **2.5:** authoring and export: the short constructors, the JSON documents and
   ``.tg`` output through :class:`~mpldts.export.tg.TgSink`.
+- **2.5.1:** ``FrameView.available_frames`` lists the legacy names again
+  (``Station``, ``CMS``, ``SL{n}``, the plotting virtual frames) next to the
+  frame ids, so a reference frame given by name keeps resolving; the names are
+  API until 3.0 (ADR-025).
 
 Behaviour that did change, deliberately:
 

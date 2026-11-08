@@ -1,6 +1,6 @@
 [project]
 name = "mplDTs"
-version = "2.5.1"
+version = "2.6.0"
 description = "Set of tools to produce CMS DTs matplotlib patches"
 authors = [
   { name = "Daniel Estrada", email = "destrada@cern.ch" }
@@ -47,7 +47,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-testpaths = ["test/geometry"]
+testpaths = ["test/geometry", "test/downstream", "test/patches"]
 addopts = "-m 'not slow'"
 markers = [
     "slow: run the oracle against all 250 chambers (minutes)"

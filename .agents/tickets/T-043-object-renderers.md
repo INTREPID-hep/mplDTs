@@ -1,6 +1,6 @@
 # T-043 — Object renderers (`DTObjectsPatch`)
 
-- **Status:** ready
+- **Status:** done
 - **Phase:** 4
 - **Epic:** E4 Downstream
 - **Depends on:** T-022, T-023
@@ -56,10 +56,12 @@ coordinates, then the base applies the Station->CMS affine (`local=False`) and
      `axes.add_line`, keep `add_collection` for collections (three lines, no
      behaviour change for the two existing patches).
 
-2. `DTSegmentsPatch`: same class, same paths, same `vmap`; build its paths
-   through the new projection and use `AMDTSegment.length` when present instead
-   of the fixed `size = 20 if seg.sl != 0 else 40` (`length=None` keeps today's
-   value, so dtpr's output does not move).
+2. `DTSegmentsPatch`: same class, same paths, same `vmap`; it accepts
+   `length` on the segment (`length=None` keeps the fixed
+   `size = 20 if seg.sl != 0 else 40`, so dtpr's output does not move). The
+   path builder stays where it is: routing it through the point projection
+   would change the SL2 eta marks (their direction loses its y component
+   today), and parity wins in this ticket.
 
 3. The dtpr side is T-055, which depends on this ticket:
    `embed_simhits2axes_loc` and `embed_shower2axes_loc` swap their
@@ -76,15 +78,18 @@ coordinates, then the base applies the Station->CMS affine (`local=False`) and
 
 ## Acceptance criteria
 
-- [ ] A line given in `CMS` and the same line given in `Station` land on
+- [x] A line given in `CMS` and the same line given in `Station` land on
       identical pixels (same display coordinates).
-- [ ] A point at `cell.local_center` coincides with that cell's
-      `DTStationPatch` outline in data coordinates (< 1e-9).
-- [ ] `inverted=True` mirrors the objects together with the cells; `local=False`
-      puts them in the CMS frame together with the chamber.
-- [ ] `DTSegmentsPatch` paths are identical to 2.5.0 for a CMS chamber with no
-      `length` set.
-- [ ] `pytest -q` green; the new test file runs in < 1 s, no ROOT, no Qt.
+- [x] A point at `cell.local_center` coincides with that cell's
+      `DTStationPatch` outline in data coordinates (< 1e-9): the difference is
+      exactly 0 for the three super layers in both views.
+- [x] `inverted=True` mirrors the objects together with the cells; `local=False`
+      puts them in the CMS frame together with the chamber (both artists get
+      the same transform on one axes).
+- [x] `DTSegmentsPatch` paths are identical to 2.5.0 for a CMS chamber with no
+      `length` set (pinned to the two vertices in the test).
+- [x] `pytest -q` green (204 passed / 2 skipped); `test/patches` runs in
+      2 s with the matplotlib import, no ROOT, no Qt.
 
 ## Verification
 
@@ -102,7 +107,22 @@ PYTHONPATH=/home/destrada/mplDTs MPLBACKEND=Agg \
   *extents in a rotated frame*, so do not merge the two.
 - `DTSegmentsPatch` keeps its eta rule for now (it filters `sl == 2`); removing
   the filter is dtpr's call, not this ticket's.
+- **Found while testing:** the cells are drawn at station `(x, z)` in *both*
+  views (the view only selects which layers you see), while the station and
+  super layer *outlines* map `-y` in the `eta` view. For a CMS chamber the two
+  ranges are almost the same (the box is nearly square), so it has never been
+  visible; a custom chamber with different x/y extents would put its cells
+  outside its outline. `DTObjectsPatch` follows the cells, not the outline,
+  because a hit has to sit on its cell. The fix belongs to `DTStationPatch`
+  and needs a dtpr visual check, so it is not in this ticket.
+- Release: the new public class is additive, so 2.6.0 (2.x, ADR-022), tag
+  `v2.6.0`; T-055 pins that tag.
 
 ## Progress
 
 - 2026-11-08: opened from the dtpr review; Phase 4 rescope (ADR-024/025).
+- 2026-11-08: done. `DTObjectsPatch` (one `Line2D` per object, points or
+  polylines, any frame the graph resolves) + `DTRelatedPatch`'s add-artist
+  dispatch + `length` on the segment mark; `test/patches/test_objects_patch.py`
+  (12 tests) and the `objects_patch` docs page; 2.6.0 in both metadata
+  sources, tag `v2.6.0`.

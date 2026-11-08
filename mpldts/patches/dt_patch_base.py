@@ -1,4 +1,5 @@
 from mpldts.geometry import Station
+from matplotlib.lines import Line2D
 from matplotlib.transforms import Affine2D
 from numpy import array, sqrt
 
@@ -68,10 +69,14 @@ class DTRelatedPatch:
 
     def _add_collections_to_axes(self):
         """
-        Add the collections to the axes.
+        Add the collections to the axes. A `Line2D` (the object renderer, T-043)
+        goes through the line list, everything else through the collection list.
         """
         for _collection in self._collections:
-            self.axes.add_collection(_collection)
+            if isinstance(_collection, Line2D):
+                self.axes.add_line(_collection)
+            else:
+                self.axes.add_collection(_collection)
 
     def move_to_global(self):
         """

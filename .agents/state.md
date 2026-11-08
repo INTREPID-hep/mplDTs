@@ -179,10 +179,9 @@ done and merged into `main` by the maintainer (`2eac105`, tag `v2.5.0`,
    `generate_geometry_data.py` to `TgSink`, take the yoke station solid and
    rotation names from the same export, re-run the one-station smoke;
 2. `T-006`: record the benchmark baseline on merged code;
-3. `T-040` (`test/downstream` + the cell-data contract) -> `T-043` (object
-   renderers: `DTObjectsPatch`) -> `T-055` (dtpr pinned to `v2.5.1`); `T-053`
-   (thin CLI) in parallel; `T-056` is done: 2.5.1 carries the legacy names in
-   `available_frames`, tag `v2.5.1` on `main`;
+3. `T-055` (dtpr pinned to `v2.6.0`); `T-005`/`T-006` on the simulator and
+   `T-053` (thin CLI) in parallel; `T-056` (2.5.1), `T-040` (`test/downstream`)
+   and `T-043` (2.6.0, `DTObjectsPatch`) are done and merged;
 4. Phase 6 (GDML) is an idea only (ADR-008/ADR-014).
 
 Only the maintainer pushes `main` and decides on 3.0.
