@@ -299,6 +299,39 @@ oracle stay untouched and no CSG or backend dependency is introduced.
 
 ---
 
+## ADR-021 — The phi/eta view follows the super layer orientation
+
+**Status:** accepted · 2026-11-08
+**Context:** `DTStationPatch` picked the super layers of the two views by the
+CMS convention `super_layer.number == 2`. That is a layout fact of the CMS
+chambers, not geometry: a chamber built from a spec drew its middle super layer
+in the wrong place and could not show a turned layer at all.
+**Decision:** each patch asks the super layer whether it is turned
+(`dt_station_patch._is_turned`: its x axis runs along the station length) and
+draws it in the view where `faceview` does not match. `faceview` stays
+accepted; the segment convention (`seg.sl == 2`) stays a rule of the segments,
+not of the station.
+**Consequences:** identical rectangles for all 250 CMS chambers (pinned by
+`test_the_turned_super_layers_are_the_cms_ones` and by the slow sweep); custom
+geometry plots correctly; no API change for callers.
+
+---
+
+## ADR-022 — Releases are tagged on the integration branch; `main` moves only on approval
+
+**Status:** accepted · 2026-11-08
+**Context:** the refactor is reviewed on `refactor/v2-integration` and `main` must
+not move until the maintainer says so, but downstream work (the simulator pin,
+the docs deploy) needs an addressable release.
+**Decision:** a release is tagged on the integration branch once its version
+metadata and tests are green (`v2.3.0` at `8997ad7`). Merging into `main`
+stays a maintainer action (fast-forward; the tag is then on the same commit).
+Phase 3 ships as 2.4.0 and is tagged the same way.
+**Consequences:** `main` stays untouched while downstream pins a tag; the tag
+commit is an ancestor of `main` after the merge, so no history is rewritten.
+
+---
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |
@@ -310,6 +343,7 @@ oracle stay untouched and no CSG or backend dependency is introduced.
 | Output | `.tg` first, GDML later | ADR-015 |
 | Event objects | separate annotation layer; segments/tracks/jets | ADR-016 |
 | Honeycomb/yoke | data; CSG in a backend | ADR-017 |
+| Merge into `main` | not before the maintainer approves; releases are tagged on the integration branch | ADR-022 |
 
 ## Open decisions
 
@@ -319,7 +353,7 @@ None blocking the plan. The defaults were resolved in Rev 4 and recorded in
 | Id | Question | Resolution |
 |---|---|---|
 | O-01 | Compatibility horizon? | until 3.0 |
-| O-02 | Plotting: orientation-based phi/eta? | yes, keep `faceview` |
+| O-02 | Plotting: orientation-based phi/eta? | yes, keep `faceview` (ADR-021) |
 | O-03 | Event scope? | Segment/Track/Jet only; no hits/digis |
 | O-04 | Yoke: keep in simulator or a `.tg` CSG sink? | keep in simulator until Phase 6 |
 | O-05 | Phase 0 granularity? | six tickets; T-004 folded into T-003 |

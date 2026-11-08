@@ -28,6 +28,8 @@ __all__ = [
     "LayerSpec",
     "SuperLayerSpec",
     "StationSpec",
+    "AttachmentSpec",
+    "StructureSpec",
     "DetectorSpec",
     "validate",
 ]
@@ -212,12 +214,41 @@ class SuperLayerSpec:
 
 
 @dataclass(frozen=True, eq=False)
+class AttachmentSpec:
+    """A passive panel bolted to a station, e.g. the honeycomb spacer.
+
+    Data only: a shape and a pose, no boolean solid. An exporter may turn it into
+    a volume; nothing in the model does (T-032).
+    """
+
+    name: str
+    pose: Pose
+    shape: Shape
+    material: str = "G4_Al"
+
+
+@dataclass(frozen=True, eq=False)
 class StationSpec:
     name: str
     pose: Pose
     super_layers: list
     shape: Optional[Shape] = None
     material: Optional[str] = "G4_AIR"
+    attachments: list = field(default_factory=list)
+
+
+@dataclass(frozen=True, eq=False)
+class StructureSpec:
+    """Detector structure outside the chambers, e.g. the yoke (T-033).
+
+    Data only: the builder makes no node for it and no exporter sees it until a
+    backend can do the boolean solids (ADR-011, ADR-017).
+    """
+
+    name: str
+    pose: Pose
+    shape: Optional[Shape] = None
+    material: str = "G4_Fe"
 
 
 @dataclass(frozen=True, eq=False)
@@ -227,6 +258,7 @@ class DetectorSpec:
     stations: list
     shape: Optional[Shape] = None
     material: str = "G4_Galactic"
+    structure: list = field(default_factory=list)
 
 
 def _check_pose(pose, where):
@@ -288,20 +320,23 @@ def _check_grid(grid, layer_shape, where):
             )
 
 
-def _check_number(number, limit, where):
-    if not isinstance(number, int) or not 1 <= number <= limit:
-        raise ValueError("%s: number must be an int in [1, %d], got %r" % (where, limit, number))
+def _check_number(number, where):
+    """Numbers are positive ints. How many super layers and layers a station has
+    is the source's concern: the CMS chambers have three and four, a custom
+    station may have any count (T-030)."""
+    if not isinstance(number, int) or number < 1:
+        raise ValueError("%s: number must be a positive int, got %r" % (where, number))
 
 
 def _validate_layer(layer, where):
-    _check_number(layer.number, 4, where)
+    _check_number(layer.number, where)
     _check_pose(layer.pose, where)
     _check_shape(layer.shape, where)
     _check_grid(layer.cells, layer.shape, where)
 
 
 def _validate_super_layer(super_layer, where):
-    _check_number(super_layer.number, 3, where)
+    _check_number(super_layer.number, where)
     _check_pose(super_layer.pose, where)
     _check_shape(super_layer.shape, where)
     if not super_layer.layers:
@@ -312,6 +347,25 @@ def _validate_super_layer(super_layer, where):
             raise ValueError("%s: duplicate layer number %d" % (where, layer.number))
         numbers.add(layer.number)
         _validate_layer(layer, where + " / layer %d" % layer.number)
+
+
+def _validate_attachments(attachments, where):
+    names = set()
+    for attachment in attachments:
+        if not isinstance(attachment, AttachmentSpec):
+            raise ValueError(
+                "%s: attachments must be AttachmentSpec, got %r"
+                % (where, type(attachment).__name__)
+            )
+        if not isinstance(attachment.name, str) or not attachment.name:
+            raise ValueError("%s: an attachment needs a non-empty name" % where)
+        if attachment.name in names:
+            raise ValueError("%s: duplicate attachment name %r" % (where, attachment.name))
+        names.add(attachment.name)
+        _check_pose(attachment.pose, where + " / " + attachment.name)
+        if attachment.shape is None:
+            raise ValueError("%s / %s: an attachment needs a shape" % (where, attachment.name))
+        _check_shape(attachment.shape, where + " / " + attachment.name)
 
 
 def _validate_station(station, where):
@@ -327,6 +381,23 @@ def _validate_station(station, where):
             raise ValueError("%s: duplicate super layer number %d" % (where, super_layer.number))
         numbers.add(super_layer.number)
         _validate_super_layer(super_layer, where + " / super layer %d" % super_layer.number)
+    _validate_attachments(station.attachments, where)
+
+
+def _validate_structure(structure, where):
+    names = set()
+    for part in structure:
+        if not isinstance(part, StructureSpec):
+            raise ValueError(
+                "%s: structure must be StructureSpec, got %r" % (where, type(part).__name__)
+            )
+        if not isinstance(part.name, str) or not part.name:
+            raise ValueError("%s: a structure entry needs a non-empty name" % where)
+        if part.name in names:
+            raise ValueError("%s: duplicate structure name %r" % (where, part.name))
+        names.add(part.name)
+        _check_pose(part.pose, where + " / " + part.name)
+        _check_shape(part.shape, where + " / " + part.name)
 
 
 def validate(spec):
@@ -347,6 +418,7 @@ def validate(spec):
                 raise ValueError("detector %r: duplicate station name %r" % (spec.name, station.name))
             names.add(station.name)
             _validate_station(station, "detector %r / station %r" % (spec.name, station.name))
+        _validate_structure(spec.structure, "detector %r" % spec.name)
     elif isinstance(spec, StationSpec):
         _validate_station(spec, "station %r" % spec.name)
     elif isinstance(spec, SuperLayerSpec):

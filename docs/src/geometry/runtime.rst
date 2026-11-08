@@ -52,7 +52,21 @@ knows about: no XML, no raw ids, no plotting.
 
 .. autoclass:: mpldts.geometry.specs.StationSpec
 
+.. autoclass:: mpldts.geometry.specs.AttachmentSpec
+
+A station may carry attachments: passive panels bolted to it, such as the
+aluminium honeycomb spacer. The builder emits one node per attachment beside the
+geometry children, so an exporter can turn it into a volume while plotting and
+the frame queries ignore it. The CMS preset derives the honeycomb panel from the
+super layer records, because the XML carries none.
+
 .. autoclass:: mpldts.geometry.specs.DetectorSpec
+
+.. autoclass:: mpldts.geometry.specs.StructureSpec
+
+Detector structure (the yoke) is a spec-level list and stays data: the builder
+creates no node for it and no exporter sees it until a backend can do the boolean
+solids.
 
 Building the node tree
 ----------------------
@@ -60,6 +74,37 @@ Building the node tree
 .. autofunction:: mpldts.geometry.model.build_station
 
 .. autoclass:: mpldts.geometry.model.Node
+
+Assemblies and custom stations
+------------------------------
+
+A detector is the root of the same node tree:
+:func:`build_detector <mpldts.geometry.model.build_detector>` hangs every
+station of a :class:`~mpldts.geometry.specs.DetectorSpec` under it at its
+own pose, so one graph holds the whole assembly. A chamber that is not in the CMS
+XML gets the legacy views with
+:meth:`Station.from_spec <mpldts.geometry.station.Station.from_spec>`: the
+values those classes read (local centres, bounds, direction, raw ids) are
+derived from the node tree, so the same plotting patches draw it. A super layer
+is chosen for the phi or the eta view by its orientation, not by its number.
+
+.. autofunction:: mpldts.geometry.model.build_detector
+
+.. automethod:: mpldts.geometry.station.Station.from_spec
+    :no-index:
+
+The CMS-only frames (`SectorRef` and `SL13Center`) live in
+:mod:`mpldts.geometry.presets.cms` and are added to CMS chambers only; a
+station built from a spec gets `StationNvPhi` and `StationNvEta` and
+nothing else. The face factor that orients the natural views comes from the
+station pose, so a custom chamber inverts its views like a CMS one.
+
+.. automodule:: mpldts.geometry.presets.cms
+    :members:
+
+.. literalinclude:: ../../examples/custom_station.py
+    :language: python
+    :lines: 1-66
 
 The CMS source
 --------------

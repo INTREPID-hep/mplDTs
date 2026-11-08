@@ -1,12 +1,12 @@
 # Handoff — start here if you are new
 
 **Last updated:** 2026-11-07 (Europe/Madrid)
-**Previous session:** T-026 release prep (2.3.0, runtime docs) on
-`refactor/v2-integration`.
+**Previous session:** T-031...T-033 on `feature/phase-3-assemblies`: the M3
+gate is met and the branch is tagged `v2.4.0`.
 **Current state:** **Phases 0-2 done on `refactor/v2-integration` (2.3.0, not
-merged); Phase 3 planned on `feature/phase-3-assemblies`.**
+merged); Phase 3 done on `feature/phase-3-assemblies` (2.4.0, tag `v2.4.0`).**
 **Current checkpoint:** `CP-007` (M2) complete.
-**Next action:** `T-030` — `DetectorSpec` assemblies and custom stations.
+**Next action:** Phase 5 — `T-051` (JSON schema) and `T-052` (`VolumeSink`/`TgSink`, `.tg` parity); Phase 4 events only on request.
 
 ---
 
@@ -45,8 +45,14 @@ XML attribute names; `BUG-03` gone).
 T-025 closed the `test/` triage: the documented examples live in
 `docs/examples/` and run headless in `test/geometry/test_examples.py`.
 T-026 released 2.3.0 (one version string, new `docs/src/geometry/runtime.rst`)
-on `refactor/v2-integration`. Phase 3 is planned: `T-030` assemblies,
-`T-031` CMS preset + plotting orientation, `T-032` honeycomb, `T-033` yoke hook.
+on `refactor/v2-integration`. T-030 is done on `feature/phase-3-assemblies`:
+`build_detector`, `Station.from_spec`, a custom 1-SL/5-SL test and example,
+and the phi/eta choice in the patches follows the super layer orientation.
+T-031 moved the CMS-only frames (`SectorRef`, `SL13Center`) into
+`mpldts/geometry/presets/cms.py` and takes the face factor from the pose.
+T-032 added honeycomb as an attachment (`AttachmentSpec`, `Node.attachments`,
+the panel derived by the CMS preset) and T-033 added `StructureSpec` as
+detector-structure data. Phase 3 is complete; M5 (authoring + exporters) is next.
 
 Branch policy: `feature/phase-2-runtime` is frozen; the review branch is
 `refactor/v2-integration` (2.3.0) and Phase 3 works on
@@ -72,7 +78,8 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - `mpldts/` legacy runtime classes — T-022 wired them to the source and
   the graph; T-023 added `Station.overlay`, so per-event data goes there and
   never on a cached station.
-- `mpldts/patches/` — plotting must keep working; changes need an ADR.
+- `mpldts/patches/` — plotting must keep working; the phi/eta choice follows
+  the super layer orientation since T-030, any further change needs an ADR.
 - `DTGeometry_v3.xml` — it is the oracle.
 - `DTG4Simulator/geometry/generate_geometry_data.py` — wait for the model and
   the `VolumeSink`/`.tg` parity.
@@ -98,6 +105,9 @@ Phase 3 does not start before the maintainer reviews M2; M2 has been green since
 - `.tg` first, GDML later (ADR-015).
 - Event objects are annotations (ADR-016).
 - Honeycomb/yoke are data; CSG in a backend (ADR-017).
+- phi/eta follows the super layer orientation; `faceview` is kept (ADR-021).
+- Releases are tagged on the integration branch; `main` moves on approval
+  (ADR-022, `v2.3.0` at `8997ad7`).
 
 If you need to change one, write a superseding ADR and ask the maintainer.
 

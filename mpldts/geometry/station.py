@@ -9,6 +9,10 @@ A Station is a view over the T-011 source and the T-020 node tree:
 
 The data attributes keep the XML values (conventions section 7.3): the frame
 chain never reads them, it is the node poses. That is what removes BUG-01.
+
+A station that is not in the CMS XML is built with :meth:`Station.from_spec`:
+there is no record, so the record-shaped values the legacy classes read are
+derived from the node tree (T-030).
 """
 
 from copy import deepcopy
@@ -22,6 +26,7 @@ from pandas import DataFrame
 from mpldts.geometry.dt_frame import DTFrame
 from mpldts.geometry.frames import FrameGraph, FrameView
 from mpldts.geometry.model import build_station
+from mpldts.geometry.presets import cms
 from mpldts.geometry.sources.cms_xml import CMSXMLSource
 from mpldts.geometry.specs import Pose
 from mpldts.geometry.super_layer import SuperLayer
@@ -50,52 +55,105 @@ def _unit(vector):
     return vector / np.linalg.norm(vector)
 
 
-def _face_factor(wheel, sector):
-    """-1 for negative wheels, 1 for positive; wheel 0 depends on the sector."""
-    return (
-        -1 if wheel < 0 else 1 if wheel > 0 else -1 if sector in [1, 4, 5, 8, 9, 12, 13] else 1
-    )
+def _face_from_pose(node):
+    """1 when the station length axis points up the detector z axis, else -1.
+
+    The legacy face factor of a CMS chamber is stated by its wheel and sector;
+    for any other station the pose is the only statement (T-031).
+    """
+    return 1.0 if node.world_pose.rotation[2, 1] >= 0.0 else -1.0
 
 
-def _add_plotting_frames(graph, node, record, wheel, sector):
-    """Register the frames the plotting patches ask for: the natural views
-    StationNvPhi and StationNvEta, the sector phi line (SectorRef) and the
-    geometrical center of the super layers 1 and 3 (SL13Center)."""
+def _add_natural_views(graph, node, face):
+    """Register StationNvPhi and StationNvEta for a station whose face orientation
+    factor is that value; the plotting patches invert the local views through them."""
     station_frame = node.frame_id
 
-    def add(name, pose):
-        graph.add_virtual(station_frame + "/" + name, station_frame, pose)
-
-    face = _face_factor(wheel, sector)
-
-    # Station 'Natural view' (phi): a rotation, the station frame to the view frame
+    # phi view: a rotation, the station frame to the view frame
     ez = np.array([0.0, 0.0, -1.0])
     ey = np.array([0.0, -1.0, 0.0]) * face
     ex = _unit(np.cross(ey, ez))
-    add("StationNvPhi", Pose(np.column_stack([ex, ey, ez]).T))
+    graph.add_virtual(
+        station_frame + "/StationNvPhi", station_frame, Pose(np.column_stack([ex, ey, ez]).T)
+    )
 
-    # Station 'Natural view' (eta)
+    # eta view
     ex = np.array([-1.0, 0.0, 0.0]) * face
     ey = _unit(np.cross(ez, ex))
-    add("StationNvEta", Pose(np.column_stack([ex, ey, ez]).T))
+    graph.add_virtual(
+        station_frame + "/StationNvEta", station_frame, Pose(np.column_stack([ex, ey, ez]).T)
+    )
 
-    # Sector phi line (AM trigger primitives). MB4 sectors 4 and 10 are
-    # divided into 13 and 14, hence the sign correction.
-    x, y, _ = record["global"]
-    correction = 1
-    if sector in [13, 14]:
-        correction = -1
-        sector = 4 if sector == 13 else 10
-    dphi = np.arctan2(y, x) - (sector - 1) * np.pi / 6 * correction
-    dx = -np.sin(dphi) * np.hypot(x, y) * face * correction
-    add("SectorRef", Pose.translated(-dx, 0.0, 0.0))
 
-    # Geometrical center of the super layers 1 and 3
-    sl1 = next((sl for sl in record["super_layers"] if sl["number"] == 1), None)
-    sl3 = next((sl for sl in record["super_layers"] if sl["number"] == 3), None)
-    if sl1 is not None and sl3 is not None:
-        centre = (np.asarray(sl1["local"]) + np.asarray(sl3["local"])) / 2.0
-        add("SL13Center", Pose.translated(*centre))
+def _bounds(shape):
+    """(width, thickness, length) of a primitive, or zeros for a grouping frame."""
+    if shape is None:
+        return (0.0, 0.0, 0.0)
+    width, length, thickness = shape.aabb()
+    return (float(width), float(thickness), float(length))
+
+
+def _plane_local(position, axis, across):
+    """The cell convention of the XML: super layer plane coordinates and the
+    station z.
+
+    The CMS source states the SL2 cells in the plane of their own super layer and
+    the plotting patches draw cells unrotated in both views, so a station built
+    from a spec derives them the same way.
+    """
+    return np.array([float(position @ axis), float(position @ across), float(position[2])])
+
+
+def _record_for(node):
+    """The record shape the legacy classes read, derived from a node tree.
+
+    A station built from a spec has no XML record. The local positions are taken
+    in the station frame and the globals from the composed world pose; the raw
+    ids only have to be unique, they look the children up.
+    """
+    station = node.world_pose
+    to_station = station.inverse()
+    ids = iter(range(1, 10 ** 7))
+
+    def local(part):
+        return to_station.apply(part.world_pose.translation)
+
+    record = {
+        "id": node.name,
+        "local": local(node),
+        "global": station.translation,
+        "direction": station.rotation[:, 2],
+        "bounds": _bounds(node.shape),
+        "super_layers": [],
+    }
+    for super_layer in node.children:
+        axis = super_layer.pose.rotation[:, 0]
+        across = super_layer.pose.rotation[:, 1]
+        sl_record = {
+            "raw_id": next(ids),
+            "number": int(super_layer.name[2:]),
+            "local": local(super_layer),
+            "global": super_layer.world_pose.translation,
+            "bounds": _bounds(super_layer.shape),
+            "layers": [],
+        }
+        for layer in super_layer.children:
+            sl_record["layers"].append(
+                {
+                    "raw_id": next(ids),
+                    "number": int(layer.name[1:]),
+                    "local": local(layer),
+                    "global": layer.world_pose.translation,
+                    "bounds": _bounds(layer.shape),
+                    "cells": [],
+                    "cell_locals": {
+                        int(cell.name[1:]): _plane_local(local(cell), axis, across)
+                        for cell in layer.children
+                    },
+                }
+            )
+        record["super_layers"].append(sl_record)
+    return record
 
 
 # ponytail: unbounded per-chamber cache (250 entries at most); add an LRU only
@@ -116,10 +174,12 @@ def _built(wheel, sector, station):
         return built
     source = _source()
     record = source.record(wheel, sector, station)
-    node = build_station(source.station(wheel, sector, station))
+    spec = cms.with_attachments(source.station(wheel, sector, station), record)
+    node = build_station(spec)
     graph = FrameGraph()
     graph.add_nodes(node)
-    _add_plotting_frames(graph, node, record, wheel, sector)
+    _add_natural_views(graph, node, _face_from_pose(node))
+    cms.add_frames(graph, node, record, wheel, sector)
     built = _BUILT[key] = (record, node, graph)
     return built
 
@@ -163,6 +223,7 @@ class Station(DTFrame):
         self.wheel = wheel
         self.sector = sector
         self.number = station
+        self._name = None
 
         try:
             record, node, graph = _built(wheel, sector, station)
@@ -171,6 +232,42 @@ class Station(DTFrame):
                 "chamber Wh:%d St:%d Se:%d is not in the CMS geometry" % (wheel, station, sector)
             ) from None
 
+        self._bind(record, node, graph)
+
+        # == Set the drift cell attributes
+        if dt_info is not None:
+            self.set_cell_attrs(dt_info)
+
+    @classmethod
+    def from_spec(cls, spec, dt_info=None):
+        """A Station view over any StationSpec, without the CMS cache (T-030).
+
+        The node tree and the frame graph are built here. The station has no XML
+        record, so the values the legacy classes read (local centres, bounds,
+        direction, raw ids) are derived from the node tree.
+
+        :param spec: The station to build.
+        :type spec: StationSpec
+        :param dt_info: Drift cell information, as in :meth:`set_cell_attrs`.
+        :type dt_info: dict, list of dict, or pandas.DataFrame, optional
+        :return: The station.
+        :rtype: Station
+        """
+        node = build_station(spec)
+        graph = FrameGraph()
+        graph.add_nodes(node)
+        _add_natural_views(graph, node, _face_from_pose(node))
+
+        station = object.__new__(cls)
+        station._wheel, station._sector, station._number = 0, 0, 0
+        station._name = spec.name
+        station._bind(_record_for(node), node, graph)
+        if dt_info is not None:
+            station.set_cell_attrs(dt_info)
+        return station
+
+    def _bind(self, record, node, graph):
+        """Attach this view to a record, its node tree and their frame graph."""
         self.id = record["id"]
         self.local_center = record["local"]
         self.global_center = record["global"]
@@ -193,10 +290,6 @@ class Station(DTFrame):
             SuperLayer(rawId=sl_record["raw_id"], parent=self)
             for sl_record in record["super_layers"]
         ]
-
-        # == Set the drift cell attributes
-        if dt_info is not None:
-            self.set_cell_attrs(dt_info)
 
     # == Getters
 
@@ -225,9 +318,12 @@ class Station(DTFrame):
         """
         Name of the station.
 
-        :return: Name of the station in format "Wheel {wheel}, Sector {sector}, Station {number}".
+        :return: Name of the station: "Wheel {wheel}, Sector {sector}, Station {number}" for a CMS
+            chamber, the spec name for a station built from a spec.
         :rtype: str
         """
+        if self._name is not None:
+            return self._name
         return f"Wheel {self._wheel}, Sector {self._sector}, Station {self._number}"
 
     @property
@@ -250,7 +346,7 @@ class Station(DTFrame):
         :return: Face orientation factor.
         :rtype: int
         """
-        return _face_factor(self._wheel, self._sector)
+        return cms.face_factor(self._wheel, self._sector)
 
     def super_layer(self, super_layer_number):
         """
