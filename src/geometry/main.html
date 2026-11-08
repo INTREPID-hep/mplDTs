@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>geometry &mdash; mplDTs 2.0.0 documentation</title>
+  <title>geometry &mdash; mplDTs 2.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Station" href="station.html" />
+    <link rel="next" title="Runtime model" href="runtime.html" />
     <link rel="prev" title="mplDTs" href="../../index.html" /> 
 </head>
 
@@ -49,14 +49,71 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="station.html">Station</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
@@ -64,17 +121,21 @@
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -90,7 +151,6 @@
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
@@ -114,7 +174,6 @@
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
@@ -135,9 +194,9 @@
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
@@ -230,14 +289,17 @@
 <p>This module provides tools to manage geometrical objects in the context of CMS DT detectors.</p>
 <p>The CMS DTs geometry informatio is stored in a XML file - (<a class="reference download internal" download="" href="../../_downloads/c4bf51d99900153a5f2448059a06fd4b/DTGeometry_v3.xml"><code class="xref download docutils literal notranslate"><span class="pre">DTGeometry.xml</span></code></a>).
 The <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module includes a class to read and manage this file (<a class="reference internal" href="#dtgeometry">DTGeometry</a>).</p>
-<p>By default, an instance of this class is created when this module (<code class="docutils literal notranslate"><span class="pre">geometry</span></code>) is imported, and the geometry information
-can be accessed through the <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code> global variable.</p>
-<p>Additionally, this module offers a base class for defining geometrical objects representing various
-DT chamber components (e.g., <a class="reference internal" href="drift_cell.html"><span class="doc">DriftCell</span></a>, DT <a class="reference internal" href="layer.html"><span class="doc">Layer</span></a>, DT <a class="reference internal" href="super_layer.html"><span class="doc">SuperLayer</span></a>). This base class represents a general
-cubic form with properties such as bounds, center, id, width, height, etc. In this way, CMS DT chambers are built by nesting instances
-of <a class="reference internal" href="#dtframe">DTFrame</a> class (see the <a class="reference internal" href="#geometry-submodules">geometry-submodules</a> below). In other words, a Chamber is a DTFrame child
-which contains SuperLayers; SuperLayers are DTFrame children that contain Layers; Layers are DTFrame
-children that contain DriftCells.</p>
+<p>By default the geometry information can be accessed through the <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code>
+global variable. It is parsed on first use, so importing the <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module
+does not read the XML.</p>
+<p>Since version 2.3 the model is built in four layers: an XML source produces
+immutable specs, a builder turns a spec into a node tree with one pose per
+node, and a frame graph resolves the transforms. <a class="reference internal" href="runtime.html"><span class="doc">Runtime model</span></a> documents that
+architecture and its API. The classes below (<a class="reference internal" href="station.html"><span class="doc">Station</span></a>,
+<a class="reference internal" href="super_layer.html"><span class="doc">SuperLayer</span></a>, <a class="reference internal" href="layer.html"><span class="doc">Layer</span></a>, <a class="reference internal" href="drift_cell.html"><span class="doc">DriftCell</span></a>) keep their historical API
+and are now thin views over it, so existing plotting code does not change: a
+chamber is a tree of SuperLayers, layers and cells, and the legacy
+<code class="docutils literal notranslate"><span class="pre">DTFrame</span></code> base class still provides bounds, centres and ids.</p>
 <p>The following image shows the composition of a CMS DT chamber and indicates how the reference frames
 for each component are defined. Transformations between these frames are possible with the help of the
 <code class="docutils literal notranslate"><span class="pre">TranforManager</span></code> class (see <a class="reference internal" href="#transforms">Transforms</a> below).</p>
@@ -246,18 +308,19 @@ for each component are defined. Transformations between these frames are possibl
 <div class="toctree-wrapper compound" id="geometry-submodules">
 <p class="caption" role="heading"><span class="caption-text">Submodules</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="runtime.html">Runtime model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="station.html">Station</a></li>
 <li class="toctree-l1"><a class="reference internal" href="super_layer.html">SuperLayer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layer.html">Layer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="drift_cell.html">DriftCell</a></li>
 </ul>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Starting from version 1.1.0, the XML geometry file includes the local and global positions of each Drift Cell.
-Consequently, the <a class="reference internal" href="layer.html"><span class="doc">Layer</span></a> module was updated to directly read these properties from the file in the cells creation.
-While this enhancement simplifies data access, it increases the creation time of a <a class="reference internal" href="station.html"><span class="doc">Station</span></a>
-object. To mitigate this when several stations are created, parallelization of the process is strongly recommended.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Every drift cell centre is read from the XML. A chamber is built once and
+every <a class="reference internal" href="station.html"><span class="doc">Station</span></a> is a view over that build, so creating many stations
+is cheap: the XML is parsed once per process and the legacy data attributes
+stay verbatim XML values.</p>
 </div>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
@@ -304,37 +367,38 @@ object. To mitigate this when several stations are created, parallelization of t
 </dd></dl>
 
 <p>The following example shows how to access the CMS DT geometry information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">dt_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;./DTGeometry_v3.xml&quot;</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">dt_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">"./DTGeometry_v3.xml"</span><span class="p">))</span>
 
     <span class="c1"># Retrieve and print global and local positions, and bounds for specific chambers</span>
-    <span class="n">global_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GlobalPosition&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">local_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GlobalPosition&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">bounds</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Bounds&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bounds for Wh:-1, Sec:1, St:4: </span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">global_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GlobalPosition"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">local_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GlobalPosition"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Bounds"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bounds for Wh:-1, Sec:1, St:4: </span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Global position for Wh:-2, Sec:1, St:1: </span><span class="si">{</span><span class="n">global_pos_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local position for Wh:1, Sec:1, St:4: </span><span class="si">{</span><span class="n">local_pos_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Global position for Wh:-2, Sec:1, St:1: </span><span class="si">{</span><span class="n">global_pos_1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Local position for Wh:1, Sec:1, St:4: </span><span class="si">{</span><span class="n">local_pos_1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Iterate through all layers in a specific SuperLayer and print their attributes</span>
     <span class="c1"># 1. by using the root element</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//SuperLayer[@rawId=&#39;574922752&#39;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">".//SuperLayer[@rawId='574922752']"</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
         <span class="k">break</span>
     <span class="c1"># 2. by using the get method</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="s2">&quot;574922752&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="s2">"574922752"</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
         <span class="k">break</span>
     <span class="c1"># Test retrieving attributes of a specific SuperLayer</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Super_Layer"</span><span class="p">,</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="mi">574922752</span><span class="p">)</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Output</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Bounds for Wh:-1, Sec:1, St:4: (416.339996, 32.5999985, 251.100006)
 Global position for Wh:-2, Sec:1, St:1: (431.175, 39.12, -533.35)
 Local position for Wh:1, Sec:1, St:4: (720.2, -94.895, -267.75)
-Layer {&#39;rawId&#39;: &#39;574923776&#39;, &#39;layerNumber&#39;: &#39;1&#39;}
-Layer {&#39;rawId&#39;: &#39;574923776&#39;, &#39;layerNumber&#39;: &#39;1&#39;}
-Super_Layer {&#39;rawId&#39;: &#39;574922752&#39;, &#39;superLayerNumber&#39;: &#39;1&#39;}
+Layer {'rawId': '574923776', 'layerNumber': '1'}
+Layer {'rawId': '574923776', 'layerNumber': '1'}
+Super_Layer {'rawId': '574922752', 'superLayerNumber': '1'}
 </pre></div>
 </div>
 <div class="admonition note">
@@ -347,7 +411,15 @@ geometry through the <code class="docutils literal notranslate"><span class="pre
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Instead of creating an instance of DTGeometry each time, if you will use the default geometry file,
-you can access the geometry information from the variable <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code>.</p>
+you can access the geometry information from the variable <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code>. It is
+parsed on first use, never at import.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">DTGeometry</span></code> and <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code> are kept for compatibility. New
+code reads the geometry through
+<a class="reference internal" href="runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource" title="mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a>, which returns specs
+instead of XML elements (<a class="reference internal" href="runtime.html"><span class="doc">Runtime model</span></a>).</p>
 </div>
 </section>
 <section id="dtframe">
@@ -644,28 +716,28 @@ frames.</p>
 <span class="c1"># using the cell transform manager</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="n">chamber</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">transformer</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transform manager: &quot;</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Transform manager: "</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 
-<span class="n">Layer_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">&quot;Cell&quot;</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">&quot;Layer&quot;</span><span class="p">)</span>
+<span class="n">Layer_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">"Cell"</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">"Layer"</span><span class="p">)</span>
 <span class="n">SuperLayer_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-    <span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">&quot;Cell&quot;</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">&quot;SuperLayer&quot;</span>
+    <span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">"Cell"</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">"SuperLayer"</span>
 <span class="p">)</span>
-<span class="n">Station_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">&quot;Cell&quot;</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">&quot;Station&quot;</span><span class="p">)</span>
-<span class="n">CMS_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">&quot;Cell&quot;</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">&quot;CMS&quot;</span><span class="p">)</span>
+<span class="n">Station_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">"Cell"</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">"Station"</span><span class="p">)</span>
+<span class="n">CMS_center_cell</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center_cell</span><span class="p">,</span> <span class="n">from_frame</span><span class="o">=</span><span class="s2">"Cell"</span><span class="p">,</span> <span class="n">to_frame</span><span class="o">=</span><span class="s2">"CMS"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cell center in Cell frame: &quot;</span><span class="p">,</span> <span class="n">center_cell</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cell center in Layer frame: &quot;</span><span class="p">,</span> <span class="n">Layer_center_cell</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cell center in SuperLayer frame: &quot;</span><span class="p">,</span> <span class="n">SuperLayer_center_cell</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cell center in Cell frame: "</span><span class="p">,</span> <span class="n">center_cell</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cell center in Layer frame: "</span><span class="p">,</span> <span class="n">Layer_center_cell</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cell center in SuperLayer frame: "</span><span class="p">,</span> <span class="n">SuperLayer_center_cell</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Cell center in Station frame: &quot;</span><span class="p">,</span>
+    <span class="s2">"Cell center in Station frame: "</span><span class="p">,</span>
     <span class="n">Station_center_cell</span><span class="p">,</span>
-    <span class="s2">&quot; -&gt; check with config file: &quot;</span><span class="p">,</span>
+    <span class="s2">" -&gt; check with config file: "</span><span class="p">,</span>
     <span class="n">chamber</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">local_center</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Cell center in CMS frame: &quot;</span><span class="p">,</span>
+    <span class="s2">"Cell center in CMS frame: "</span><span class="p">,</span>
     <span class="n">CMS_center_cell</span><span class="p">,</span>
-    <span class="s2">&quot; -&gt; check with config file: &quot;</span><span class="p">,</span>
+    <span class="s2">" -&gt; check with config file: "</span><span class="p">,</span>
     <span class="n">chamber</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">global_center</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -833,6 +905,12 @@ Cell center in CMS frame:  [ 263.53996    329.9044575 -287.25     ]  -&gt; check
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">TransformManager</span></code> is the legacy entry point. The runtime model resolves the
+same transforms through the frame graph with the node poses; see
+<a class="reference internal" href="runtime.html"><span class="doc">Runtime model</span></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This documentation supports multiple versions. Use the version selector in the top-right corner to switch between versions.</p>
 </div>
 </section>
@@ -844,7 +922,7 @@ Cell center in CMS frame:  [ 263.53996    329.9044575 -287.25     ]  -&gt; check
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../../index.html" class="btn btn-neutral float-left" title="mplDTs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="station.html" class="btn btn-neutral float-right" title="Station" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="runtime.html" class="btn btn-neutral float-right" title="Runtime model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; mplDTs 2.0.0 documentation</title>
+  <title>Index &mdash; mplDTs 2.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/documentation_options.js?v=3c4615cf"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,14 +45,71 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="src/geometry/main.html">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src/geometry/runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="src/geometry/station.html">Station</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
@@ -60,17 +117,21 @@
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -86,7 +147,6 @@
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
@@ -110,7 +170,6 @@
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
@@ -131,9 +190,9 @@
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
@@ -236,11 +295,14 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -268,12 +330,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes">_add_collections_to_axes() (mpldts.patches.dt_patch_base.DTRelatedPatch method)</a>
 </li>
-      <li><a href="src/geometry/layer.html#mpldts.geometry.layer.Layer._build_layer">_build_layer() (mpldts.geometry.layer.Layer method)</a>
-</li>
-      <li><a href="src/geometry/station.html#mpldts.geometry.station.Station._build_station">_build_station() (mpldts.geometry.station.Station method)</a>
-</li>
-      <li><a href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer">_build_super_layer() (mpldts.geometry.super_layer.SuperLayer method)</a>
-</li>
       <li><a href="src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._create_frame">_create_frame() (mpldts.patches.dt_station_patch.DTStationPatch method)</a>
 </li>
       <li><a href="src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_bounds">_draw_bounds() (mpldts.patches.dt_station_patch.DTStationPatch method)</a>
@@ -282,15 +338,31 @@
 </li>
       <li><a href="src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._draw_collections">_draw_collections() (mpldts.patches.dt_patch_base.DTRelatedPatch method)</a>
 </li>
-      <li><a href="src/geometry/station.html#mpldts.geometry.station.Station._setup_tranformer">_setup_tranformer() (mpldts.geometry.station.Station method)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager.add">add() (mpldts.geometry.transforms.TransformManager method)</a>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameView.add">add() (mpldts.geometry.frames.FrameView method)</a>
+
+      <ul>
+        <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager.add">(mpldts.geometry.transforms.TransformManager method)</a>
+</li>
+      </ul></li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.add_edge">add_edge() (mpldts.geometry.frames.FrameGraph method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.presets.cms.add_frames">add_frames() (in module mpldts.geometry.presets.cms)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.add_nodes">add_nodes() (mpldts.geometry.frames.FrameGraph method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.add_virtual">add_virtual() (mpldts.geometry.frames.FrameGraph method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Pose.apply">apply() (mpldts.geometry.specs.Pose method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec">AttachmentSpec (class in mpldts.geometry.specs)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,6 +383,14 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Box">Box (class in mpldts.geometry.specs)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.model.build_detector">build_detector() (in module mpldts.geometry.model)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.model.build_station">build_station() (in module mpldts.geometry.model)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="C">C</h2>
@@ -318,11 +398,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/geometry/layer.html#mpldts.geometry.layer.Layer.cell">cell() (mpldts.geometry.layer.Layer method)</a>
 </li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource.cell_centres">cell_centres() (mpldts.geometry.sources.cms_xml.CMSXMLSource method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.CellGrid">CellGrid (class in mpldts.geometry.specs)</a>
+</li>
       <li><a href="src/geometry/layer.html#mpldts.geometry.layer.Layer.cells">cells (mpldts.geometry.layer.Layer property)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource.chamber_keys">chamber_keys() (mpldts.geometry.sources.cms_xml.CMSXMLSource method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.change_vmap">change_vmap() (mpldts.patches.dt_station_patch.DTStationPatch method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource">CMSXMLSource (class in mpldts.geometry.sources.cms_xml)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Pose.compose">compose() (mpldts.geometry.specs.Pose method)</a>
 </li>
       <li><a href="src/geometry/main.html#mpldts.geometry.transforms.compute_eta">compute_eta() (in module mpldts.geometry.transforms)</a>
 </li>
@@ -334,6 +424,10 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource.detector">detector() (mpldts.geometry.sources.cms_xml.CMSXMLSource method)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec">DetectorSpec (class in mpldts.geometry.specs)</a>
+</li>
       <li><a href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction">direction (mpldts.geometry.drift_cell.DriftCell property)</a>
 
       <ul>
@@ -377,12 +471,32 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.export.base.export_volumes">export_volumes() (in module mpldts.export.base)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.presets.cms.face_factor">face_factor() (in module mpldts.geometry.presets.cms)</a>
+</li>
       <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.face_orientation_factor">face_orientation_factor (mpldts.geometry.station.Station property)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph">FrameGraph (class in mpldts.geometry.frames)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.frames">frames() (mpldts.geometry.frames.FrameGraph method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameView">FrameView (class in mpldts.geometry.frames)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.serialize.from_dict">from_dict() (in module mpldts.geometry.serialize)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.serialize.from_json">from_json() (in module mpldts.geometry.serialize)</a>
+</li>
+      <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.from_spec">from_spec() (mpldts.geometry.station.Station class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -464,6 +578,8 @@
         <li><a href="src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.invert_view">(mpldts.patches.dt_station_patch.DTStationPatch method)</a>
 </li>
       </ul></li>
+      <li><a href="src/geometry/runtime.html#mpldts.export.base.iter_volume_placements">iter_volume_placements() (in module mpldts.export.base)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -520,21 +636,44 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.constructors.make_detector">make_detector() (in module mpldts.geometry.constructors)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.constructors.make_layer">make_layer() (in module mpldts.geometry.constructors)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.constructors.make_station">make_station() (in module mpldts.geometry.constructors)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer">make_superlayer() (in module mpldts.geometry.constructors)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.matrix">matrix() (mpldts.geometry.frames.FrameGraph method)</a>
+
+      <ul>
+        <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Pose.matrix">(mpldts.geometry.specs.Pose method)</a>
+</li>
+      </ul></li>
       <li>
     module
 
       <ul>
+        <li><a href="src/geometry/runtime.html#module-mpldts.geometry.presets.cms">mpldts.geometry.presets.cms</a>
+</li>
         <li><a href="src/geometry/main.html#module-mpldts.geometry.transforms">mpldts.geometry.transforms</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.move_to_global">move_to_global() (mpldts.patches.dt_patch_base.DTRelatedPatch method)</a>
 
       <ul>
         <li><a href="src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.move_to_global">(mpldts.patches.dt_station_patch.DTStationPatch method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    mpldts.geometry.presets.cms
+
+      <ul>
+        <li><a href="src/geometry/runtime.html#module-mpldts.geometry.presets.cms">module</a>
+</li>
+      </ul></li>
       <li>
     mpldts.geometry.transforms
 
@@ -550,6 +689,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.name">name (mpldts.geometry.station.Station property)</a>
 </li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.model.Node">Node (class in mpldts.geometry.model)</a>
+</li>
       <li><a href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number">number (mpldts.geometry.drift_cell.DriftCell property)</a>
 
       <ul>
@@ -562,6 +703,14 @@
         <li><a href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number">(mpldts.geometry.super_layer.SuperLayer property)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.overlay">overlay() (mpldts.geometry.station.Station method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -581,10 +730,18 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Pose">Pose (class in mpldts.geometry.specs)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.export.base.RecordingSink">RecordingSink (class in mpldts.export.base)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager.remove">remove() (mpldts.geometry.transforms.TransformManager method)</a>
 </li>
@@ -600,8 +757,14 @@
 </li>
       <li><a href="src/geometry/station.html#mpldts.geometry.station.Station">Station (class in mpldts.geometry.station)</a>
 </li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource.station">station() (mpldts.geometry.sources.cms_xml.CMSXMLSource method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.StationSpec">StationSpec (class in mpldts.geometry.specs)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.StructureSpec">StructureSpec (class in mpldts.geometry.specs)</a>
+</li>
       <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.super_layer">super_layer() (mpldts.geometry.station.Station method)</a>
 </li>
       <li><a href="src/geometry/station.html#mpldts.geometry.station.Station.super_layers">super_layers (mpldts.geometry.station.Station property)</a>
@@ -614,6 +777,10 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.export.tg.TgFormatError">TgFormatError</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.export.tg.TgSink">TgSink (class in mpldts.export.tg)</a>
+</li>
       <li><a href="src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.theta">theta (mpldts.geometry.drift_cell.DriftCell property)</a>
 
       <ul>
@@ -628,9 +795,31 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager.transform">transform() (mpldts.geometry.transforms.TransformManager method)</a>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.serialize.to_dict">to_dict() (in module mpldts.geometry.serialize)</a>
 </li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.serialize.to_json">to_json() (in module mpldts.geometry.serialize)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph.transform">transform() (mpldts.geometry.frames.FrameGraph method)</a>
+
+      <ul>
+        <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager.transform">(mpldts.geometry.transforms.TransformManager method)</a>
+</li>
+      </ul></li>
       <li><a href="src/geometry/main.html#mpldts.geometry.transforms.TransformManager">TransformManager (class in mpldts.geometry.transforms)</a>
+</li>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.Tube">Tube (class in mpldts.geometry.specs)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.export.base.VolumePlacement">VolumePlacement (class in mpldts.export.base)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.export.base.VolumeSink">VolumeSink (class in mpldts.export.base)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -652,6 +841,18 @@
         <li><a href="src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.width">(mpldts.geometry.super_layer.SuperLayer property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.presets.cms.with_attachments">with_attachments() (in module mpldts.geometry.presets.cms)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/geometry/runtime.html#mpldts.geometry.specs.CellGrid.x_positions">x_positions() (mpldts.geometry.specs.CellGrid method)</a>
+</li>
   </ul></td>
 </tr></table>
 

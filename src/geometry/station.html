@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Station &mdash; mplDTs 2.0.0 documentation</title>
+  <title>Station &mdash; mplDTs 2.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="SuperLayer" href="super_layer.html" />
-    <link rel="prev" title="geometry" href="main.html" /> 
+    <link rel="prev" title="Runtime model" href="runtime.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,14 +48,71 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="main.html">geometry</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Station</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
@@ -63,17 +120,21 @@
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -89,7 +150,6 @@
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
@@ -113,7 +173,6 @@
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
@@ -134,9 +193,9 @@
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
@@ -261,78 +320,31 @@
 <li><p><strong>station</strong> (<em>int</em>) – Station type (1: MB1, 2: MB2, 3: MB3, or 4: MB4).</p></li>
 <li><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em> of </em><em>dict</em><em>, or </em><em>pandas.DataFrame.</em>) – Information for the station at cell level. Default is None. Drift cell information for the station. Can be a dictionary, a list of dictionaries,
 or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-layer, and wire. e.g. <code class="docutils literal notranslate"><span class="pre">[{&quot;sl&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;l&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;w&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;time&quot;:</span> <span class="pre">300},</span> <span class="pre">...]</span></code></p></li>
+layer, and cell. e.g. <cite>[{“sl”: 1, “l”: 1, “w”: 1, “time”: 300}, …]</cite></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.id">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.id" title="Link to this definition"></a></dt>
-<dd><p>Identifier of the Object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.from_spec">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station.from_spec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station.from_spec" title="Link to this definition"></a></dt>
+<dd><p>A Station view over any StationSpec, without the CMS cache (T-030).</p>
+<p>The node tree and the frame graph are built here. The station has no XML
+record, so the values the legacy classes read (local centres, bounds,
+direction, raw ids) are derived from the node tree.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Identifier of the object.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spec</strong> (<a class="reference internal" href="runtime.html#mpldts.geometry.specs.StationSpec" title="mpldts.geometry.specs.StationSpec"><em>StationSpec</em></a>) – The station to build.</p></li>
+<li><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em> of </em><em>dict</em><em>, or </em><em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Drift cell information, as in <a class="reference internal" href="#mpldts.geometry.station.Station.set_cell_attrs" title="mpldts.geometry.station.Station.set_cell_attrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_cell_attrs()</span></code></a>.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The station.</p>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.local_center">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">local_center</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.local_center" title="Link to this definition"></a></dt>
-<dd><p>Local center coordinates of the Object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Local center coordinates (x, y, z).</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.global_center">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">global_center</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.global_center" title="Link to this definition"></a></dt>
-<dd><p>Global center coordinates of the Object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Global center coordinates (x, y, z).</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.direction">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">direction</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.direction" title="Link to this definition"></a></dt>
-<dd><p>Direction of the Object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Direction of the object.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.bounds">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.bounds" title="Link to this definition"></a></dt>
-<dd><p>Space dimensions of the Object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Space dimensions of the object.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mpldts.geometry.station.Station" title="mpldts.geometry.station.Station">Station</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,7 +355,8 @@ layer, and wire. e.g. <code class="docutils literal notranslate"><span class="pr
 <dd><p>Name of the station.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Name of the station in format “Wheel {wheel}, Sector {sector}, Station {number}”.</p>
+<dd class="field-odd"><p>Name of the station: “Wheel {wheel}, Sector {sector}, Station {number}” for a CMS
+chamber, the spec name for a station built from a spec.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
@@ -441,9 +454,71 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station._build_station">
-<span class="sig-name descname"><span class="pre">_build_station</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station._build_station"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station._build_station" title="Link to this definition"></a></dt>
-<dd><p>Build up the station. It creates the super layers contained in the station.</p>
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.set_cell_attrs">
+<span class="sig-name descname"><span class="pre">set_cell_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station.set_cell_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station.set_cell_attrs" title="Link to this definition"></a></dt>
+<dd><p>Set the attributes for the drift cells in the station.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em>, or </em><em>pandas.DataFrame</em>) – Drift cell information for the station. Can be a dictionary, a list of dictionaries,
+or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
+layer, and cell. e.g. <cite>[{“sl”: 1, “l”: 1, “w”: 1, “time”: 300}, …]</cite></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This writes on this station’s own cells. On a station shared through
+<code class="xref py py-class docutils literal notranslate"><span class="pre">StationsCache</span></code> use <a class="reference internal" href="#mpldts.geometry.station.Station.overlay" title="mpldts.geometry.station.Station.overlay"><code class="xref py py-meth docutils literal notranslate"><span class="pre">overlay()</span></code></a> instead: the cache hands
+the same instance to every caller.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.overlay">
+<span class="sig-name descname"><span class="pre">overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station.overlay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station.overlay" title="Link to this definition"></a></dt>
+<dd><p>A per-event view of this station: the same geometry, its own cell attributes.</p>
+<p>The node tree and the frame graph are shared with this station, so an
+overlay costs a fraction of a full build; the super layers, layers and
+cells are new objects, so setting an attribute on an overlay cell never
+reaches the station or another overlay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em> of </em><em>dict</em><em>, or </em><em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Drift cell information, as in <a class="reference internal" href="#mpldts.geometry.station.Station.set_cell_attrs" title="mpldts.geometry.station.Station.set_cell_attrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_cell_attrs()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The overlay station.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mpldts.geometry.station.Station" title="mpldts.geometry.station.Station">Station</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.bounds">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.bounds" title="Link to this definition"></a></dt>
+<dd><p>Space dimensions of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Space dimensions of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.direction">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">direction</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.direction" title="Link to this definition"></a></dt>
+<dd><p>Direction of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Direction of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -456,6 +531,20 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.global_center">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">global_center</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.global_center" title="Link to this definition"></a></dt>
+<dd><p>Global center coordinates of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Global center coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -493,6 +582,20 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.id">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.id" title="Link to this definition"></a></dt>
+<dd><p>Identifier of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Identifier of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="mpldts.geometry.station.Station.length">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.length" title="Link to this definition"></a></dt>
 <dd><p>Length of the Object.</p>
@@ -502,6 +605,20 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.station.Station.local_center">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">local_center</span></span><a class="headerlink" href="#mpldts.geometry.station.Station.local_center" title="Link to this definition"></a></dt>
+<dd><p>Local center coordinates of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Local center coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -562,56 +679,38 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station._setup_tranformer">
-<span class="sig-name descname"><span class="pre">_setup_tranformer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station._setup_tranformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station._setup_tranformer" title="Link to this definition"></a></dt>
-<dd><p>Set up the transformer for the station. It defines the transformation from the local frame
-to the global frame and other useful transformations (e.g. for plotting).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mpldts.geometry.station.Station.set_cell_attrs">
-<span class="sig-name descname"><span class="pre">set_cell_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station.set_cell_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station.set_cell_attrs" title="Link to this definition"></a></dt>
-<dd><p>Set the attributes for the drift cells in the station.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em>, or </em><em>pandas.DataFrame</em>) – Drift cell information for the station. Can be a dictionary, a list of dictionaries,
-or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-layer, and wire. e.g. <code class="docutils literal notranslate"><span class="pre">[{&quot;sl&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;l&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;w&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;time&quot;:</span> <span class="pre">300},</span> <span class="pre">...]</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_setup_sl13center_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add to the parent transformer the transformation to move from the SL13 center frame</span>
-<span class="sd">    to the Station frame. The SL13 center frame is defined as the geometrical center of the super layers 1 and 3.</span>
-<span class="sd">    The transformation is added to the parent station&#39;s transformer with the name &quot;SL13Center&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    if value &lt; -2 or value &gt; 2:</span>
+<span class="sd">        raise ValueError("Wheel value must be between -2 and 2")</span>
+<span class="sd">    self._wheel = value</span>
 
-    <span class="n">sl1_center</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">local_center</span><span class="p">)</span>
-    <span class="n">sl3_center</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">local_center</span><span class="p">)</span>
-    <span class="n">sls_center</span> <span class="o">=</span> <span class="p">(</span><span class="n">sl1_center</span> <span class="o">+</span> <span class="n">sl3_center</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="sd">@sector.setter</span>
+<span class="sd">def sector(self, value):</span>
+<span class="sd">    """</span>
+    <span class="n">Set</span> <span class="n">the</span> <span class="n">sector</span> <span class="n">position</span><span class="o">.</span>
 
-    <span class="c1"># Translation vector to move the center of SL13 frame to the Station Frame</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;SL13Center&quot;</span><span class="p">,</span> <span class="s2">&quot;Station&quot;</span><span class="p">,</span> <span class="n">translation_vector</span><span class="o">=</span><span class="n">sls_center</span><span class="p">)</span>
+    <span class="p">:</span><span class="n">param</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sector</span> <span class="n">position</span><span class="o">.</span>
+    <span class="p">:</span><span class="nb">type</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">:</span><span class="n">raises</span> <span class="ne">ValueError</span><span class="p">:</span> <span class="n">If</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">between</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mf">14.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    if value &lt; 1 or value &gt; 14:</span>
+<span class="sd">        raise ValueError("Sector value must be between 1 and 14")</span>
+<span class="sd">    else:</span>
+<span class="sd">        self._sector = value</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">set_cell_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_info</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Set the attributes for the drift cells in the station.</span>
+<span class="sd">@DTFrame.number.setter</span>
+<span class="sd">def number(self, value):</span>
+<span class="sd">    """</span>
+    <span class="n">Set</span> <span class="n">the</span> <span class="n">station</span> <span class="nb">type</span><span class="o">.</span>
 
-<span class="sd">    :param dt_info: Drift cell information for the station. Can be a dictionary, a list of dictionaries,</span>
-<span class="sd">            or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,</span>
-<span class="sd">            layer, and wire. e.g. ``[{&quot;sl&quot;: 1, &quot;l&quot;: 1, &quot;w&quot;: 1, &quot;time&quot;: 300}, ...]``</span>
-<span class="sd">    :type dt_info: dict, list, or pandas.DataFrame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt_info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dt_info</span><span class="p">)]</span>
+    <span class="p">:</span><span class="n">param</span> <span class="n">value</span><span class="p">:</span> <span class="n">Station</span> <span class="nb">type</span><span class="o">.</span>
+    <span class="p">:</span><span class="nb">type</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">:</span><span class="n">raises</span> <span class="ne">ValueError</span><span class="p">:</span> <span class="n">If</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">between</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mf">4.</span>
+    <span class="s2">"""</span>
 </pre></div>
 </div>
 <p class="rubric">Output</p>
@@ -655,7 +754,7 @@ layer, and wire. e.g. <code class="docutils literal notranslate"><span class="pr
 		 id: 579129344 number: 4 local_center: (-1.75, 0.0, -8.35004) global_center: (520.825, -23.18, -533.35) direction: (-1.0, 0.0, 0.0) bounds: (235.330002, 1.14999998, 252.0)
 			 id: 2 number: 2 local_center: (-115.5, 0.0, -8.35004) global_center: None direction: (-1.0, 0.0, 0.0) bounds: (4.19999981, 1.29999995, 234.800003)
 			 id: 55 number: 55 local_center: (107.09998992999996, 0.0, -8.35004) global_center: None direction: (-1.0, 0.0, 0.0) bounds: (4.19999981, 1.29999995, 234.800003)
-	 properties contained into cells: dict_keys([&#39;_parent&#39;, &#39;_id&#39;, &#39;_number&#39;, &#39;_x_local&#39;, &#39;_y_local&#39;, &#39;_z_local&#39;, &#39;time&#39;, &#39;size&#39;, &#39;other&#39;])
+	 properties contained into cells: dict_keys(['_parent', '_id', '_number', '_x_local', '_y_local', '_z_local', 'time', 'size', 'other'])
 </pre></div>
 </div>
 </section>
@@ -664,7 +763,7 @@ layer, and wire. e.g. <code class="docutils literal notranslate"><span class="pr
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="main.html" class="btn btn-neutral float-left" title="geometry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="runtime.html" class="btn btn-neutral float-left" title="Runtime model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="super_layer.html" class="btn btn-neutral float-right" title="SuperLayer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

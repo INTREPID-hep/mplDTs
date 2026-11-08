@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mpldts.geometry._geometry &mdash; mplDTs 2.0.0 documentation</title>
+  <title>mpldts.geometry._geometry &mdash; mplDTs 2.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../../_static/documentation_options.js?v=3c4615cf"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,14 +45,71 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../src/geometry/main.html">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/station.html">Station</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
@@ -60,17 +117,21 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -86,7 +147,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
@@ -110,7 +170,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
@@ -131,9 +190,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
@@ -224,82 +283,142 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 
 
 
 <div class="viewcode-block" id="DTGeometry">
 <a class="viewcode-back" href="../../../src/geometry/main.html#mpldts.geometry.DTGeometry">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DTGeometry</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to easy access to the CMS DT Geometry from the XML file.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    root : xml.etree.ElementTree.Element</span>
 <span class="sd">        The root element of the parsed XML tree.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_file</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the DTGeometry object by parsing the XML file.</span>
 
 <span class="sd">        :param xml_file: Path to the XML file containing the DT Geometry.</span>
 <span class="sd">        :type xml_file: str</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rawid_index</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chamber_key_index</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_indexes</span><span class="p">()</span>
 
-<div class="viewcode-block" id="DTGeometry.get">
-<a class="viewcode-back" href="../../../src/geometry/main.html#mpldts.geometry.DTGeometry.get">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve specific attributes or elements from the XML based on the provided criteria.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Build fast lookup indexes from the geometry XML tree."""</span>
+        <span class="n">chamber_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Wh:(-?\d+)\s+St:(\d+)\s+Se:(\d+)"</span><span class="p">)</span>
 
-<span class="sd">        :param attribute: The attribute to retrieve (e.g., &#39;GlobalPosition&#39;, &#39;LocalPosition&#39;, &#39;Bounds&#39;).</span>
-<span class="sd">        :type attribute: str, optional</span>
-<span class="sd">        :param kwargs: Additional criteria to filter the elements (e.g., rawId, wh, sec, st, sl, l).</span>
-<span class="sd">        :type kwargs: dict</span>
-<span class="sd">        :return: The requested attribute values or element.</span>
-<span class="sd">        :rtype: tuple, str, or xml.etree.ElementTree.Element</span>
-<span class="sd">        :raises ValueError: If the element or attribute is not found for the given query.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;rawId&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;//*[@rawId=&#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;rawId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;]&quot;</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;wh&quot;</span><span class="p">,</span> <span class="s2">&quot;sec&quot;</span><span class="p">,</span> <span class="s2">&quot;st&quot;</span><span class="p">]):</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;//Chamber&quot;</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;[@Id=&#39; Wh:</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;wh&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> St:</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;st&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> Se:</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sec&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &#39;]&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;sl&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;//SuperLayer&quot;</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;[@superLayerNumber=&#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sl&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;]&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;l&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;//Layer&quot;</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;[@layerNumber=&#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;]&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;//Wire&quot;</span>
-            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;[@wireNumber=&#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;]&quot;</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+            <span class="n">raw_id</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"rawId"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">raw_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rawid_index</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">raw_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">element</span>
 
-        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">"Chamber"</span><span class="p">:</span>
+                <span class="n">chamber_id</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">chamber_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">chamber_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="n">wh</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">sec</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_chamber_key_index</span><span class="p">[(</span><span class="n">wh</span><span class="p">,</span> <span class="n">sec</span><span class="p">,</span> <span class="n">st</span><span class="p">)]</span> <span class="o">=</span> <span class="n">element</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_descendant_by_attr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Find first descendant by tag and attribute value."""</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr_value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">element</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Resolve an XML element from query parts without costly XPath scans."""</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+
+        <span class="k">if</span> <span class="n">raw_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rawid_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">raw_id</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">wh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">st</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chamber_key_index</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">wh</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">st</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">sl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_descendant_by_attr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"SuperLayer"</span><span class="p">,</span> <span class="s2">"superLayerNumber"</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_descendant_by_attr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"Layer"</span><span class="p">,</span> <span class="s2">"layerNumber"</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_descendant_by_attr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"Wire"</span><span class="p">,</span> <span class="s2">"wireNumber"</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">element</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_query_str</span><span class="p">(</span><span class="n">raw_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Build query-like string for user-facing errors."""</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">"."</span>
+        <span class="k">if</span> <span class="n">raw_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"//*[@rawId='</span><span class="si">{</span><span class="n">raw_id</span><span class="si">}</span><span class="s2">']"</span>
+        <span class="k">if</span> <span class="n">wh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">st</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">"//Chamber"</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"[@Id=' Wh:</span><span class="si">{</span><span class="n">wh</span><span class="si">}</span><span class="s2"> St:</span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s2"> Se:</span><span class="si">{</span><span class="n">sec</span><span class="si">}</span><span class="s2"> ']"</span>
+        <span class="k">if</span> <span class="n">sl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">"//SuperLayer"</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"[@superLayerNumber='</span><span class="si">{</span><span class="n">sl</span><span class="si">}</span><span class="s2">']"</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">"//Layer"</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"[@layerNumber='</span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">']"</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">"//Wire"</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"[@wireNumber='</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">']"</span>
+        <span class="k">return</span> <span class="n">query</span>
+
+    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raw_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Cached internal resolver with normalized query keys."""</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_element</span><span class="p">(</span><span class="n">raw_id</span><span class="o">=</span><span class="n">raw_id</span><span class="p">,</span> <span class="n">wh</span><span class="o">=</span><span class="n">wh</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="n">sec</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="n">st</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="n">sl</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_query_str</span><span class="p">(</span><span class="n">raw_id</span><span class="o">=</span><span class="n">raw_id</span><span class="p">,</span> <span class="n">wh</span><span class="o">=</span><span class="n">wh</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="n">sec</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="n">st</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="n">sl</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">attribute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Element not found for query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element</span>
 
         <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;GlobalPosition&quot;</span><span class="p">,</span> <span class="s2">&quot;LocalPosition&quot;</span><span class="p">,</span> <span class="s2">&quot;NormalVector&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"GlobalPosition"</span><span class="p">,</span> <span class="s2">"LocalPosition"</span><span class="p">,</span> <span class="s2">"NormalVector"</span><span class="p">]:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_to_pos</span><span class="p">(</span><span class="n">str_pos_tuple</span><span class="o">=</span><span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_to_pos</span><span class="p">(</span><span class="n">str_pos_tuple</span><span class="o">=</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
-            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">&quot;Bounds&quot;</span><span class="p">:</span>
-                <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="s2">&quot;wire&quot;</span> <span class="ow">in</span> <span class="n">attribute</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//Wires&quot;</span><span class="p">)</span>
-                <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">&quot;WiresSize&quot;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">&quot;WiresRange&quot;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">last</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">"Bounds"</span><span class="p">:</span>
+                <span class="n">bounds</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="n">attrib</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s2">"width"</span><span class="p">]),</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s2">"thickness"</span><span class="p">]),</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s2">"length"</span><span class="p">]),</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">"wire"</span> <span class="ow">in</span> <span class="n">attribute</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">".//Wires"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">"WiresSize"</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"width"</span><span class="p">)),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thickness"</span><span class="p">)),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"length"</span><span class="p">)),</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s2">"WiresRange"</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"first"</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last"</span><span class="p">)))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">element</span>
             <span class="k">else</span><span class="p">:</span>
@@ -311,15 +430,48 @@
                         <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Attribute or element &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&#39; not found for query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">"Attribute or element '</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">' not found for query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">"</span>
                         <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element not found for query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Element not found for query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DTGeometry.get">
+<a class="viewcode-back" href="../../../src/geometry/main.html#mpldts.geometry.DTGeometry.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Retrieve specific attributes or elements from the XML based on the provided criteria.</span>
+
+<span class="sd">        :param attribute: The attribute to retrieve (e.g., 'GlobalPosition', 'LocalPosition', 'Bounds').</span>
+<span class="sd">        :type attribute: str, optional</span>
+<span class="sd">        :param kwargs: Additional criteria to filter the elements (e.g., rawId, wh, sec, st, sl, l).</span>
+<span class="sd">        :type kwargs: dict</span>
+<span class="sd">        :return: The requested attribute values or element.</span>
+<span class="sd">        :rtype: tuple, str, or xml.etree.ElementTree.Element</span>
+<span class="sd">        :raises ValueError: If the element or attribute is not found for the given query.</span>
+<span class="sd">        """</span>
+        <span class="n">raw_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"rawId"</span><span class="p">)</span>
+        <span class="n">wh</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"wh"</span><span class="p">)</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sec"</span><span class="p">)</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"st"</span><span class="p">)</span>
+        <span class="n">sl</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sl"</span><span class="p">)</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"l"</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"w"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cached</span><span class="p">(</span>
+            <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+            <span class="n">raw_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">raw_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">wh</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">wh</span><span class="p">)</span> <span class="k">if</span> <span class="n">wh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">sec</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span> <span class="k">if</span> <span class="n">sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">st</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">st</span><span class="p">)</span> <span class="k">if</span> <span class="n">st</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">sl</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span> <span class="k">if</span> <span class="n">sl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">l</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_transform_to_pos</span><span class="p">(</span><span class="n">str_pos_tuple</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Transform a string representation of coordinates into a tuple of floats.</span>
 
 <span class="sd">        :param str: The string containing the coordinates.</span>
@@ -328,40 +480,57 @@
 <span class="sd">        :type local: bool, optional</span>
 <span class="sd">        :return: A tuple containing the transformed coordinates.</span>
 <span class="sd">        :rtype: tuple</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cords</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?&quot;</span><span class="p">,</span> <span class="n">str_pos_tuple</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">cords</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"</span><span class="p">,</span> <span class="n">str_pos_tuple</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">cord</span><span class="p">)</span> <span class="k">for</span> <span class="n">cord</span> <span class="ow">in</span> <span class="n">cords</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
 
 
+<span class="k">class</span><span class="w"> </span><span class="nc">_LazyDTGeometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The default geometry, parsed on first use.</span>
+
+<span class="sd">    Parsing DTGeometry_v3.xml costs ~3 s and the model no longer reads it, so</span>
+<span class="sd">    the legacy entry point pays only when a caller touches it.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+
 <span class="c1"># Initialize the DTGeometry object with the path to the XML file</span>
-<span class="n">DTGEOMETRY</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;./DTGeometry_v3.xml&quot;</span><span class="p">))</span>
+<span class="n">DTGEOMETRY</span> <span class="o">=</span> <span class="n">_LazyDTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">"DTGeometry_v3.xml"</span><span class="p">))</span>
 
 <span class="c1"># Example usage</span>
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">dt_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;./DTGeometry_v3.xml&quot;</span><span class="p">))</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">dt_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">"./DTGeometry_v3.xml"</span><span class="p">))</span>
 
     <span class="c1"># Retrieve and print global and local positions, and bounds for specific chambers</span>
-    <span class="n">global_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GlobalPosition&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">local_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GlobalPosition&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">bounds</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Bounds&quot;</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bounds for Wh:-1, Sec:1, St:4: </span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">global_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GlobalPosition"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">local_pos_1</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GlobalPosition"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Bounds"</span><span class="p">,</span> <span class="n">wh</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">st</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bounds for Wh:-1, Sec:1, St:4: </span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Global position for Wh:-2, Sec:1, St:1: </span><span class="si">{</span><span class="n">global_pos_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local position for Wh:1, Sec:1, St:4: </span><span class="si">{</span><span class="n">local_pos_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Global position for Wh:-2, Sec:1, St:1: </span><span class="si">{</span><span class="n">global_pos_1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Local position for Wh:1, Sec:1, St:4: </span><span class="si">{</span><span class="n">local_pos_1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Iterate through all layers in a specific SuperLayer and print their attributes</span>
     <span class="c1"># 1. by using the root element</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//SuperLayer[@rawId=&#39;574922752&#39;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">".//SuperLayer[@rawId='574922752']"</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
         <span class="k">break</span>
     <span class="c1"># 2. by using the get method</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="s2">&quot;574922752&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="s2">"574922752"</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Layer"</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
         <span class="k">break</span>
     <span class="c1"># Test retrieving attributes of a specific SuperLayer</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Super_Layer&quot;</span><span class="p">,</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="mi">574922752</span><span class="p">)</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Super_Layer"</span><span class="p">,</span> <span class="n">dt_geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rawId</span><span class="o">=</span><span class="mi">574922752</span><span class="p">)</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
 </pre></div>
 
            </div>
