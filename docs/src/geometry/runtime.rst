@@ -191,6 +191,14 @@ rotation `R0` belong to the document that includes the file. Volume and
 rotation names are qualified by the exported root, so several station files can
 be included in one document without redefining anything.
 
+The names are part of the contract with the reader: a consumer whose Geant4 code
+parses the volume names passes ``name_of`` to :class:`~mpldts.export.tg.TgSink`
+and keeps its own scheme. ``DTG4Simulator`` does exactly that, because its
+sensitive detectors decode the chamber from ``Station_W<w>_Sec<s>_St<n>``, the
+super layer and the cells per layer from
+``DriftCell_W<w>_Sec<s>_St<n>_SL<n>_<encoding>``, and the layer and wire from
+the copy number of the cell volume (T-005, T-057).
+
 .. autoclass:: mpldts.export.tg.TgSink
 
 .. autoexception:: mpldts.export.tg.TgFormatError

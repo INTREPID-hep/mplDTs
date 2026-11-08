@@ -96,9 +96,9 @@ def _facts(solids, volumes, rotations, placements):
     return facts
 
 
-def _tg(root):
+def _tg(root, **options):
     stream = io.StringIO()
-    export_volumes(root, TgSink(stream))
+    export_volumes(root, TgSink(stream, **options))
     return stream.getvalue()
 
 
@@ -252,7 +252,7 @@ def test_a_tube_cell_is_rotated_onto_its_axis():
         np.testing.assert_allclose(rotations[placement[2]] @ (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), atol=1e-9)
 
 
-def test_copy_numbers_are_unique_within_a_mother():
+def test_copy_numbers_restart_for_every_volume():
     panel = AttachmentSpec(
         name="Honeycomb",
         pose=Pose.translated(0.0, 0.0, 1.0),
@@ -266,10 +266,32 @@ def test_copy_numbers_are_unique_within_a_mother():
     for line in text.splitlines():
         if line.startswith(":PLACE"):
             tokens = line.split()
-            copies.setdefault(tokens[3], []).append(int(tokens[2]))
+            copies.setdefault(tokens[1], []).append(int(tokens[2]))
 
-    assert copies["world"] == [1]
-    assert sorted(copies["station"]) == list(range(1, 10))  # 8 cells then the panel
+    # every volume numbers its own copies from 1, as the reference generator
+    # does; the simulator's cell decoder reads the copy number that way
+    assert copies["station"] == [1]  # the station, placed once in the world
+    assert copies["DriftCell_station_SL1"] == [1, 2, 3, 4, 5, 6, 7, 8]
+    assert copies["Honeycomb_station"] == [1]
+
+
+def test_the_naming_hook_overrides_the_volume_names():
+    def legacy(node):
+        if node.kind == "station":
+            return "Station_W0_Sec1_St1"
+        if node.kind == "cell":
+            return "DriftCell_W0_Sec1_St1_" + node.parent.parent.name + "_0202"
+        return None
+
+    text = _tg(build_station(_station(material="GasMixture")), name_of=legacy)
+
+    assert ":VOLU Station_W0_Sec1_St1 Solid_Station_W0_Sec1_St1 G4_AIR" in text
+    assert (
+        ":VOLU DriftCell_W0_Sec1_St1_SL1_0202 Solid_DriftCell_W0_Sec1_St1_SL1_0202 GasMixture"
+        in text
+    )
+    # the placement still refers to the station under its hooked name
+    assert ":PLACE DriftCell_W0_Sec1_St1_SL1_0202 1 Station_W0_Sec1_St1 R0" in text
 
 
 def test_a_volume_without_a_material_is_rejected():

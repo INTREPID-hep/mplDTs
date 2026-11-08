@@ -16,6 +16,16 @@ Names come from the node tree: a station keeps its node name, cells become
 `DriftCell_<station>_<SL>` and attachments `<name>_<station>`. Because the
 simulator includes every station file in one document, names and rotation
 matrices are qualified by the exported root name, so two files never collide.
+
+A consumer whose Geant4 code parses those names passes `name_of`: a callable
+`node -> str or None` overriding the base name of a node (None keeps the
+default). DTG4Simulator decodes `DriftCell_<w>_Sec<s>_St<n>_SL<n>_<encoding>`
+from the volume name, and the layer and wire from the copy number, so it supplies
+both sides of that contract with the hook (T-057).
+
+Copy numbers restart for every volume placed in a mother, so a cell volume
+numbers its copies 1..n exactly as the reference CMS generator does; the
+downstream sensitive detectors decode the cell from that copy number.
 """
 
 from __future__ import annotations
@@ -98,10 +108,12 @@ def _solid_axis(shape: Shape) -> str:
 class TgSink:
     """Write the placements of one tree as a Geant4 ASCII geometry file."""
 
-    def __init__(self, target, world: str = "world"):
+    def __init__(self, target, world: str = "world", name_of=None):
         #: a path or any object with `write` (a StringIO in tests)
         self._target = target
         self._world = _clean(world)
+        #: optional `node -> str or None` override of the volume base name
+        self._name_of = name_of
         self._lines: List[str] = []
         self._root: Optional[Node] = None
         self._rotations: Dict[tuple, str] = {}
@@ -128,8 +140,8 @@ class TgSink:
         self._emit_volume(volume, node)
         rotation = pose_in_mother.rotation @ _AXIS_ALIGNMENT[_solid_axis(node.shape)]
         mother_name = self._mother_name(mother)
-        copy = self._copies.get(mother_name, 0) + 1
-        self._copies[mother_name] = copy
+        copy = self._copies.get((mother_name, volume), 0) + 1
+        self._copies[(mother_name, volume)] = copy
         self._lines.append(
             ":PLACE %s %d %s %s %.6f*cm %.6f*cm %.6f*cm"
             % (
@@ -173,6 +185,10 @@ class TgSink:
         return name
 
     def _base_name(self, node: Node) -> str:
+        if self._name_of is not None:
+            custom = self._name_of(node)
+            if custom is not None:
+                return _clean(custom)
         if node is self._root or node.kind in ("detector", "station"):
             return _clean(node.name)
         station = _ancestor(node, "station")

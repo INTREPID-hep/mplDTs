@@ -8,9 +8,10 @@ authoring path (builders, JSON) and the `.tg` export with parity; 2.5.0.
 **Current checkpoint:** `CP-010` (M5) complete and merged.
 **Next action:** `T-005` on the simulator — pin `mplDTs @ v2.5.0` and switch
 `generate_geometry_data.py` to `TgSink`; then `T-006` (baseline). After that:
-`T-055` (dtpr pinned to `v2.6.0` and drawing through `DTObjectsPatch`), with
-`T-053` (thin CLI) in parallel. `T-056` (2.5.1), `T-040` (`test/downstream`) and
-`T-043` (2.6.0) are done, merged and pushed with the tags.
+`T-005` (simulator pin `v2.6.0` + `.tg` smoke), `T-006` (benchmark) and
+`T-053` (thin CLI) in parallel. M4 is met: `T-056` (2.5.1), `T-040`
+(`test/downstream`), `T-043` (2.6.0) and `T-055` (dtpr on `v2.6.0`) are done,
+merged and pushed in both repositories; tags `v2.5.1` and `v2.6.0` are on `main`.
 
 ---
 
