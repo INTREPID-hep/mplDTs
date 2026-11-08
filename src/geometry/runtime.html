@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runtime model &mdash; mplDTs 2.8.0 documentation</title>
+  <title>Runtime model &mdash; mplDTs 2.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=69ff2ef9"></script>
+      <script src="../../_static/documentation_options.js?v=182a64a0"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -108,6 +108,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#immutability-and-per-event-data">Immutability and per-event data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migrating-to-3-0">Migrating to 3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#migrating-from-2-2">Migrating from 2.2</a></li>
 </ul>
 </li>
@@ -984,6 +985,60 @@ attribute of that cell on the returned overlay (<code class="docutils literal no
 what <code class="docutils literal notranslate"><span class="pre">DTStationPatch(vmap=...)</span></code> colours by. A <code class="docutils literal notranslate"><span class="pre">dict</span></code>, a <code class="docutils literal notranslate"><span class="pre">list[dict]</span></code> and a
 <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> are all accepted, and the station in the cache is never
 mutated.</p>
+</section>
+<section id="migrating-to-3-0">
+<h2>Migrating to 3.0<a class="headerlink" href="#migrating-to-3-0" title="Link to this heading"></a></h2>
+<p>2.9.0 is the last minor release that carries the pre-refactor API, and it says
+so: every call below raises a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> that names its replacement.
+Nothing else changed; 3.0.0 only deletes. The content, the order and the gates
+of that release live in <code class="docutils literal notranslate"><span class="pre">.agents/migration-3.0.md</span></code> (ADR-026), and these
+warnings are the part a consumer meets first.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42.0%" />
+<col style="width: 58.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>What 3.0 removes</p></th>
+<th class="head"><p>What replaces it</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Station(wheel,</span> <span class="pre">sector,</span> <span class="pre">station)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CMSXMLSource().station(wheel,</span> <span class="pre">sector,</span> <span class="pre">station)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">build_station(spec)</span></code>; <code class="docutils literal notranslate"><span class="pre">Station.from_spec(spec)</span></code> when a patch needs
+a station view</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs(dt_info)</span></code>, <code class="docutils literal notranslate"><span class="pre">Station.overlay(dt_info)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">StationsCache.get(...,</span> <span class="pre">dt_info=...)</span></code></p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">(sl,</span> <span class="pre">l,</span> <span class="pre">w)</span></code> cell-data table (ADR-024); the event model stays in
+<code class="docutils literal notranslate"><span class="pre">DTPatternRecognition</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DTGeometry(xml_file)</span></code>, <code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CMSXMLSource()</span></code>: one parse per process, specs instead of XML elements</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SuperLayer(rawId=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">Layer(rawId=...)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DriftCell(number=...)</span></code></p></td>
+<td><p>the node tree of <code class="docutils literal notranslate"><span class="pre">build_station(spec)</span></code>: <code class="docutils literal notranslate"><span class="pre">node.children</span></code> is the same
+hierarchy and every pose is on the node</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">view.transform(...,</span> <span class="pre">&quot;SuperLayer&quot;,</span> <span class="pre">...)</span></code></p></td>
+<td><p>the frame name <code class="docutils literal notranslate"><span class="pre">&quot;superlayer&quot;</span></code>; the alias table goes with the views</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TgSink(target,</span> <span class="pre">name_of=...)</span></code></p></td>
+<td><p>nothing yet: 3.0 names every volume from the node tree, and the
+simulator’s decoders read those names in the same release (T-072)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The alias table is the one exception: a dictionary lookup has no call site to
+warn on, so it is in the table above and not in the warnings.</p>
+<p>A consumer meets the whole list at once with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">W</span> <span class="n">error</span><span class="p">::</span><span class="ne">DeprecationWarning</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">test/downstream</span></code> pins what the two downstream packages import, so that test
+and this table are the two things that have to agree before 3.0.0 ships.</p>
 </section>
 <section id="migrating-from-2-2">
 <h2>Migrating from 2.2<a class="headerlink" href="#migrating-from-2-2" title="Link to this heading"></a></h2>

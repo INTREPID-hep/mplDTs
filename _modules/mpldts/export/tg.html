@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mpldts.export.tg &mdash; mplDTs 2.8.0 documentation</title>
+  <title>mpldts.export.tg &mdash; mplDTs 2.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=69ff2ef9"></script>
+      <script src="../../../_static/documentation_options.js?v=182a64a0"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -105,6 +105,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-to-3-0">Migrating to 3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
 </ul>
 </li>
@@ -327,6 +328,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts._deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry.specs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">Tube</span>
 
@@ -410,6 +412,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_world</span> <span class="o">=</span> <span class="n">_clean</span><span class="p">(</span><span class="n">world</span><span class="p">)</span>
         <span class="c1">#: optional `node -&gt; str or None` override of the volume base name</span>
+        <span class="k">if</span> <span class="n">name_of</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">deprecated</span><span class="p">(</span>
+                <span class="s2">"TgSink(name_of=...)"</span><span class="p">,</span>
+                <span class="s2">"the node names (3.0 emits DriftCell_&lt;station&gt;_&lt;SL&gt;, T-072)"</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name_of</span> <span class="o">=</span> <span class="n">name_of</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Station &mdash; mplDTs 2.8.0 documentation</title>
+  <title>Station &mdash; mplDTs 2.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=69ff2ef9"></script>
+      <script src="../../_static/documentation_options.js?v=182a64a0"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -108,6 +108,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime.html#migrating-to-3-0">Migrating to 3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
 </ul>
 </li>
@@ -467,18 +468,9 @@ and 13, and 1 otherwise). Details in <a class="reference external" href="https:/
 <dt class="sig sig-object py" id="mpldts.geometry.station.Station.set_cell_attrs">
 <span class="sig-name descname"><span class="pre">set_cell_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/station.html#Station.set_cell_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.station.Station.set_cell_attrs" title="Link to this definition"></a></dt>
 <dd><p>Set the attributes for the drift cells in the station.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt_info</strong> (<em>dict</em><em>, </em><em>list</em><em>, or </em><em>pandas.DataFrame</em>) – Drift cell information for the station. Can be a dictionary, a list of dictionaries,
-or a pandas DataFrame containing the drift cell attributes, they should be identified by super layer,
-layer, and cell. e.g. <cite>[{“sl”: 1, “l”: 1, “w”: 1, “time”: 300}, …]</cite></p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This writes on this station’s own cells. On a station shared through
-<code class="xref py py-class docutils literal notranslate"><span class="pre">StationsCache</span></code> use <a class="reference internal" href="#mpldts.geometry.station.Station.overlay" title="mpldts.geometry.station.Station.overlay"><code class="xref py py-meth docutils literal notranslate"><span class="pre">overlay()</span></code></a> instead: the cache hands
-the same instance to every caller.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.9: </span>3.0 removes it. The per-event data is the (sl, l, w) cell-data
+table of ADR-024; the event model lives in DTPatternRecognition.</p>
 </div>
 </dd></dl>
 
@@ -693,34 +685,34 @@ reaches the station or another overlay.</p>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    if value &lt; -2 or value &gt; 2:</span>
-<span class="sd">        raise ValueError("Wheel value must be between -2 and 2")</span>
-<span class="sd">    self._wheel = value</span>
-
-<span class="sd">@sector.setter</span>
-<span class="sd">def sector(self, value):</span>
-<span class="sd">    """</span>
-    <span class="n">Set</span> <span class="n">the</span> <span class="n">sector</span> <span class="n">position</span><span class="o">.</span>
-
-    <span class="p">:</span><span class="n">param</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sector</span> <span class="n">position</span><span class="o">.</span>
-    <span class="p">:</span><span class="nb">type</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">:</span><span class="n">raises</span> <span class="ne">ValueError</span><span class="p">:</span> <span class="n">If</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">between</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mf">14.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    if value &lt; 1 or value &gt; 14:</span>
-<span class="sd">        raise ValueError("Sector value must be between 1 and 14")</span>
-<span class="sd">    else:</span>
-<span class="sd">        self._sector = value</span>
+<span class="sd">    Set the wheel position.</span>
 
-<span class="sd">@DTFrame.number.setter</span>
-<span class="sd">def number(self, value):</span>
+<span class="sd">    :param value: Wheel position.</span>
+<span class="sd">    :type value: int</span>
+<span class="sd">    :raises ValueError: If the value is not between -2 and 2.</span>
 <span class="sd">    """</span>
-    <span class="n">Set</span> <span class="n">the</span> <span class="n">station</span> <span class="nb">type</span><span class="o">.</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Wheel value must be between -2 and 2"</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wheel</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="p">:</span><span class="n">param</span> <span class="n">value</span><span class="p">:</span> <span class="n">Station</span> <span class="nb">type</span><span class="o">.</span>
-    <span class="p">:</span><span class="nb">type</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">:</span><span class="n">raises</span> <span class="ne">ValueError</span><span class="p">:</span> <span class="n">If</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">between</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mf">4.</span>
-    <span class="s2">"""</span>
+<span class="nd">@sector</span><span class="o">.</span><span class="n">setter</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Set the sector position.</span>
+
+<span class="sd">    :param value: Sector position.</span>
+<span class="sd">    :type value: int</span>
+<span class="sd">    :raises ValueError: If the value is not between 1 and 14.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sector value must be between 1 and 14"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sector</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="nd">@DTFrame</span><span class="o">.</span><span class="n">number</span><span class="o">.</span><span class="n">setter</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 </pre></div>
 </div>
 <p class="rubric">Output</p>

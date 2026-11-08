@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mpldts.geometry._geometry &mdash; mplDTs 2.8.0 documentation</title>
+  <title>mpldts.geometry._geometry &mdash; mplDTs 2.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=69ff2ef9"></script>
+      <script src="../../../_static/documentation_options.js?v=182a64a0"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -105,6 +105,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-to-3-0">Migrating to 3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
 </ul>
 </li>
@@ -292,8 +293,11 @@
   <h1>Source code for mpldts.geometry._geometry</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts._deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
 
 
 
@@ -316,6 +320,10 @@
 <span class="sd">        :param xml_file: Path to the XML file containing the DT Geometry.</span>
 <span class="sd">        :type xml_file: str</span>
 <span class="sd">        """</span>
+        <span class="n">deprecated</span><span class="p">(</span>
+            <span class="s2">"DTGeometry(xml_file)"</span><span class="p">,</span>
+            <span class="s2">"CMSXMLSource() (mpldts.geometry.sources)"</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rawid_index</span> <span class="o">=</span> <span class="p">{}</span>
@@ -509,8 +517,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">deprecated</span><span class="p">(</span><span class="s2">"DTGEOMETRY"</span><span class="p">,</span> <span class="s2">"CMSXMLSource() (mpldts.geometry.sources)"</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+            <span class="c1"># the alias warned for both of them: report the touch, not the object</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">DTGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
 

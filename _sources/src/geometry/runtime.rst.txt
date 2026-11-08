@@ -312,6 +312,51 @@ what ``DTStationPatch(vmap=...)`` colours by. A ``dict``, a ``list[dict]`` and a
 ``pandas.DataFrame`` are all accepted, and the station in the cache is never
 mutated.
 
+Migrating to 3.0
+----------------
+
+2.9.0 is the last minor release that carries the pre-refactor API, and it says
+so: every call below raises a ``DeprecationWarning`` that names its replacement.
+Nothing else changed; 3.0.0 only deletes. The content, the order and the gates
+of that release live in ``.agents/migration-3.0.md`` (ADR-026), and these
+warnings are the part a consumer meets first.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 42 58
+
+   * - What 3.0 removes
+     - What replaces it
+   * - ``Station(wheel, sector, station)``
+     - ``CMSXMLSource().station(wheel, sector, station)`` and
+       ``build_station(spec)``; ``Station.from_spec(spec)`` when a patch needs
+       a station view
+   * - ``Station.set_cell_attrs(dt_info)``, ``Station.overlay(dt_info)``,
+       ``StationsCache.get(..., dt_info=...)``
+     - the ``(sl, l, w)`` cell-data table (ADR-024); the event model stays in
+       ``DTPatternRecognition``
+   * - ``DTGeometry(xml_file)``, ``DTGEOMETRY``
+     - ``CMSXMLSource()``: one parse per process, specs instead of XML elements
+   * - ``SuperLayer(rawId=...)``, ``Layer(rawId=...)``,
+       ``DriftCell(number=...)``
+     - the node tree of ``build_station(spec)``: ``node.children`` is the same
+       hierarchy and every pose is on the node
+   * - ``view.transform(..., "SuperLayer", ...)``
+     - the frame name ``"superlayer"``; the alias table goes with the views
+   * - ``TgSink(target, name_of=...)``
+     - nothing yet: 3.0 names every volume from the node tree, and the
+       simulator's decoders read those names in the same release (T-072)
+
+The alias table is the one exception: a dictionary lookup has no call site to
+warn on, so it is in the table above and not in the warnings.
+
+A consumer meets the whole list at once with::
+
+    python -W error::DeprecationWarning -m pytest
+
+``test/downstream`` pins what the two downstream packages import, so that test
+and this table are the two things that have to agree before 3.0.0 ships.
+
 Migrating from 2.2
 ------------------
 
