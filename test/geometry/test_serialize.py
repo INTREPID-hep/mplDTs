@@ -140,10 +140,11 @@ def test_the_json_path_builds_and_exports_a_tg():
     export_volumes(build_station(spec.stations[0]), TgSink(stream))
     text = stream.getvalue()
 
-    # the Geant4 name is sanitised: a dash is not safe in a .tg name
-    assert ":VOLU TB_1 Solid_TB_1 G4_AIR" in text
-    assert ":VOLU DriftCell_TB_1_SL1 Solid_DriftCell_TB_1_SL1 GasMixture" in text
-    assert ":VOLU Honeycomb_TB_1 Solid_Honeycomb_TB_1 G4_Al" in text
+    # the name is sanitised but keeps its dash: StationSD reads the wheel as
+    # "_W-1", so the sign is part of the contract (2.9.1)
+    assert ":VOLU TB-1 Solid_TB-1 G4_AIR" in text
+    assert ":VOLU DriftCell_TB-1_SL1 Solid_DriftCell_TB-1_SL1 GasMixture" in text
+    assert ":VOLU Honeycomb_TB-1 Solid_Honeycomb_TB-1 G4_Al" in text
 
 
 def test_an_unknown_key_is_rejected():
