@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mpldts.patches.dt_patch_base &mdash; mplDTs 2.5.1 documentation</title>
+  <title>mpldts.patches.dt_patch_base &mdash; mplDTs 2.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=983e91d6"></script>
+      <script src="../../../_static/documentation_options.js?v=ae39cb24"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -252,6 +252,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#examples">Examples</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/patches/objects_patch.html">DTObjectsPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -282,6 +290,7 @@
              
   <h1>Source code for mpldts.patches.dt_patch_base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Station</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">Line2D</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Affine2D</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">sqrt</span>
 
@@ -361,10 +370,14 @@
 <a class="viewcode-back" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_collections_to_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Add the collections to the axes.</span>
+<span class="sd">        Add the collections to the axes. A `Line2D` (the object renderer, T-043)</span>
+<span class="sd">        goes through the line list, everything else through the collection list.</span>
 <span class="sd">        """</span>
         <span class="k">for</span> <span class="n">_collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collections</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">_collection</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_collection</span><span class="p">,</span> <span class="n">Line2D</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">_collection</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">_collection</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DTRelatedPatch.move_to_global">

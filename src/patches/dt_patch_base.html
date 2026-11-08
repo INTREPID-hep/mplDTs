@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DTRelatedPatch &mdash; mplDTs 2.5.1 documentation</title>
+  <title>DTRelatedPatch &mdash; mplDTs 2.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=983e91d6"></script>
+      <script src="../../_static/documentation_options.js?v=ae39cb24"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -255,6 +255,14 @@
 <li class="toctree-l3"><a class="reference internal" href="dt_station_patch.html#examples">Examples</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="objects_patch.html">DTObjectsPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -339,7 +347,8 @@ common methods and functionalities such as moving to global coordinates and inve
 <dl class="py method">
 <dt class="sig sig-object py" id="mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes">
 <span class="sig-name descname"><span class="pre">_add_collections_to_axes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/patches/dt_patch_base.html#DTRelatedPatch._add_collections_to_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes" title="Link to this definition"></a></dt>
-<dd><p>Add the collections to the axes.</p>
+<dd><p>Add the collections to the axes. A <cite>Line2D</cite> (the object renderer, T-043)
+goes through the line list, everything else through the collection list.</p>
 </dd></dl>
 
 <dl class="py method">
