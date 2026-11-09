@@ -1,28 +1,25 @@
 # Handoff — start here if you are new
 
-**Last updated:** 2026-11-08 (Europe/Madrid)
-**Previous session:** `T-074` (2.9.0, the deprecation release) and the end-to-end
-validation that found one real bug: 2.9.1 keeps the minus of a negative wheel.
-**Current state:** **`main` is tagged `v2.9.1` and pushed to
-`INTREPID-hep/mplDTs`; the simulator is merged on `destrada`
-(`2e397bb`, pin `v2.9.1`) and a Geant4 run decodes every cell,
-negative wheels included.**
-**Current checkpoint:** `CP-014` — the deprecation release is shipped and
-the removal is planned (`migration-3.0.md`, ADR-026).
-**Next action:** nothing is queued. The removal is *planned* — content,
-sequence, gates and anti-patterns in `migration-3.0.md` (ADR-026, T-070, T-072,
-T-073) — and starts only when the maintainer opens the window. Meanwhile 2.9.1
-is what the consumers pin, and running their suites with
-`-W error::DeprecationWarning` shows exactly what they still use. The simulator
-side is done: `destrada` carries the exporter, `build/geometry` is
-regenerated (36 chambers, yoke, honeycomb) and one event decodes wheels -1, 0
-and 1; the simulator's own `main` is still the three-commit skeleton.
+**Last updated:** 2026-11-09 (Europe/Madrid)
+**Previous session:** 3.0.0 (T-070, T-071, T-073) and 3.0.1, the downstream
+migration (dtpr, simulator) and the MuTel prototype.
+**Current state:** **`main` is tagged `v3.0.1` and pushed to
+`INTREPID-hep/mplDTs`.** dtpr moved to it (`chamber()` + `data=`, its own `main`) and the
+simulator on `destrada` (`geometry/build_geometry.py` + `geometry/detectors/`) builds the CMS
+detector byte-identically and the MuTel prototype, which runs in Geant4.
+**Current checkpoint:** `CP-015` — 3.0 shipped, the detector files landed, the
+MuTel works.
+**Next action:** nothing is queued. T-060 (pyg4ometry/GDML) and T-072 (the volume
+names, which needs the golden identity table) are the open tickets; the MuTel
+numbers in `geometry/detectors/prototype.py` are the first thing to tune once the
+detector is specified further.
 
 Open questions for the maintainer:
-1. Merge `feature/T-005-tg-exporter` into the simulator's `main`? It sits on the
-   `destrada` lineage (`76ab8a4`), far ahead of that `main` (`43b1057`).
-2. When to open the 3.0 window? The plan is ready (`migration-3.0.md`); it
-   needs dtpr and the simulator free at the same time, nothing else.
+1. Merge the simulator's `destrada` into its `main`? It is still a three-commit skeleton;
+   `destrada` carries the exporter, the detector files and the MuTel.
+2. The MuTel parameters are the ones agreed for the first build (4.2 x 100 cm
+   cells, 23 per layer, 4 layers, 40 cm gap, 5 cm Pb, pairs 100.2 x 100.2 x
+   14.2 cm). Change a constant in `detectors/prototype.py` and rebuild.
 
 ---
 
@@ -134,8 +131,12 @@ the simulator work continues on `feature/T-005-tg-smoke`.
 - No event layer in mplDTs: the contract is a `(sl, l, w)` cell-data table
   and the segment views; the event model lives in `DTPatternRecognition`
   (ADR-024, supersedes ADR-016).
-- The downstream packages are part of the release gate (`test/downstream`,
-  aliases stay API until 3.0) (ADR-025).
+- The downstream packages are part of the release gate (`test/downstream`)
+  (ADR-025); the aliases went with 3.0.
+- 3.0 deletes compatibility, not the view layer: `dt_frame`, `super_layer`,
+  `layer` and `drift_cell` are what the patches draw through, and
+  `Station.from_spec(spec, wheel, sector, number)` is the one constructor
+  (ADR-027).
 - Honeycomb/yoke are data; CSG in a backend (ADR-017).
 - phi/eta follows the super layer orientation; `faceview` is kept (ADR-021).
 - Releases are tagged on the integration branch; `main` moves on approval

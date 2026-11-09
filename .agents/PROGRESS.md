@@ -1,9 +1,10 @@
 # PROGRESS — checkpoints and session log
 
-**Last updated:** 2026-11-08
-**Current checkpoint:** `CP-014 — the deprecation release and the chain validated end to end`
-**Implementation status:** every delivery ticket closed, `main` at `v2.9.1` and
-pushed; 2.9.1 fixes the negative-wheel names, the simulator is on `destrada`
+**Last updated:** 2026-11-09
+**Current checkpoint:** `CP-015 — 3.0.0 deleted the compatibility layer, and the simulator builds detectors from one file each`
+**Implementation status:** 3.0.0 deleted the compatibility layer and 3.0.1 allows a
+passive station solid; `main` is at `v3.0.1` and pushed. dtpr moved to it on its own `main`,
+the simulator on `destrada`
 with the exporter geometry and a Geant4 run decodes every cell; the 3.0 removal
 is planned and deferred
 **Board:** [`TICKETS.md`](TICKETS.md) · **Plan:** [`plan.md`](plan.md) Rev 5
@@ -15,7 +16,7 @@ is planned and deferred
 | Item | Value |
 |---|---|
 | Phase | 0-5 complete (M0-M5 met); 6 and 7 planned, deferred |
-| Current milestone | `CP-014`: the deprecation release and the Geant4 chain validated; the removal itself is planned |
+| Current milestone | `CP-015`: 3.0.0 shipped (T-070, T-071, T-073) and both consumers are on it; the MuTel prototype runs |
 | Last completed | T-074 (2.9.0, T-057 fix in 2.9.1); the simulator merged on `destrada` |
 | Integration branch | `main`, tagged `v2.9.1` and pushed; the simulator is on `destrada` (`2e397bb`) |
 | Next | nothing scheduled; the removal is gated in `migration-3.0.md` (ADR-026) and waits for the window |
@@ -47,6 +48,7 @@ is planned and deferred
 | CP-011 | M6 GDML (future) | — | deferred | T-060 |
 | CP-013 | The 3.0 removal plan recorded | 2026-11-08 | done | `migration-3.0.md` + ADR-026 + T-070...T-073; the inventory (~1.2-1.5k lines), the sequence, gates G1-G5 (the cell identity table included) and the anti-patterns |
 | CP-012 | Close-out: simulator, naming seam, baseline, CLI | 2026-11-08 | done | `T-005`: 621 placements and 25896 cells unchanged, all 250 chambers in 11.6 s; `T-057`: `.tg` 2.7.0; `T-006`: 2-8 ms per station; `T-053`: CLI + 7 tests; 212 passed / 2 skipped; docs warning-free |
+| CP-015 | mplDTs 3.0 + the detector files | 2026-11-09 | done | `T-070/T-071/T-073`: the XML-backed Station, DTGeometry/DTGEOMETRY, StationsCache, overlay/set_cell_attrs/dt_info, presets.cms, the standalone child constructors and the SuperLayer alias are gone; `DTStationPatch(..., data=rows)` is the per-event path; 213 + 4 passed / 2 skipped; docs 0 warnings; 3.0.1 allows a passive station solid. dtpr: `chamber()` cache and `data=`, the 10 failures unchanged from the v2.6.0 baseline. Simulator: one detector per file (`build_geometry.py` + `detectors/`), the CMS build byte-identical (37 files), the MuTel prototype built and simulated: 16 cell hits + 2 segments per event, both views, overlap check clean |
 | CP-014 | The 2.9.0 deprecation release | 2026-11-08 | done | `T-074`: 9 legacy entry points warn and name their replacement, `Station.from_spec` and the `CMSXMLSource` pipeline stay silent; "Migrating to 3.0" in `runtime.rst`; 219 passed / 2 skipped; dtpr 22 + the 2 known failures; simulator smoke 621 placements; docs 0 warnings |
 
 A checkpoint is complete only when its gate (in `TICKETS.md` §5) is met and
@@ -182,6 +184,15 @@ No history was rewritten.
 | 2026-11-08 | dtpr imports against the `2.5.0` checkout | `mpldts 2.5.0`; `dt_plot_functions`, `artist_gui_manager`, `local_plotter`, `base` all import |
 | 2026-11-08 | dtpr contract smoke (`StationsCache`, overlay, `DTStationPatch`, `MultiDTSegmentsPatch`) | station `W0/S1/MB1`; cell ids 1..50; `dt_info` time 400 reached the cell; patches for phi and eta with `.station` |
 | 2026-11-08 | `AMDTSegments(reference_frame="Station"/"SL13Center")` | 2.5.0 raises `ValueError: ... not available in the parent transformer`; 2.2.0-beta works -> T-056 |
+
+| 2026-11-09 | pytest -q (after 3.0.0) | 213 passed, 2 skipped, 2 deselected, 152 s |
+| 2026-11-09 | pytest -q (after 3.0.1) | 217 passed, 2 skipped, 2 deselected, 101 s |
+| 2026-11-09 | sphinx-build -E -b html docs (after 3.0.0) | build succeeded, no warnings |
+| 2026-11-09 | python -c import mpldts | 3.0.0, then 3.0.1 |
+| 2026-11-09 | dtpr pytest -q tests against the 3.0 checkout | 14 passed / 10 failed; the same 10 with the unmodified tree on the v2.6.0 pin, so none is new (ROOT shadowed by the repo-local ROOT/ in a subprocess); the CLI and visualizer tests pass in isolation |
+| 2026-11-09 | CMS build through build_geometry.py | 36 stations + yoke byte-identical to the validated build (37 files, 25896 cells) |
+| 2026-11-09 | MuTel build (--detector mutel) | 2 pairs x 184 cells + the lead wall; station 100.2 x 100.2 x 14.2 cm at z -27.1 and +27.1; every cell inside its envelope |
+| 2026-11-09 | Geant4 exampleDTSim, MuTel, 20 events, 10 GeV muon at (2, 1, -120) cm | 16 DriftCell hits and 2 segments per event, hits in stations 1-2 and super layers 1-2, CHECK_OVERLAPS clean, no G4 exception |
 
 Update this ledger after each verification; do not claim a run that did not
 happen.
