@@ -31,7 +31,6 @@ WORLD = "World"
 #: Alias -> node kind, for the names resolved in scope.
 ALIASES = {
     "Station": "station",
-    "SuperLayer": "superlayer",
     "Layer": "layer",
     "Cell": "cell",
 }

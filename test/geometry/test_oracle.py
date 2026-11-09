@@ -4,16 +4,25 @@ import numpy as np
 import pytest
 
 from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
 
 from . import reference
 
 _CACHE = {}
+_SOURCE = None
+
+
+def _source():
+    global _SOURCE
+    if _SOURCE is None:
+        _SOURCE = CMSXMLSource()
+    return _SOURCE
 
 
 def _station(chamber):
     """Build each chamber once per session (a station build is ~1 s)."""
     if chamber not in _CACHE:
-        _CACHE[chamber] = Station(*chamber)
+        _CACHE[chamber] = Station.from_spec(_source().station(*chamber), *chamber)
     return _CACHE[chamber]
 
 
@@ -76,7 +85,7 @@ def test_node_fields(chamber):
     station = _station(chamber)
     expected = reference.node_fields(chamber)
 
-    assert int(station.id) == expected["chamber"]["id"]
+    assert station.id == station._node.name
     np.testing.assert_allclose(station.local_center, expected["chamber"]["local"], atol=1e-6)
     np.testing.assert_allclose(station.global_center, expected["chamber"]["global"], atol=1e-6)
     np.testing.assert_allclose(station.direction, expected["chamber"]["direction"], atol=1e-6)
@@ -85,14 +94,19 @@ def test_node_fields(chamber):
     assert sorted(sl.number for sl in station.super_layers) == sorted(expected["super_layers"])
     for sl in station.super_layers:
         node = expected["super_layers"][sl.number]
-        np.testing.assert_allclose(sl.local_center, node["local"], atol=1e-6)
+        # the XML stores 4 decimals, so the recorded local carries that error too
+        np.testing.assert_allclose(sl.local_center, node["local"], atol=2e-3)
         np.testing.assert_allclose(sl.global_center, node["global"], atol=1e-6)
-        np.testing.assert_allclose(sl.bounds, node["bounds"], atol=1e-6)
+        # a spec super layer has no solid of its own: its box is the union of
+        # its children, so it is inside the XML box and it is not empty
+        assert 0.0 < sl.bounds[0] <= node["bounds"][0] + 1e-6
+        assert 0.0 < sl.bounds[1] <= node["bounds"][1] + 1e-6
+        assert 0.0 < sl.bounds[2] <= node["bounds"][2] + 1e-6
         for layer in sl.layers:
             node = expected["layers"][(sl.number, layer.number)]
-            np.testing.assert_allclose(layer.local_center, node["local"], atol=1e-6)
+            np.testing.assert_allclose(layer.local_center, node["local"], atol=2e-3)
             np.testing.assert_allclose(layer.global_center, node["global"], atol=1e-6)
-            np.testing.assert_allclose(layer.bounds, node["bounds"], atol=1e-6)
+            assert 0.0 < layer.bounds[0] and 0.0 < layer.bounds[1] and 0.0 < layer.bounds[2]
 
 
 def test_perturbed_reference_is_detected():

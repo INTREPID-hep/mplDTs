@@ -19,6 +19,7 @@ from pathlib import Path
 import numpy as np
 
 from mpldts.geometry.specs import (
+    AttachmentSpec,
     Box,
     CellGrid,
     DetectorSpec,
@@ -82,13 +83,14 @@ class CMSXMLSource:
     def record(self, wheel, sector, station):
         """Raw parse record of one chamber (read-only); KeyError if absent.
 
-        The legacy wrappers (T-022) read the values the XML states verbatim:
-        raw ids, local positions and bounds. The model reads the derived poses.
+        The values the XML states verbatim: raw ids, local positions, bounds
+        and the cell centres. The model reads the derived poses; this is the
+        reference the oracle and the honeycomb panel are computed from.
         """
         return self._record(wheel, sector, station)
 
     def chamber_of(self, raw_id):
-        """(wheel, sector, station) of the element with this rawId."""
+        """(wheel, sector, station) of the XML element with this rawId."""
         try:
             return self._chamber_of[int(raw_id)]
         except (KeyError, TypeError, ValueError):
@@ -259,4 +261,31 @@ class CMSXMLSource:
             super_layers=super_layers,
             shape=Box(width, length, thickness),
             material="G4_AIR",
+            attachments=self._honeycomb(record),
+        )
+
+    def _honeycomb(self, record):
+        """The aluminium panel between SL1 and SL2 (SL3 for an MB4), T-032.
+
+        The XML carries no honeycomb: it is the box that fills the gap between
+        the upper and the lower super layer, 1 cm clear of the chamber bounds,
+        as the simulator builds it. A chamber whose super layers touch gets no
+        panel.
+        """
+        members = {super_layer["number"]: super_layer for super_layer in record["super_layers"]}
+        upper = members.get(1)
+        lower = members.get(2) or members.get(3)
+        if upper is None or lower is None:
+            return ()
+        upper_bottom = upper["local"][2] - upper["bounds"][1] / 2.0
+        lower_top = lower["local"][2] + lower["bounds"][1] / 2.0
+        if upper_bottom - lower_top <= 1.0:
+            return ()
+        width, _, length = record["bounds"]
+        return (
+            AttachmentSpec(
+                name="Honeycomb",
+                pose=Pose.translated(0.0, 0.0, (lower_top + upper_bottom) / 2.0),
+                shape=Box(width - 1.0, length - 1.0, upper_bottom - lower_top - 1.0),
+            ),
         )

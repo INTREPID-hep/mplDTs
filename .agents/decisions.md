@@ -430,6 +430,34 @@ rejected.
 
 ---
 
+---
+
+## ADR-027 — 3.0 deletes compatibility, not the view layer
+
+**Status:** accepted · 2026-11-09 (completes ADR-026)
+**Context:** `migration-3.0.md` §1 planned to delete `dt_frame.py`,
+`super_layer.py`, `layer.py` and `drift_cell.py` together with the
+XML-backed `Station`. Implementing it showed that those four modules are the
+surface `DTStationPatch`, `DTObjectsPatch` and `AMDTSegments` draw on:
+`bounds`, `local_cords_at_min`, `transformer.get_transformation` and
+the `super_layers -> layers -> cells` walk. Deleting them meant rewriting 627
+lines of patches in a release whose own anti-pattern list forbids redesign, and
+whose acceptance criteria speak of "one patch per view on the new surface" -
+that is, of patches that still draw views.
+**Decision:** 3.0 removes the XML-backed constructor, the chamber cache,
+`DTGeometry`/`DTGEOMETRY`, `StationsCache`,
+`overlay`/`set_cell_attrs`/`dt_info`, the standalone child
+constructors, the `"SuperLayer"` alias and the CMS preset. The four modules
+stay as the view layer of the patches, with no XML behind them. The per-event
+path is the patch's `(sl, l, w)` table, not a stateful overlay.
+`TgSink.name_of` and the volume names are not compatibility and stay, so 3.0
+needs no C++ change; T-072 keeps its own gate.
+**Consequences:** the release is a pure deletion with no Geant4-side change, the
+.tg files are untouched, and dtpr keeps drawing through the objects it already
+imports while sending event data as a table. A backend that reads the node tree
+directly (GDML/CSG) could retire the views later; that is T-060's business, not
+3.0's.
+
 ## Decisions from the maintainer (2026-11-05)
 
 | Question | Answer | ADR |

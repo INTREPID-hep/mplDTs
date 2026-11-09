@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
 from mpldts.patches import DTStationPatch
 
 dpi = 800
@@ -18,6 +19,8 @@ cells_kwargs = {
     "edgecolor": "k",
 }
 
+source = CMSXMLSource()
+
 fig, ax = plt.subplots(1, 1, figsize=(14, 7), dpi=dpi)
 axins = zoomed_inset_axes(
     ax, 4, loc="upper left", bbox_to_anchor=(1.1, 1.01), bbox_transform=ax.transAxes
@@ -27,7 +30,7 @@ for sc in range(1, 15):
     for st in range(1, 5):
         if (sc == 13 or sc == 14) and st != 4:
             continue  # Sector 13 and 14 are only one MB4 station
-        station = Station(wheel=2, sector=sc, station=st)
+        station = Station.from_spec(source.station(2, sc, st), 2, sc, st)
         _ = DTStationPatch(
             station,
             axes=ax,
@@ -41,7 +44,7 @@ cells_kwargs["linewidth"] = 0.5 * 72 / dpi
 
 for sc in [1, 2, 12]:  # Only 3 sectors for the zoomed in view
     for st in range(1, 3):
-        station = Station(wheel=-2, sector=sc, station=st)
+        station = Station.from_spec(source.station(-2, sc, st), -2, sc, st)
         _ = DTStationPatch(
             station,
             axes=axins,

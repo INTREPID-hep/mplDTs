@@ -15,9 +15,46 @@ def _is_turned(super_layer):
     return abs(rotation[1, 0]) > abs(rotation[0, 0])
 
 
+def _rows(data):
+    """The rows of a cell-data table, whatever shape it arrives in (ADR-024).
+
+    A DataFrame (anything with `to_dict`), one dict, or a list of dicts, each
+    keyed by `sl`, `l` and `w`. The identifiers are cast to int: a column read
+    from a ROOT branch or a CSV arrives as a float, and `(1.0, 2.0, 3.0)` would
+    never match a cell.
+    """
+    if data is None:
+        return []
+    if hasattr(data, "to_dict"):
+        rows = data.to_dict("records")
+    elif isinstance(data, dict):
+        rows = [data]
+    else:
+        rows = [dict(row) for row in data]
+    for row in rows:
+        try:
+            for key in ("sl", "l", "w"):
+                row[key] = int(row[key])
+        except (KeyError, TypeError, ValueError):
+            raise ValueError(
+                "the cell data must be keyed by 'sl', 'l' and 'w': got %r" % (row,)
+            ) from None
+    return rows
+
+
+def _values(rows, vmap):
+    """{(sl, l, w): value} of the column named vmap, 0 where the row has none."""
+    return {(row["sl"], row["l"], row["w"]): row.get(vmap, 0) for row in rows}
+
+
 class DTStationPatch(DTRelatedPatch):
     """
     A class to visualize a 2D representation of a DT Station data in matplotlib context.
+
+    The per-event data is a table keyed by `(sl, l, w)` plus value columns
+    (ADR-024): the patch colours the cell that matches a row and leaves the
+    others at 0. Nothing is written on the geometry, so the same station draws
+    two events without being copied.
 
     Attributes:
     -----------
@@ -53,6 +90,7 @@ class DTStationPatch(DTRelatedPatch):
         local=True,
         inverted=False,
         vmap="time",
+        data=None,
         bounds_kwargs=None,
         cells_kwargs=None,
         kwargs=None,
@@ -72,6 +110,10 @@ class DTStationPatch(DTRelatedPatch):
         :type inverted: bool, optional
         :param vmap: The variable to map to the colormap.
         :type vmap: str, optional
+        :param data: The cell data to colour the cells with: a DataFrame, a dict or a list of dicts keyed by
+            `sl`, `l` and `w`, plus the column `vmap` (e.g. `[{"sl": 1, "l": 1, "w": 1, "time": 300}, ...]`).
+            Cells without a row, or without the column, are drawn with 0.
+        :type data: pandas.DataFrame, dict, or list of dict
         :param bounds_kwargs: Additional keyword arguments to apply specifically to the bounds PatchCollection.
         :type bounds_kwargs: dict, optional
         :param cells_kwargs: Additional keyword arguments to apply specifically to the cells PatchCollection.
@@ -81,6 +123,8 @@ class DTStationPatch(DTRelatedPatch):
         :return: None. Adds two collections, one for the bounds and another for each DT cell, to the provided matplotlib axes.
         """
         self.vmap = vmap
+        self.data = _rows(data)
+        self.values = _values(self.data, vmap)
 
         self.bounds_collection = PatchCollection(
             [], **(bounds_kwargs or {"facecolor": "none", "edgecolor": "k"}), **(kwargs or {})
@@ -121,23 +165,25 @@ class DTStationPatch(DTRelatedPatch):
 
         self.bounds_collection.set_paths(frames)
 
-    def _draw_cells(self):
-        """
-        Draw the cells within the superlayers.
-        """
-        cells = []
-        vars = []
+    def _drawn_cells(self):
+        """The cells of this view, with the value of their row."""
+        cells, vars = [], []
         for super_layer in self.station.super_layers:
             if _is_turned(super_layer) != (self.view == "eta"):
                 continue  # phi draws the unturned super layers, eta the turned ones
             for layer in super_layer.layers:
                 for cell in layer.cells:
-                    cell_patch = self._create_frame(cell)
-                    var = getattr(cell, self.vmap, 0)
+                    cells.append(self._create_frame(cell))
+                    vars.append(
+                        self.values.get((super_layer.number, layer.number, cell.id), 0)
+                    )
+        return cells, vars
 
-                    cells.append(cell_patch)
-                    vars.append(var)
-
+    def _draw_cells(self):
+        """
+        Draw the cells within the superlayers.
+        """
+        cells, vars = self._drawn_cells()
         self.cells_collection.set_paths(cells)
         self.cells_collection.set_array(vars)
 
@@ -166,19 +212,11 @@ class DTStationPatch(DTRelatedPatch):
 
     def change_vmap(self, vmap):
         """
-        Change the variable to map to the colormap. Drift cells without the attribute will be set to 0.
+        Change the variable to map to the colormap. Cells without a value for it are set to 0.
 
         :param vmap: The variable to map to the colormap.
         :type vmap: str
         """
         self.vmap = vmap
-        vars = []
-        for super_layer in self.station.super_layers:
-            if _is_turned(super_layer) != (self.view == "eta"):
-                continue
-            for layer in super_layer.layers:
-                for cell in layer.cells:
-                    var = getattr(cell, self.vmap, 0)
-                    vars.append(var)
-
-        self.cells_collection.set_array(vars)
+        self.values = _values(self.data, vmap)
+        self.cells_collection.set_array(self._drawn_cells()[1])

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
 from mpldts.patches import DTStationPatch
 
 cmap = plt.get_cmap("viridis").copy()
@@ -40,10 +41,12 @@ dt_info = [
 fig, axs = plt.subplots(2, 2, figsize=(10, 10), dpi=dpi)
 axs = axs.flatten()
 
-station = Station(wheel=-1, sector=1, station=2, dt_info=dt_info)
+source = CMSXMLSource()
+station = Station.from_spec(source.station(-1, 1, 2), -1, 1, 2)
 
 dt_patch_phi = DTStationPatch(
     station,
+    data=dt_info,
     axes=axs[0],
     faceview="phi",
     local=True,

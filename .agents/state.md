@@ -1,7 +1,7 @@
 # State — dated snapshot
 
-**Last updated:** 2026-11-08 (Europe/Madrid)
-**Branch:** `main` — tagged `v2.9.0` and pushed to `INTREPID-hep/mplDTs`
+**Last updated:** 2026-11-09 (Europe/Madrid)
+**Branch:** `main` — tagged `v3.0.1` and pushed to `INTREPID-hep/mplDTs`
 **Repo:** `/home/destrada/mplDTs`
 **Plan:** `.agents/plan.md` Rev 5
 **Design revision:** Rev 4 (`docs/design/generalization-plan.md`)
@@ -19,7 +19,7 @@
 | `prototype/parametric_poc_v1.py` | **removed** | superseded; boxes only |
 | `prototype/custom_station.png` | done | box (top) and tube (bottom) stations, phi/eta |
 | `.agents/` | done | this operating workspace |
-| Release tags | done | `v2.3.0` ... `v2.9.0` per ADR-022, all on `main`; `v2.7.0` is the `.tg` naming seam (T-057), `v2.8.0` the CLI (T-053), `v2.9.0` the deprecation release (T-074) |
+| Release tags | done | `v2.3.0` ... `v3.0.1` per ADR-022, all on `main`; `v2.7.0` is the `.tg` naming seam (T-057), `v2.8.0` the CLI (T-053), `v2.9.0` the deprecation release (T-074), `v2.9.1` the negative-wheel fix, `v3.0.0` the removal (T-070, T-071, T-073), `v3.0.1` passive station solids |
 | `.agents/pyg4ometry-readiness.md` | done | contract for the deferred backend |
 | `.agents/TICKETS.md` + `tickets/` | done | board and refined tickets; all `proposed` |
 | `.agents/plan.md` | done (Rev 4) | specs-first order, leaner scope |
@@ -27,9 +27,11 @@
 | `mpldts/` library changes | Phase 0 + 1 + 2 | `super_layer.py` alias; `specs.py`, `sources/cms_xml.py`, `model.py` (`Node`, `build_station`) and `frames.py` (`FrameGraph`, `FrameView`) added; the legacy classes are views over the source, the tree and the graph (T-022); `StationsCache.get` returns per-event overlays (T-023); one build per chamber and a lazy `DTGEOMETRY` (T-024);
 `build_detector` and `Station.from_spec` (T-030); the CMS preset (T-031); attachments + `StructureSpec` (T-032/T-033);
 `serialize.py` (JSON documents), `constructors.py` and `mpldts/export/` (`VolumeSink`, `RecordingSink`, `TgSink`) (T-050...T-052) |
-| pytest suite | **all of it** | `test/geometry/` + `test/downstream/` + `test/patches/`: 219 passed, 2 skipped, 3 deselected |
-| The 2.9.0 deprecations | done | `mpldts/_deprecation.py` (T-074): 9 legacy entry points warn with the replacement named, the surviving pipeline stays silent, "Migrating to 3.0" in `docs/src/geometry/runtime.rst` |
-| 3.0 removal plan | planned, not scheduled | `.agents/migration-3.0.md` + ADR-026 + T-070, T-072, T-073: what goes, the sequence (2.9 deprecation DONE -> downstream move -> removal -> names -> yoke as CSG) and gates G1-G5 |
+| pytest suite | **all of it** | `test/geometry/` + `test/downstream/` + `test/patches/`: 217 passed, 2 skipped, 2 deselected |
+| 3.0.0 / 3.0.1 | **shipped** | `mpldts/_deprecation.py` (T-074): 9 legacy entry points warn with the replacement named, the surviving pipeline stays silent, "Migrating to 3.0" in `docs/src/geometry/runtime.rst`; 2.9.1 fixes the sanitiser that ate the minus of a negative wheel (T-057) |
+| The Geant4 chain | **validated** | simulator `destrada` (`2e397bb`): exporter geometry (36 chambers, 25896 cells, yoke, honeycomb, CMS frame) and one event that decodes wheels -1, 0 and 1 |
+| The detector files | **shipped** | simulator `geometry/build_geometry.py` + `geometry/detectors/{cms,prototype}.py` (T-076): the CMS build is byte-identical, the MuTel runs (16 hits, 2 segments per event) |
+| 3.0 removal | done | `.agents/migration-3.0.md` §9 + ADR-027: what the release deleted, what it kept (the view layer), and why T-072/T-060 stayed out |
 
 The prototype verifies:
 

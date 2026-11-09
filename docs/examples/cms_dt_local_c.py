@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
 from mpldts.patches import DTStationPatch
 from matplotlib.colors import Normalize
 
@@ -47,12 +48,14 @@ dt_info = [
 fig, axs = plt.subplots(1, 2, figsize=(15, 7), sharey=True, dpi=dpi)
 axs = axs.flatten()
 
-# Define DT station
-station = Station(wheel=-1, sector=1, station=2, dt_info=dt_info)
+# Define DT station: the CMS source gives the spec, the view draws it
+source = CMSXMLSource()
+station = Station.from_spec(source.station(-1, 1, 2), -1, 1, 2)
 
 # Create patches for phi-view and eta-view
 dt_patch_phi = DTStationPatch(
     station,
+    data=dt_info,
     axes=axs[0],
     faceview="phi",
     local=True,

@@ -35,7 +35,6 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from mpldts._deprecation import deprecated
 from mpldts.geometry.model import Node
 from mpldts.geometry.specs import Box, Shape, Tube
 
@@ -118,11 +117,6 @@ class TgSink:
         self._target = target
         self._world = _clean(world)
         #: optional `node -> str or None` override of the volume base name
-        if name_of is not None:
-            deprecated(
-                "TgSink(name_of=...)",
-                "the node names (3.0 emits DriftCell_<station>_<SL>, T-072)",
-            )
         self._name_of = name_of
         self._lines: List[str] = []
         self._root: Optional[Node] = None

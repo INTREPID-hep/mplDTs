@@ -7,10 +7,14 @@ The XML Wire element is the cell entry (ADR-019): its GlobalPosition is the
 cell centre in CMS coordinates.
 """
 
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
 import numpy as np
 
-from mpldts.geometry import DTGEOMETRY
-from mpldts.geometry._geometry import DTGeometry
+#: The source of truth: the CMS geometry the model is checked against. The
+#: library no longer wraps it, so the oracle reads the file directly.
+XML = Path(__file__).resolve().parents[2] / "mpldts" / "geometry" / "DTGeometry_v3.xml"
 
 #: One chamber per wheel/station family, used by the default test run.
 REPRESENTATIVE = [(-2, 1, 1), (-1, 3, 2), (0, 5, 3), (1, 3, 4), (2, 14, 4), (0, 1, 1)]
@@ -23,15 +27,29 @@ SL2 = 2
 #: A real pose bug is two orders of magnitude larger (SL2 is 5e-1 cm).
 TOLERANCE = 2e-3
 
+_CHAMBERS = None
+
+
+def _chambers():
+    """{(wheel, sector, station): Chamber element}, parsed once."""
+    global _CHAMBERS
+    if _CHAMBERS is None:
+        index = {}
+        for chamber in ET.parse(XML).getroot().iter("Chamber"):
+            fields = dict(part.split(":") for part in chamber.get("Id").split())
+            index[(int(fields["Wh"]), int(fields["Se"]), int(fields["St"]))] = chamber
+        _CHAMBERS = index
+    return _CHAMBERS
+
 
 def all_chambers():
     """All (wheel, sector, station) keys in the XML, sorted."""
-    return sorted(DTGEOMETRY._chamber_key_index)
+    return sorted(_chambers())
 
 
 def chamber_element(chamber):
     """XML element of a chamber, given its (wheel, sector, station) key."""
-    return DTGEOMETRY.get(wh=chamber[0], sec=chamber[1], st=chamber[2])
+    return _chambers()[tuple(chamber)]
 
 
 def super_layer_numbers(chamber):
@@ -40,7 +58,7 @@ def super_layer_numbers(chamber):
 
 
 def _pos(text):
-    return np.asarray(DTGeometry._transform_to_pos(text), dtype=float)
+    return np.asarray([float(value) for value in text.strip().strip("()").split(",")], dtype=float)
 
 
 def _bounds(element):
@@ -70,13 +88,13 @@ def cell_centres(chamber):
 
 
 def node_fields(chamber):
-    """Node fields of the chamber, its super layers and its layers, from the XML."""
+    """Node fields of the chamber, its super layers and its layers, from the XML.
+
+    The rawId is not among them: it belonged to the XML-backed wrapper 3.0
+    deletes, and nothing in the model reads it.
+    """
     element = chamber_element(chamber)
-    out = {
-        "chamber": {"id": int(element.get("rawId")), **_node(element)},
-        "super_layers": {},
-        "layers": {},
-    }
+    out = {"chamber": _node(element), "super_layers": {}, "layers": {}}
     for sl in element.iter("SuperLayer"):
         slno = int(sl.get("superLayerNumber"))
         out["super_layers"][slno] = _node(sl)

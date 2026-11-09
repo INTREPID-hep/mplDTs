@@ -96,10 +96,10 @@ until the maintainer opens that window.
 | T-056 | `FrameView.available_frames` accepts legacy aliases | 4 | done | T-021 | [T-056](tickets/T-056-frame-aliases.md) |
 | T-057 | The `.tg` naming seam (`TgSink.name_of`, copy numbers) | 5 | done | T-052 | [T-057](tickets/T-057-tg-names.md) |
 | T-060 | pyg4ometry backend + GDML | 6 | deferred | T-052 | [T-060](tickets/T-060-pyg4ometry-backend.md) |
-| T-070 | Remove the legacy view layer | 7 | deferred | T-071, T-073 | [T-070](tickets/T-070-legacy-layer-removal.md) |
-| T-071 | The per-event contract replaces `StationsCache.get(dt_info=...)` | 7 | deferred | T-040 | [T-071](tickets/T-071-event-contract.md) |
+| T-070 | Remove the legacy view layer | 7 | done | T-071, T-073 | [T-070](tickets/T-070-legacy-layer-removal.md) |
+| T-071 | The per-event contract replaces `StationsCache.get(dt_info=...)` | 7 | done | T-040 | [T-071](tickets/T-071-event-contract.md) |
 | T-072 | The volume names stop being the C++ API | 7 | deferred | T-005, T-073 | [T-072](tickets/T-072-volume-names.md) |
-| T-073 | The 3.0.0 release and the downstream lockstep | 7 | deferred | T-070...T-072 | [T-073](tickets/T-073-release-3.0.md) |
+| T-073 | The 3.0.0 release and the downstream lockstep | 7 | done | T-070, T-071 | [T-073](tickets/T-073-release-3.0.md) |
 | T-074 | The 2.9.0 deprecation release | 7 | done | — | [T-074](tickets/T-074-deprecations-2.9.md) |
 
 **Retired:** T-002 and T-004 (folded into T-003), T-008 and T-009 (covered by design

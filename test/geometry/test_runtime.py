@@ -1,15 +1,21 @@
-"""T-024: lazy XML shim, explicit attribute names, one build per chamber."""
+"""T-024/T-070: nothing is parsed at import; one source builds one tree."""
 
 import subprocess
 import sys
 
-from mpldts.geometry import DTGeometry, Station
+import numpy as np
+
+from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
+from mpldts.geometry.specs import Box, CellGrid, LayerSpec, Pose, StationSpec, SuperLayerSpec
+
+CHAMBER = (0, 1, 1)
 
 
-def test_import_does_not_parse_the_geometry_xml():
+def test_importing_the_library_reads_no_geometry_xml():
     code = (
-        "import mpldts.geometry as g; "
-        "assert g._geometry.DTGEOMETRY._geometry is None, 'parsed at import'; "
+        "import sys, mpldts.geometry; "
+        "assert 'mpldts.geometry.sources.cms_xml' not in sys.modules, 'XML module imported'; "
         "print('lazy')"
     )
     result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
@@ -18,28 +24,36 @@ def test_import_does_not_parse_the_geometry_xml():
     assert result.stdout.strip() == "lazy"
 
 
-def test_bounds_and_wires_do_not_depend_on_attribute_order(tmp_path):
-    path = tmp_path / "geometry.xml"
-    path.write_text(
-        '<DTGeometry><Chamber Id=" Wh:0 St:1 Se:1 " rawId="1">'
-        '<Bounds length="251.1" width="218" thickness="36.2"/>'
-        '<Wires last="49" first="1" length="234.8" width="4.2" thickness="1.3"/>'
-        "</Chamber></DTGeometry>"
-    )
-    geometry = DTGeometry(path)
+def test_one_source_builds_the_same_tree_twice():
+    source = CMSXMLSource()
+    first = Station.from_spec(source.station(*CHAMBER), *CHAMBER)
+    second = Station.from_spec(source.station(*CHAMBER), *CHAMBER)
 
-    assert geometry.get("Bounds", wh=0, sec=1, st=1) == (218.0, 36.2, 251.1)
-    assert geometry.get("WiresSize", wh=0, sec=1, st=1) == (4.2, 1.3, 234.8)
-    assert geometry.get("WiresRange", wh=0, sec=1, st=1) == (1, 49)
-
-
-def test_one_chamber_is_built_once():
-    first = Station(-2, 1, 2)
-    second = Station(-2, 1, 2)
-    other = Station(0, 5, 3)
-
+    # two views, one geometry: nothing is shared but the values it derives
     assert first is not second
     assert first.local_center == second.local_center
-    assert first._node is second._node
-    assert first._graph is second._graph
-    assert other._node is not first._node
+    np.testing.assert_allclose(first.global_center, second.global_center, atol=1e-12)
+
+
+def _tiny():
+    grid = CellGrid(pitch=4.2, count=2, shape=Box(4.2, 40.0, 1.3))
+    return StationSpec(
+        name="tiny",
+        pose=Pose.identity(),
+        super_layers=[
+            SuperLayerSpec(
+                number=1,
+                pose=Pose.identity(),
+                layers=[LayerSpec(number=1, pose=Pose.identity(), cells=grid)],
+                shape=Box(8.4, 40.0, 1.3),
+            )
+        ],
+        shape=Box(8.4, 40.0, 1.3),
+    )
+
+
+def test_a_station_that_is_not_a_cms_chamber_has_no_numbers():
+    station = Station.from_spec(_tiny())
+
+    assert (station.wheel, station.sector, station.number) == (None, None, None)
+    assert station.name == "tiny"
