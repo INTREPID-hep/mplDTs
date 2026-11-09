@@ -378,8 +378,10 @@ def _validate_station(station, where):
         raise ValueError("%s: name must be a non-empty string" % where)
     _check_pose(station.pose, where)
     _check_shape(station.shape, where)
-    if not station.super_layers:
-        raise ValueError("%s: no super layers" % where)
+    if not station.super_layers and station.shape is None:
+        # a station is a chamber (super layers) or a passive solid with a pose:
+        # the lead wall of a prototype, a support panel (3.0.1)
+        raise ValueError("%s: no super layers and no solid" % where)
     numbers = set()
     for super_layer in station.super_layers:
         if super_layer.number in numbers:
