@@ -1,4 +1,4 @@
-"""T-052: the volume sink, the .tg writer and its parity with the generator."""
+"""The volume sink, the .tg writer and its parity with the generator."""
 
 import io
 import os
@@ -15,7 +15,6 @@ from mpldts.export import (
     iter_volume_placements,
 )
 from mpldts.geometry import build_detector, build_station
-from mpldts.geometry.sources import CMSXMLSource
 from mpldts.geometry.specs import (
     AttachmentSpec,
     Box,
@@ -29,7 +28,7 @@ from mpldts.geometry.specs import (
 )
 
 #: Output of generate_geometry_data.py for (0, 1, 1) in DTG4Simulator; the
-#: parity oracle of T-052. Override with MPLDTS_TG_REFERENCE.
+#: parity oracle. Override with MPLDTS_TG_REFERENCE.
 REFERENCE = os.environ.get(
     "MPLDTS_TG_REFERENCE",
     "/home/destrada/Geant4/DTG4Simulator/geometry/stations/station_W0_Sec1_St1.tg",
@@ -198,8 +197,7 @@ def test_a_detector_builds_into_one_graph_and_exports():
 # -- the .tg writer -------------------------------------------------------
 
 
-def test_the_tg_places_every_cell_at_its_xml_centre():
-    source = CMSXMLSource()
+def test_the_tg_places_every_cell_at_its_xml_centre(source):
     spec = source.station(0, 1, 1)
     reference = spec.pose  # the exporter below writes in the station frame
     exported = build_station(replace(spec, name="Station_W0_Sec1_St1", pose=Pose.identity()))
@@ -225,8 +223,7 @@ def test_the_tg_places_every_cell_at_its_xml_centre():
 
 
 @pytest.mark.skipif(not os.path.exists(REFERENCE), reason="DTG4Simulator checkout not available")
-def test_the_tg_matches_the_current_generator():
-    source = CMSXMLSource()
+def test_the_tg_matches_the_current_generator(source):
     spec = source.station(0, 1, 1)
     # the generator writes the chamber where the XML puts it, panel included
     exported = build_station(replace(spec, name="Station_W0_Sec1_St1"))

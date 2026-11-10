@@ -14,7 +14,7 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt  # noqa: E402  (after the backend switch)
 import pytest  # noqa: E402
 
-EXAMPLES = sorted((Path(__file__).parents[2] / "docs" / "examples").glob("*.py"))
+EXAMPLES = sorted((Path(__file__).parents[1] / "docs" / "examples").glob("*.py"))
 
 
 @pytest.mark.parametrize("example", EXAMPLES, ids=lambda path: path.stem)

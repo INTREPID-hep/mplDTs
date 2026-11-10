@@ -1,7 +1,8 @@
-"""XML reference values for the geometry oracle.
+"""Shared XML reference readers, spec helpers and fixtures for the test suite.
 
-Test helper, not library code. It reads the CMS XML once and returns the
-values the model must reproduce; the spec path (T-012) reuses it.
+The helpers below are test helpers, not library code: they read the CMS XML
+once and return the values the model must reproduce. The spec path reuses
+them.
 
 The XML Wire element is the cell entry (ADR-019): its GlobalPosition is the
 cell centre in CMS coordinates.
@@ -11,10 +12,15 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import numpy as np
+import pytest
+
+from mpldts.geometry import Station
+from mpldts.geometry.sources import CMSXMLSource
+from mpldts.geometry.specs import Pose
 
 #: The source of truth: the CMS geometry the model is checked against. The
 #: library no longer wraps it, so the oracle reads the file directly.
-XML = Path(__file__).resolve().parents[2] / "mpldts" / "geometry" / "DTGeometry_v3.xml"
+XML = Path(__file__).resolve().parents[1] / "mpldts" / "geometry" / "DTGeometry_v3.xml"
 
 #: One chamber per wheel/station family, used by the default test run.
 REPRESENTATIVE = [(-2, 1, 1), (-1, 3, 2), (0, 5, 3), (1, 3, 4), (2, 14, 4), (0, 1, 1)]
@@ -126,3 +132,61 @@ def compare_cell_centres(computed, expected, tolerance=TOLERANCE):
                 % (key + (tuple(np.round(ref, 4)), tuple(np.round(got, 4)), error))
             )
     return failures
+
+
+# -- the spec path ---------------------------------------------------------
+
+
+def spec_cell_centres(station_spec):
+    """{(sl, layer, cell): xyz} in the parent frame of the station.
+
+    Composes station -> super layer -> layer -> cell poses.
+    """
+    centres = {}
+    for super_layer in station_spec.super_layers:
+        super_layer_frame = station_spec.pose.compose(super_layer.pose)
+        for layer in super_layer.layers:
+            layer_frame = super_layer_frame.compose(layer.pose)
+            grid = layer.cells
+            for x, number in zip(grid.x_positions(), grid.ids()):
+                centre = layer_frame.compose(Pose.translated(x, 0.0, 0.0)).apply((0.0, 0.0, 0.0))
+                centres[(super_layer.number, layer.number, number)] = centre
+    return centres
+
+
+def station_cell_centres(station):
+    """{(sl, layer, cell): xyz} from the Cell -> CMS transform of a station view."""
+    out = {}
+    for sl in station.super_layers:
+        for layer in sl.layers:
+            for cell in layer.cells:
+                out[(sl.number, layer.number, cell.number)] = cell.transformer.transform(
+                    (0, 0, 0), "Cell", "CMS"
+                )
+    return out
+
+
+# -- fixtures --------------------------------------------------------------
+
+
+@pytest.fixture(scope="session")
+def source():
+    """One CMSXMLSource for the whole run: the XML is parsed once."""
+    return CMSXMLSource()
+
+
+@pytest.fixture(scope="session")
+def built_station(source):
+    """A session cache of Station views, exposed as station_of(chamber).
+
+    A station build is expensive enough that every test needing the same
+    chamber should share the one already built.
+    """
+    cache = {}
+
+    def station_of(chamber):
+        if chamber not in cache:
+            cache[chamber] = Station.from_spec(source.station(*chamber), *chamber)
+        return cache[chamber]
+
+    return station_of

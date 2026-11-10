@@ -1,4 +1,4 @@
-"""T-006: station build benchmark.
+"""station build benchmark.
 
 Baseline (2026-11-08, 2.7.0, WSL2, checkout, median of 3; the millisecond
 cases move 50% between runs on WSL, so read them as an order of magnitude):

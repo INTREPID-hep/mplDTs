@@ -1,4 +1,4 @@
-"""T-053: the thin command line (info / convert / plot)."""
+"""The thin command line (info / convert / plot)."""
 
 from dataclasses import replace
 

@@ -22,7 +22,8 @@ dependencies = [
 docs = [
     "sphinx",
     "sphinx-rtd-theme",
-    "sphinx-copybutton"
+    "sphinx-copybutton",
+    "myst-nb>=1.0"
 ]
 dev = [
     "black"
@@ -50,7 +51,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-testpaths = ["test/geometry", "test/downstream", "test/patches"]
+testpaths = ["test"]
 addopts = "-m 'not slow'"
 markers = [
     "slow: run the oracle against all 250 chambers (minutes)"

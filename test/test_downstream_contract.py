@@ -1,4 +1,4 @@
-"""T-040/T-071: the surface DTPatternRecognition imports (ADR-024, ADR-025).
+"""The surface DTPatternRecognition imports (ADR-024, ADR-025).
 
 Only what dtpr's plotting modules touch, with no ROOT and no Qt:
 
@@ -16,8 +16,7 @@ import numpy as np
 import pytest
 from pandas import DataFrame
 
-from mpldts.geometry import AMDTSegments, Station
-from mpldts.geometry.sources import CMSXMLSource
+from mpldts.geometry import AMDTSegments
 from mpldts.patches import DTRelatedPatch, DTStationPatch, MultiDTSegmentsPatch
 
 CHAMBER = (0, 1, 1)
@@ -25,9 +24,9 @@ ROW = {"sl": 1, "l": 1, "w": 2, "time": 400.0}
 
 
 @pytest.fixture(scope="module")
-def station():
+def station(built_station):
     """What dtpr builds: a source, a spec, and a view carrying the chamber numbers."""
-    return Station.from_spec(CMSXMLSource().station(*CHAMBER), *CHAMBER)
+    return built_station(CHAMBER)
 
 
 def test_the_station_carries_the_numbers_dtpr_labels_plots_with(station):
