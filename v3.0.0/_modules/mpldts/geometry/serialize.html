@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mpldts.geometry.serialize &mdash; mplDTs 2.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=182a64a0"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            mplDTs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../src/geometry/main.html">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.add_frames"><code class="docutils literal notranslate"><span class="pre">add_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.face_factor"><code class="docutils literal notranslate"><span class="pre">face_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.presets.cms.with_attachments"><code class="docutils literal notranslate"><span class="pre">with_attachments()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-command-line">The command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#immutability-and-per-event-data">Immutability and per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-to-3-0">Migrating to 3.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/station.html">Station</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.face_orientation_factor"><code class="docutils literal notranslate"><span class="pre">Station.face_orientation_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.super_layer"><code class="docutils literal notranslate"><span class="pre">Station.super_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.overlay"><code class="docutils literal notranslate"><span class="pre">Station.overlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/super_layer.html">SuperLayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer"><code class="docutils literal notranslate"><span class="pre">SuperLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.id"><code class="docutils literal notranslate"><span class="pre">SuperLayer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.parent"><code class="docutils literal notranslate"><span class="pre">SuperLayer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.bounds"><code class="docutils literal notranslate"><span class="pre">SuperLayer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.height"><code class="docutils literal notranslate"><span class="pre">SuperLayer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.length"><code class="docutils literal notranslate"><span class="pre">SuperLayer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.theta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.width"><code class="docutils literal notranslate"><span class="pre">SuperLayer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/layer.html">Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer"><code class="docutils literal notranslate"><span class="pre">Layer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.__init__"><code class="docutils literal notranslate"><span class="pre">Layer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.id"><code class="docutils literal notranslate"><span class="pre">Layer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.parent"><code class="docutils literal notranslate"><span class="pre">Layer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.local_center"><code class="docutils literal notranslate"><span class="pre">Layer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.global_center"><code class="docutils literal notranslate"><span class="pre">Layer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.bounds"><code class="docutils literal notranslate"><span class="pre">Layer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.height"><code class="docutils literal notranslate"><span class="pre">Layer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.length"><code class="docutils literal notranslate"><span class="pre">Layer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.theta"><code class="docutils literal notranslate"><span class="pre">Layer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/layer.html#mpldts.geometry.layer.Layer.width"><code class="docutils literal notranslate"><span class="pre">Layer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/drift_cell.html">DriftCell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell"><code class="docutils literal notranslate"><span class="pre">DriftCell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.__init__"><code class="docutils literal notranslate"><span class="pre">DriftCell.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.parent"><code class="docutils literal notranslate"><span class="pre">DriftCell.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.id"><code class="docutils literal notranslate"><span class="pre">DriftCell.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.theta"><code class="docutils literal notranslate"><span class="pre">DriftCell.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.width"><code class="docutils literal notranslate"><span class="pre">DriftCell.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/main.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/main.html#dtgeometry">DTGeometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/main.html#mpldts.geometry.DTGeometry"><code class="docutils literal notranslate"><span class="pre">DTGeometry</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/main.html#dtframe">DTFrame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/main.html#mpldts.geometry.DTFrame"><code class="docutils literal notranslate"><span class="pre">DTFrame</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/geometry/main.html#other-utils">Other utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/geometry/main.html#transforms">Transforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/main.html#mpldts.geometry.transforms.TransformManager"><code class="docutils literal notranslate"><span class="pre">TransformManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/main.html#mpldts.geometry.transforms.compute_eta"><code class="docutils literal notranslate"><span class="pre">compute_eta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/geometry/main.html#mpldts.geometry.transforms.compute_theta"><code class="docutils literal notranslate"><span class="pre">compute_theta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../src/patches/main.html">patches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/patches/dt_patch_base.html">DTRelatedPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._add_collections_to_axes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._draw_collections"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._draw_collections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/patches/dt_station_patch.html">DTStationPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch"><code class="docutils literal notranslate"><span class="pre">DTStationPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._create_frame"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._create_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_bounds"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_bounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_cells"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_cells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.change_vmap"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.change_vmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/patches/dt_station_patch.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/patches/objects_patch.html">DTObjectsPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../src/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">mplDTs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mpldts.geometry.serialize</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mpldts.geometry.serialize</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""JSON documents for a detector or a station (T-051).</span>
+
+<span class="sd">One schema, explicit shapes, no derived values: a document holds poses, shapes</span>
+<span class="sd">and names only, so a rebuild from JSON produces the same tree as the source</span>
+<span class="sd">does. Derived data (centres, world poses, cell positions) is never stored.</span>
+
+<span class="sd">    {</span>
+<span class="sd">      "schema": "mpldts.detector/2",</span>
+<span class="sd">      "name": "TB-2026",</span>
+<span class="sd">      "pose": {"rotation": [[1, 0, 0], [0, 1, 0], [0, 0, 1]], "translation": [0, 0, 0]},</span>
+<span class="sd">      "stations": [{"name": "TB-1", "pose": ..., "super_layers": [...]}]</span>
+<span class="sd">    }</span>
+
+<span class="sd">The rotation is a 3x3 matrix in rows. Unknown keys, a wrong schema string, a</span>
+<span class="sd">missing field and a bad type are errors: a document that loads is a document</span>
+<span class="sd">that validates, so a typo never becomes a silently different detector.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry.specs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AttachmentSpec</span><span class="p">,</span>
+    <span class="n">Box</span><span class="p">,</span>
+    <span class="n">CellGrid</span><span class="p">,</span>
+    <span class="n">DetectorSpec</span><span class="p">,</span>
+    <span class="n">LayerSpec</span><span class="p">,</span>
+    <span class="n">Pose</span><span class="p">,</span>
+    <span class="n">StationSpec</span><span class="p">,</span>
+    <span class="n">StructureSpec</span><span class="p">,</span>
+    <span class="n">SuperLayerSpec</span><span class="p">,</span>
+    <span class="n">Tube</span><span class="p">,</span>
+    <span class="n">validate</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"SCHEMA_DETECTOR"</span><span class="p">,</span>
+    <span class="s2">"SCHEMA_STATION"</span><span class="p">,</span>
+    <span class="s2">"to_dict"</span><span class="p">,</span>
+    <span class="s2">"from_dict"</span><span class="p">,</span>
+    <span class="s2">"to_json"</span><span class="p">,</span>
+    <span class="s2">"from_json"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">SCHEMA_DETECTOR</span> <span class="o">=</span> <span class="s2">"mpldts.detector/2"</span>
+<span class="n">SCHEMA_STATION</span> <span class="o">=</span> <span class="s2">"mpldts.station/2"</span>
+
+
+<span class="c1"># -- writing ---------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clean_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Plain float, never -0.0: the documents are read and diffed by people."""</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pose_to_dict</span><span class="p">(</span><span class="n">pose</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"rotation"</span><span class="p">:</span> <span class="p">[[</span><span class="n">_clean_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">pose</span><span class="o">.</span><span class="n">rotation</span><span class="p">],</span>
+        <span class="s2">"translation"</span><span class="p">:</span> <span class="p">[</span><span class="n">_clean_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pose</span><span class="o">.</span><span class="n">translation</span><span class="p">],</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_shape_to_dict</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">Box</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"box"</span><span class="p">,</span> <span class="s2">"dx"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">dx</span><span class="p">),</span> <span class="s2">"dy"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">dy</span><span class="p">),</span> <span class="s2">"dz"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">dz</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">Tube</span><span class="p">):</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"tube"</span><span class="p">,</span>
+            <span class="s2">"radius"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">radius</span><span class="p">),</span>
+            <span class="s2">"length"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">length</span><span class="p">),</span>
+            <span class="s2">"axis"</span><span class="p">:</span> <span class="n">shape</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="o">.</span><span class="n">inner_radius</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"inner_radius"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">inner_radius</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">document</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no JSON shape for </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_grid_to_dict</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"pitch"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">pitch</span><span class="p">),</span>
+        <span class="s2">"count"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">count</span><span class="p">),</span>
+        <span class="s2">"shape"</span><span class="p">:</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+        <span class="s2">"first_id"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">first_id</span><span class="p">),</span>
+        <span class="s2">"offset"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">offset</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">material</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"material"</span><span class="p">]</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">material</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_layer_to_dict</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"number"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">number</span><span class="p">),</span> <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">pose</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">material</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"material"</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">material</span>
+    <span class="n">document</span><span class="p">[</span><span class="s2">"cells"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_grid_to_dict</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_super_layer_to_dict</span><span class="p">(</span><span class="n">super_layer</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"number"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">super_layer</span><span class="o">.</span><span class="n">number</span><span class="p">),</span> <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">super_layer</span><span class="o">.</span><span class="n">pose</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">super_layer</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">super_layer</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">super_layer</span><span class="o">.</span><span class="n">material</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"material"</span><span class="p">]</span> <span class="o">=</span> <span class="n">super_layer</span><span class="o">.</span><span class="n">material</span>
+    <span class="n">document</span><span class="p">[</span><span class="s2">"layers"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_layer_to_dict</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">super_layer</span><span class="o">.</span><span class="n">layers</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_attachment_to_dict</span><span class="p">(</span><span class="n">attachment</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="n">attachment</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">attachment</span><span class="o">.</span><span class="n">pose</span><span class="p">),</span>
+        <span class="s2">"shape"</span><span class="p">:</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">attachment</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+        <span class="s2">"material"</span><span class="p">:</span> <span class="n">attachment</span><span class="o">.</span><span class="n">material</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_structure_to_dict</span><span class="p">(</span><span class="n">part</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">pose</span><span class="p">),</span> <span class="s2">"material"</span><span class="p">:</span> <span class="n">part</span><span class="o">.</span><span class="n">material</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_station_to_dict</span><span class="p">(</span><span class="n">station</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">station</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">pose</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">station</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">station</span><span class="o">.</span><span class="n">material</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"material"</span><span class="p">]</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">material</span>
+    <span class="n">document</span><span class="p">[</span><span class="s2">"super_layers"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_super_layer_to_dict</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">station</span><span class="o">.</span><span class="n">super_layers</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">station</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"attachments"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_attachment_to_dict</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">station</span><span class="o">.</span><span class="n">attachments</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<div class="viewcode-block" id="to_dict">
+<a class="viewcode-back" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="n">spec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A JSON-ready document for a StationSpec or a DetectorSpec."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">DetectorSpec</span><span class="p">):</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"schema"</span><span class="p">:</span> <span class="n">SCHEMA_DETECTOR</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">:</span> <span class="n">_pose_to_dict</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">pose</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shape_to_dict</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"material"</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">material</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"stations"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_station_to_dict</span><span class="p">(</span><span class="n">station</span><span class="p">)</span> <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">stations</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"structure"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_structure_to_dict</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">structure</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">document</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">StationSpec</span><span class="p">):</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"schema"</span><span class="p">:</span> <span class="n">SCHEMA_STATION</span><span class="p">}</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_station_to_dict</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">document</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"to_dict() got </span><span class="si">%r</span><span class="s2">, expected a DetectorSpec or a StationSpec"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,))</span></div>
+
+
+
+<div class="viewcode-block" id="to_json">
+<a class="viewcode-back" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.to_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The document as a JSON string."""</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">to_dict</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
+
+
+
+<span class="c1"># -- reading ---------------------------------------------------------------</span>
+
+<span class="n">_OPTIONAL</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mapping</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="p">()):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: expected an object, got </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">document</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">document</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: missing </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">)))</span>
+    <span class="n">unknown</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">document</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">required</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">optional</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: unknown </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">unknown</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">document</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_number</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_OPTIONAL</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: missing"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: expected a number, got </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_integer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_OPTIONAL</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: missing"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: expected an integer, got </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_OPTIONAL</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">_OPTIONAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: missing"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: expected a non-empty string"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pose_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="s2">"rotation"</span><span class="p">,</span> <span class="s2">"translation"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Pose</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"rotation"</span><span class="p">],</span> <span class="n">document</span><span class="p">[</span><span class="s2">"translation"</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_shape_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">where</span><span class="p">,</span>
+        <span class="p">(</span><span class="s2">"kind"</span><span class="p">,),</span>
+        <span class="p">(</span><span class="s2">"dx"</span><span class="p">,</span> <span class="s2">"dy"</span><span class="p">,</span> <span class="s2">"dz"</span><span class="p">,</span> <span class="s2">"radius"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">,</span> <span class="s2">"axis"</span><span class="p">,</span> <span class="s2">"inner_radius"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"box"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"dx"</span><span class="p">,</span> <span class="s2">"dy"</span><span class="p">,</span> <span class="s2">"dz"</span><span class="p">),</span>
+        <span class="s2">"tube"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"radius"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">,</span> <span class="s2">"axis"</span><span class="p">,</span> <span class="s2">"inner_radius"</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">document</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">}</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="p">())))</span>
+    <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> does not take </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">extra</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"box"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Box</span><span class="p">(</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dx"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" dx"</span><span class="p">),</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dy"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" dy"</span><span class="p">),</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dz"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" dz"</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"tube"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Tube</span><span class="p">(</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"radius"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" radius"</span><span class="p">),</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"length"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" length"</span><span class="p">),</span>
+            <span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"axis"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" axis"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">),</span>
+            <span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"inner_radius"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" inner_radius"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: unknown shape kind </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_grid_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">where</span><span class="p">,</span>
+        <span class="p">(</span><span class="s2">"pitch"</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"first_id"</span><span class="p">,</span> <span class="s2">"offset"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">CellGrid</span><span class="p">(</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pitch"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pitch"</span><span class="p">),</span>
+        <span class="n">count</span><span class="o">=</span><span class="n">_integer</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"count"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" count"</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">),</span>
+        <span class="n">first_id</span><span class="o">=</span><span class="n">_integer</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"first_id"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" first_id"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">offset</span><span class="o">=</span><span class="n">_number</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"offset"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" offset"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_layer_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="s2">"number"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">,</span> <span class="s2">"cells"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">LayerSpec</span><span class="p">(</span>
+        <span class="n">number</span><span class="o">=</span><span class="n">_integer</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"number"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" number"</span><span class="p">),</span>
+        <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pose"</span><span class="p">),</span>
+        <span class="n">cells</span><span class="o">=</span><span class="n">_grid_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"cells"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" cells"</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"shape"</span> <span class="ow">in</span> <span class="n">document</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_super_layer_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="s2">"number"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">,</span> <span class="s2">"layers"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"layers"</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: layers must be a list"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SuperLayerSpec</span><span class="p">(</span>
+        <span class="n">number</span><span class="o">=</span><span class="n">_integer</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"number"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" number"</span><span class="p">),</span>
+        <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pose"</span><span class="p">),</span>
+        <span class="n">layers</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">_layer_from</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"</span><span class="si">%s</span><span class="s2"> / layer </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"layers"</span><span class="p">])</span>
+        <span class="p">],</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"shape"</span> <span class="ow">in</span> <span class="n">document</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_attachment_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"material"</span><span class="p">,))</span>
+    <span class="k">return</span> <span class="n">AttachmentSpec</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" name"</span><span class="p">),</span>
+        <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pose"</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">),</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="s2">"G4_Al"</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_structure_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">StructureSpec</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" name"</span><span class="p">),</span>
+        <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pose"</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"shape"</span> <span class="ow">in</span> <span class="n">document</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="s2">"G4_Fe"</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_station_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">_mapping</span><span class="p">(</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">where</span><span class="p">,</span>
+        <span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">,</span> <span class="s2">"super_layers"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">,</span> <span class="s2">"attachments"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">super_layers</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">"super_layers"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">super_layers</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: super_layers must be a list"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+    <span class="n">attachments</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attachments"</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attachments</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">: attachments must be a list"</span> <span class="o">%</span> <span class="n">where</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StationSpec</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" name"</span><span class="p">),</span>
+        <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" pose"</span><span class="p">),</span>
+        <span class="n">super_layers</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">_super_layer_from</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"</span><span class="si">%s</span><span class="s2"> / super layer </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">super_layers</span><span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" shape"</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"shape"</span> <span class="ow">in</span> <span class="n">document</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">" material"</span><span class="p">,</span> <span class="s2">"G4_AIR"</span><span class="p">),</span>
+        <span class="n">attachments</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">_attachment_from</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"</span><span class="si">%s</span><span class="s2"> / attachment </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attachments</span><span class="p">)</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="from_dict">
+<a class="viewcode-back" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="n">document</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build and validate a StationSpec or a DetectorSpec from a document."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"document: expected an object, got </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">document</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,))</span>
+    <span class="k">if</span> <span class="s2">"schema"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">document</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"document: missing 'schema'"</span><span class="p">)</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">"schema"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">schema</span> <span class="o">==</span> <span class="n">SCHEMA_DETECTOR</span><span class="p">:</span>
+        <span class="n">_mapping</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="s2">"detector"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"schema"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"pose"</span><span class="p">,</span> <span class="s2">"stations"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"material"</span><span class="p">,</span> <span class="s2">"structure"</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"stations"</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"detector: stations must be a list"</span><span class="p">)</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"structure"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"detector: structure must be a list"</span><span class="p">)</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">DetectorSpec</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="s2">"detector name"</span><span class="p">),</span>
+            <span class="n">pose</span><span class="o">=</span><span class="n">_pose_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"pose"</span><span class="p">],</span> <span class="s2">"detector pose"</span><span class="p">),</span>
+            <span class="n">stations</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">_station_from</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"detector / station </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"stations"</span><span class="p">])</span>
+            <span class="p">],</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">_shape_from</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">],</span> <span class="s2">"detector shape"</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"shape"</span> <span class="ow">in</span> <span class="n">document</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">material</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"material"</span><span class="p">,</span> <span class="n">_OPTIONAL</span><span class="p">),</span> <span class="s2">"detector material"</span><span class="p">,</span> <span class="s2">"G4_Galactic"</span><span class="p">),</span>
+            <span class="n">structure</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">_structure_from</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"detector / structure </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">schema</span> <span class="o">==</span> <span class="n">SCHEMA_STATION</span><span class="p">:</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"schema"</span><span class="p">)</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">_station_from</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="s2">"station"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"document: unknown schema </span><span class="si">%r</span><span class="s2">, expected </span><span class="si">%r</span><span class="s2"> or </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">SCHEMA_DETECTOR</span><span class="p">,</span> <span class="n">SCHEMA_STATION</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">validate</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">spec</span></div>
+
+
+
+<div class="viewcode-block" id="from_json">
+<a class="viewcode-back" href="../../../src/geometry/runtime.html#mpldts.geometry.serialize.from_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build and validate a spec from a JSON string."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"not JSON: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">return</span> <span class="n">from_dict</span><span class="p">(</span><span class="n">document</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2026, Daniel Estrada, Universidad de Oviedo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+<script src="_static/versions.js"></script>
+</body>
+</html>
