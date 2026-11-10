@@ -6,7 +6,7 @@ Station
     :member-order: bysource
     :members:
     :special-members: __init__
-    :private-members: _build_station, _setup_tranformer
+    :private-members: _build_station
     :inherited-members:
 
 .. rubric:: Example
@@ -14,7 +14,7 @@ Station
 .. literalinclude:: ../../../mpldts/geometry/station.py
     :language: python
     :dedent:
-    :lines: 272-297
+    :lines: 207-232
 
 
 .. rubric:: Output

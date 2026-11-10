@@ -6,5 +6,5 @@ DriftCell
     :member-order: bysource
     :members:
     :special-members: __init__
-    :private-members: _compute_position, _setup_tranformer
+    :private-members: _compute_position
     :inherited-members:
