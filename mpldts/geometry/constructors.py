@@ -1,4 +1,4 @@
-"""Short constructors for hand-written specs (T-050).
+"""Short constructors for hand-written specs.
 
 The spec dataclasses are explicit on purpose, but writing a small test beam
 station by hand should not need six keyword arguments per layer. These four

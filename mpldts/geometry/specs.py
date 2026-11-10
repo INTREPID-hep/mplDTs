@@ -1,11 +1,11 @@
-"""Immutable geometry specs (T-010).
+"""Immutable geometry specs.
 
 Declarative description of a DT detector: one pose per node, primitive shapes,
 cell grids and the node specs. Units are cm. Every pose is parent-relative:
 
     p_parent = R * p_child + t
 
-No I/O, no XML, no matplotlib and no backend import: the CMS source (T-011)
+No I/O, no XML, no matplotlib and no backend import: the CMS source
 and the runtime builder (Phase 2) consume this module.
 
 Specs are frozen dataclasses with eq=False, because Pose and Shape hold numpy
@@ -219,7 +219,7 @@ class AttachmentSpec:
     """A passive panel bolted to a station, e.g. the honeycomb spacer.
 
     Data only: a shape and a pose, no boolean solid. An exporter may turn it into
-    a volume; nothing in the model does (T-032).
+    a volume; nothing in the model does.
     """
 
     name: str
@@ -240,7 +240,7 @@ class StationSpec:
 
 @dataclass(frozen=True, eq=False)
 class StructureSpec:
-    """Detector structure outside the chambers, e.g. the yoke (T-033).
+    """Detector structure outside the chambers, e.g. the yoke.
 
     Data only: the builder makes no node for it and no exporter sees it until a
     backend can do the boolean solids (ADR-011, ADR-017).
@@ -328,7 +328,7 @@ def _check_grid(grid, layer_shape, where):
 def _check_number(number, where):
     """Numbers are positive ints. How many super layers and layers a station has
     is the source's concern: the CMS chambers have three and four, a custom
-    station may have any count (T-030)."""
+    station may have any count."""
     if not isinstance(number, int) or number < 1:
         raise ValueError("%s: number must be a positive int, got %r" % (where, number))
 

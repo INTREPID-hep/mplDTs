@@ -1,6 +1,6 @@
-"""Legacy layer wrapper (T-022).
+"""Legacy layer wrapper.
 
-A Layer is a view over its node in the station tree (T-020): the cell nodes
+A Layer is a view over its node in the station tree: the cell nodes
 carry the cell grid, the graph carries the frames.
 """
 

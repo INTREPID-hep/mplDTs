@@ -1,4 +1,4 @@
-"""Frame graph and scoped frame views (T-021).
+"""Frame graph and scoped frame views.
 
 One graph holds one edge per parent/child pose; a FrameView is bound to a
 node and resolves the legacy names in that node's scope (Station, SuperLayer,
@@ -11,7 +11,7 @@ SL{n}, Layer, Cell, CMS/World). The legacy TransformManager contract is kept:
 - type="point" gets the translation, type="vector" only the rotation.
 
 No pytransform3d, XML or backend import: the graph is the single source of
-truth for frames and the node tree (T-020) fills it.
+truth for frames and the node tree fills it.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ class FrameGraph:
         self.add_edge(name, relative_to, pose)
 
     def add_nodes(self, root, parent_frame=None):
-        """Register a node tree built by build_station (T-020)."""
+        """Register a node tree built by build_station."""
         if parent_frame is None:
             parent_frame = root.parent.frame_id if root.parent is not None else self.root
         self.add_edge(root.frame_id, parent_frame, root.pose)
@@ -213,7 +213,7 @@ class FrameView:
 
     @property
     def available_frames(self):
-        """Frame ids plus the legacy names that resolve in scope (T-056).
+        """Frame ids plus the legacy names that resolve in scope.
 
         The ids alone are not enough: the legacy TransformManager API (and
         `AMDTSegment`'s reference-frame check) looks a frame up here before

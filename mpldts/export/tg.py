@@ -1,4 +1,4 @@
-"""Geant4 ASCII (.tg) writer (T-052).
+"""Geant4 ASCII (.tg) writer.
 
 Implements :class:`mpldts.export.base.VolumeSink` and writes the format that
 `G4tgbVolumeMgr` reads:
@@ -21,7 +21,7 @@ A consumer whose Geant4 code parses those names passes `name_of`: a callable
 `node -> str or None` overriding the base name of a node (None keeps the
 default). DTG4Simulator decodes `DriftCell_<w>_Sec<s>_St<n>_SL<n>_<encoding>`
 from the volume name, and the layer and wire from the copy number, so it supplies
-both sides of that contract with the hook (T-057).
+both sides of that contract with the hook.
 
 Copy numbers restart for every volume placed in a mother, so a cell volume
 numbers its copies 1..n exactly as the reference CMS generator does; the

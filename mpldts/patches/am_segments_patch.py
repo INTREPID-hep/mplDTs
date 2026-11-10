@@ -113,7 +113,7 @@ class DTSegmentsPatch(DTRelatedPatch):
             dx, dy = -dy, dx  # Invert direction for eta view
 
         # `length` is the physical span when the caller knows it; the default
-        # is a mark, not the length of the segment (T-043)
+        # is a mark, not the length of the segment
         size = getattr(seg, "length", None)
         if size is None:
             size = 20 if seg.sl != 0 else 40

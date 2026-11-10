@@ -69,7 +69,7 @@ class DTRelatedPatch:
 
     def _add_collections_to_axes(self):
         """
-        Add the collections to the axes. A `Line2D` (the object renderer, T-043)
+        Add the collections to the axes. A `Line2D` (the object renderer)
         goes through the line list, everything else through the collection list.
         """
         for _collection in self._collections:

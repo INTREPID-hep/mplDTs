@@ -1,4 +1,4 @@
-"""JSON documents for a detector or a station (T-051).
+"""JSON documents for a detector or a station.
 
 One schema, explicit shapes, no derived values: a document holds poses, shapes
 and names only, so a rebuild from JSON produces the same tree as the source

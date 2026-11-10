@@ -9,7 +9,7 @@ def _is_turned(super_layer):
     station length instead of its width (the CMS middle super layer).
 
     The orientation comes from the pose, so a chamber built from a spec draws like
-    a CMS one without the patch knowing which super layer number it is (T-030).
+    a CMS one without the patch knowing which super layer number it is.
     """
     rotation = super_layer.transformer.node.pose.rotation
     return abs(rotation[1, 0]) > abs(rotation[0, 0])

@@ -1,6 +1,6 @@
-"""Legacy super-layer wrapper (T-022).
+"""Legacy super-layer wrapper.
 
-A SuperLayer is a view over its node in the station tree (T-020). The station
+A SuperLayer is a view over its node in the station tree. The station
 graph carries every frame, so nothing is copied per object and the SL2
 orientation comes from the source, not from a hand-written rotation matrix.
 """

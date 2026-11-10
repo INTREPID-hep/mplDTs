@@ -1,4 +1,4 @@
-"""A thin command line for the authoring path (T-053).
+"""A thin command line for the authoring path.
 
     mpldts info    station.json
     mpldts convert station.json out.tg    [--station N]

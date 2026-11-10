@@ -1,7 +1,7 @@
-"""CMS DT geometry source: XML -> StationSpec (T-011).
+"""CMS DT geometry source: XML -> StationSpec.
 
 Reads the CMS geometry XML once, indexes chambers, super layers, layers and
-cell centres at parse time, and emits the immutable specs from T-010.
+cell centres at parse time, and emits the immutable specs.
 
 The XML stores its local positions in two different frames (station frame for
 super layers and layers, super-layer frame for the SL2 cells), so the poses are
@@ -265,7 +265,7 @@ class CMSXMLSource:
         )
 
     def _honeycomb(self, record):
-        """The aluminium panel between SL1 and SL2 (SL3 for an MB4), T-032.
+        """The aluminium panel between SL1 and SL2 (SL3 for an MB4).
 
         The XML carries no honeycomb: it is the box that fills the gap between
         the upper and the lower super layer, 1 cm clear of the chamber bounds,

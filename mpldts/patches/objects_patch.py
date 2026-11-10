@@ -1,4 +1,4 @@
-"""Arbitrary objects of a chamber: points and polylines (T-043).
+"""Arbitrary objects of a chamber: points and polylines.
 
 A chamber is drawn by :class:~`mpldts.patches.dt_station_patch.DTStationPatch`;
 everything that happens inside it (hits, tracks, showers, trigger primitives)

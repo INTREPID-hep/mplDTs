@@ -1,4 +1,4 @@
-"""Backend seam for the exporters (T-052).
+"""Backend seam for the exporters.
 
 The model is backend neutral; an exporter only walks placed solids. A sink gets
 every solid node with its mother and the pose already folded down to it:

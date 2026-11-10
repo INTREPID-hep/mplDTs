@@ -1,4 +1,4 @@
-"""Station view: what the plotting patches draw (T-022, T-030).
+"""Station view: what the plotting patches draw.
 
 A Station is a view over two things:
 
@@ -9,7 +9,7 @@ It holds no per-event data. The values a patch colours are the `(sl, l, w)`
 table the patch is given (ADR-024), so one station can draw an event without
 being copied and without any cell carrying a mutable attribute.
 
-Any `StationSpec` builds a station (T-030). A CMS chamber reaches this class
+Any `StationSpec` builds a station. A CMS chamber reaches this class
 through `CMSXMLSource().station(wheel, sector, station)`.
 """
 
@@ -30,7 +30,7 @@ def _face_from_pose(node):
     """1 when the station length axis points up the detector z axis, else -1.
 
     The legacy face factor of a CMS chamber is stated by its wheel and sector;
-    for any other station the pose is the only statement (T-031).
+    for any other station the pose is the only statement.
     """
     return 1.0 if node.world_pose.rotation[2, 1] >= 0.0 else -1.0
 

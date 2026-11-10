@@ -1,4 +1,4 @@
-"""Runtime topology (T-020).
+"""Runtime topology.
 
 build_station turns a StationSpec into a node tree:
 
@@ -13,8 +13,8 @@ world_pose is composed once, top-down, and cached on the node. Nodes with
 shape=None are pure grouping frames: they matter for transforms and plotting,
 not for the exporter.
 
-No I/O and no backend import: the CMS source (T-011) feeds build_station,
-FrameGraph (T-021) and the exporters consume the result.
+No I/O and no backend import: the CMS source feeds build_station,
+FrameGraph and the exporters consume the result.
 """
 
 from __future__ import annotations
@@ -104,7 +104,7 @@ def build_detector(spec, parent=None):
     """Build the node tree of a DetectorSpec: the detector is the root node.
 
     Every station of the spec hangs under it at its own pose, so one graph holds
-    the whole assembly (T-030). A station is still built by build_station.
+    the whole assembly. A station is still built by build_station.
     """
     validate(spec)
     detector = _make(parent, spec.name, "detector", spec.pose, spec.shape, spec.material)
