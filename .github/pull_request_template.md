@@ -1,13 +1,7 @@
 <!--
-PR title: T-0xx: <imperative summary>
-Link the ticket file in .agents/tickets/ and the design section it implements.
+PR title: <area>: <imperative summary>   (for example: patches: keep the sign in the volume name)
+Say what a user gets, and link the docs page or issue where the change is argued.
 -->
-
-## Ticket
-
-- Ticket: `T-0xx` — <title>
-- Ticket file: `.agents/tickets/T-0xx-<slug>.md`
-- Design section: `docs/design/generalization-plan.md` §<n>
 
 ## What and why
 
@@ -23,31 +17,23 @@ Link the ticket file in .agents/tickets/ and the design section it implements.
 
 ## Tests
 
-- [ ] `pytest -q` (list the new/changed tests)
-- [ ] CMS oracle: <!-- pass / documented xfail / not applicable -->
-- [ ] Prototype/benchmark: <!-- command and result -->
-- [ ] `.tg` smoke/parity: <!-- pass / not applicable -->
+- [ ] `pytest -q` (name the new or changed tests)
+- [ ] 250-chamber oracle: <!-- pytest -q -m slow, or: not applicable -->
+- [ ] Docs build clean: <!-- cd docs && sphinx-build -b html . _build/html -->
 
 ## Compatibility
 
-- [ ] `Station(wheel, sector, station)` and `rawId` constructors still work.
-- [ ] `obj.transformer` / `get_transformation` / `transform` still work.
-- [ ] Plotting API unchanged (or deprecation documented).
-- [ ] No new mandatory dependency; pyg4ometry remains optional/absent.
-- [ ] No separate wire object; SL/layer remain grouping; yoke still data-only.
-
-## Performance (if relevant)
-
-<!-- Before/after station build or full geometry. -->
+- [ ] Public API unchanged, or the change is in `docs/about/changelog.rst`
+- [ ] No new mandatory dependency
+- [ ] `.tg` format and volume names unchanged (otherwise say why, they are a contract)
 
 ## Checklist
 
-- [ ] Acceptance criteria in the ticket are met.
-- [ ] `.agents/TICKETS.md` and `.agents/PROGRESS.md` updated.
-- [ ] ADR added/updated for a non-obvious decision.
-- [ ] Design doc updated if the model/API changed.
-- [ ] No generated/secret files committed.
+- [ ] The specs stay data, and no per-event value reaches the geometry
+- [ ] A decision is recorded in `docs/about/decisions.rst` if it is not obvious
+- [ ] Changelog entry for a user-visible change
+- [ ] No generated or secret files committed
 
 ## Reviewer notes
 
-<!-- Anything the maintainer should look at first, risks, open questions. -->
+<!-- Anything the maintainer should look at first: risks, open questions. -->

@@ -4,7 +4,7 @@ geometry
 This module provides tools to manage geometrical objects in the context of CMS DT detectors.
 
 The CMS DTs geometry is stored in a XML file -
-(:download:`DTGeometry_v3.xml <../../_static/DTGeometry_v3.xml>`). The
+(`DTGeometry_v3.xml <https://github.com/INTREPID-hep/mplDTs/blob/main/mpldts/geometry/DTGeometry_v3.xml>`_). The
 :class:`~mpldts.geometry.sources.cms_xml.CMSXMLSource` below is the only
 reader of it: it returns a ``StationSpec`` per chamber, and a station that is not
 in the XML is described with the same specs by hand.
@@ -44,6 +44,13 @@ for each component are defined. Transformations between these frames are possibl
     super_layer
     layer
     drift_cell
+    specs
+    model
+    frames
+    serialize
+    constructors
+    sources
+    export
 
 .. note::
     Every drift cell centre is read from the XML once, when the source is

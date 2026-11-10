@@ -336,7 +336,7 @@ What 3.0 removed
 ----------------
 
 2.9 carried the pre-refactor API and warned on every call that would go. 3.0
-deletes it; ``.agents/migration-3.0.md`` (ADR-026) is the plan, this table is
+deletes it; :doc:`../../about/decisions` records why, this table is
 the result.
 
 .. list-table::

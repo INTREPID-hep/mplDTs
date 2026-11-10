@@ -1,11 +1,17 @@
 name: "Sphinx: Render docs"
 
-on: 
+# One push to main publishes two things: the site root always holds the latest
+# build, and a copy of it is kept under v<version>/ forever, so a link to an old
+# version keeps working. old versions are never rebuilt.
+on:
   push:
     branches:
       - main
     paths:
       - 'docs/**'
+      - 'mpldts/**'
+      - 'pyproject.toml'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,18 +23,27 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: '3.12'
     - name: Install dependencies
       run: |
         pip install . && pip install .[docs]
     - name: Build docs
       run: |
-        cd $GITHUB_WORKSPACE/docs && ls && make html
-
+        cd $GITHUB_WORKSPACE/docs && make html
+    - name: Stage the latest build and the versioned copy
+      run: |
+        VERSION="v$(python -c 'import mpldts; print(mpldts.__version__)')"
+        SITE="$RUNNER_TEMP/site"
+        mkdir -p "$SITE/$VERSION"
+        cp -r docs/_build/html/. "$SITE/"
+        cp -r docs/_build/html/. "$SITE/$VERSION/"
+        cp docs/versions.json "$SITE/versions.json"
+        echo "staged $VERSION" && ls "$SITE"
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_build/html
+        publish_dir: ${{ runner.temp }}/site
+        keep_files: true
