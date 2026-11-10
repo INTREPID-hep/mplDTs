@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layer &mdash; mplDTs 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="DriftCell" href="drift_cell.html" />
+    <link rel="prev" title="SuperLayer" href="super_layer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            mplDTs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="main.html">geometry</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="station.html">Station</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.super_layer"><code class="docutils literal notranslate"><span class="pre">Station.super_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station._build_station"><code class="docutils literal notranslate"><span class="pre">Station._build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Station._setup_tranformer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="station.html#mpldts.geometry.station.Station.set_cell_attrs"><code class="docutils literal notranslate"><span class="pre">Station.set_cell_attrs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="super_layer.html">SuperLayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer"><code class="docutils literal notranslate"><span class="pre">SuperLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.id"><code class="docutils literal notranslate"><span class="pre">SuperLayer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.parent"><code class="docutils literal notranslate"><span class="pre">SuperLayer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.bounds"><code class="docutils literal notranslate"><span class="pre">SuperLayer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer._build_super_layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._build_super_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">SuperLayer._setup_tranformer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.height"><code class="docutils literal notranslate"><span class="pre">SuperLayer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.length"><code class="docutils literal notranslate"><span class="pre">SuperLayer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.theta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer.width"><code class="docutils literal notranslate"><span class="pre">SuperLayer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mpldts.geometry.layer.Layer"><code class="docutils literal notranslate"><span class="pre">Layer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.__init__"><code class="docutils literal notranslate"><span class="pre">Layer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.id"><code class="docutils literal notranslate"><span class="pre">Layer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.parent"><code class="docutils literal notranslate"><span class="pre">Layer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.local_center"><code class="docutils literal notranslate"><span class="pre">Layer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.global_center"><code class="docutils literal notranslate"><span class="pre">Layer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.bounds"><code class="docutils literal notranslate"><span class="pre">Layer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer._build_layer"><code class="docutils literal notranslate"><span class="pre">Layer._build_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.height"><code class="docutils literal notranslate"><span class="pre">Layer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.length"><code class="docutils literal notranslate"><span class="pre">Layer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.theta"><code class="docutils literal notranslate"><span class="pre">Layer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer.width"><code class="docutils literal notranslate"><span class="pre">Layer.width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpldts.geometry.layer.Layer._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">Layer._setup_tranformer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="drift_cell.html">DriftCell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell"><code class="docutils literal notranslate"><span class="pre">DriftCell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.__init__"><code class="docutils literal notranslate"><span class="pre">DriftCell.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.parent"><code class="docutils literal notranslate"><span class="pre">DriftCell.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.id"><code class="docutils literal notranslate"><span class="pre">DriftCell.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.theta"><code class="docutils literal notranslate"><span class="pre">DriftCell.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell.width"><code class="docutils literal notranslate"><span class="pre">DriftCell.width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell._setup_tranformer"><code class="docutils literal notranslate"><span class="pre">DriftCell._setup_tranformer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#dtgeometry">DTGeometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main.html#mpldts.geometry.DTGeometry"><code class="docutils literal notranslate"><span class="pre">DTGeometry</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#dtframe">DTFrame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main.html#mpldts.geometry.DTFrame"><code class="docutils literal notranslate"><span class="pre">DTFrame</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#other-utils">Other utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#transforms">Transforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main.html#mpldts.geometry.transforms.TransformManager"><code class="docutils literal notranslate"><span class="pre">TransformManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="main.html#mpldts.geometry.transforms.compute_eta"><code class="docutils literal notranslate"><span class="pre">compute_eta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="main.html#mpldts.geometry.transforms.compute_theta"><code class="docutils literal notranslate"><span class="pre">compute_theta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../patches/main.html">patches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../patches/dt_patch_base.html">DTRelatedPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._add_collections_to_axes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._draw_collections"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._draw_collections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../patches/dt_station_patch.html">DTStationPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch"><code class="docutils literal notranslate"><span class="pre">DTStationPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._create_frame"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._create_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_bounds"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_bounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_cells"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_cells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.change_vmap"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.change_vmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../patches/dt_station_patch.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">mplDTs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="main.html">geometry</a></li>
+      <li class="breadcrumb-item active">Layer</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/DanielEstrada971102/mplDTs" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="layer">
+<h1>Layer<a class="headerlink" href="#layer" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mpldts.geometry.layer.</span></span><span class="sig-name descname"><span class="pre">Layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/layer.html#Layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.layer.Layer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="main.html#mpldts.geometry.DTFrame" title="mpldts.geometry.dt_frame.DTFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DTFrame</span></code></a></p>
+<p>Class representing a Layer.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<blockquote>
+<div><dl class="simple">
+<dt>parent<span class="classifier">SuperLayer</span></dt><dd><p>Parent super layer of the layer.</p>
+</dd>
+<dt>number<span class="classifier">int</span></dt><dd><p>Number of the layer (1, 2, 3, or 4).</p>
+</dd>
+<dt>cells<span class="classifier">list</span></dt><dd><p>List of drift cells in the layer.</p>
+</dd>
+</dl>
+<p>Others inherit from <code class="docutils literal notranslate"><span class="pre">mpldts.geometry.DTFrame</span></code>… (e.g. id, local_center, global_center, direction, etc.)</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/layer.html#Layer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.layer.Layer.__init__" title="Link to this definition"></a></dt>
+<dd><p>Constructor of the Layer class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rawId</strong> (<em>int</em>) – Raw identifier of the layer.</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="super_layer.html#mpldts.geometry.super_layer.SuperLayer" title="mpldts.geometry.super_layer.SuperLayer"><em>SuperLayer</em></a><em>, </em><em>optional</em>) – Parent super layer of the layer. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.id" title="Link to this definition"></a></dt>
+<dd><p>Identifier of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Identifier of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.parent">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.parent" title="Link to this definition"></a></dt>
+<dd><p>Parent of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Parent of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.local_center">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_center</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.local_center" title="Link to this definition"></a></dt>
+<dd><p>Local center coordinates of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Local center coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.global_center">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_center</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.global_center" title="Link to this definition"></a></dt>
+<dd><p>Global center coordinates of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Global center coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.bounds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.bounds" title="Link to this definition"></a></dt>
+<dd><p>Space dimensions of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Space dimensions of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cells</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.cells" title="Link to this definition"></a></dt>
+<dd><p>Get all the layer’s cells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of drift cells in the layer.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of <a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell" title="mpldts.geometry.drift_cell.DriftCell">DriftCell</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.number">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">number</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.number" title="Link to this definition"></a></dt>
+<dd><p>Number identifier of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of the Object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.cell">
+<span class="sig-name descname"><span class="pre">cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/layer.html#Layer.cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.layer.Layer.cell" title="Link to this definition"></a></dt>
+<dd><p>Get a layer cell by its number. If the cell_number is invalid, a ValueError is raised, or if the cell is not found, None is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cell_number</strong> (<em>int</em>) – Identifier of the cell.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Drift cell with the specified number.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="drift_cell.html#mpldts.geometry.drift_cell.DriftCell" title="mpldts.geometry.drift_cell.DriftCell">DriftCell</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the cell_number is invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer._build_layer">
+<span class="sig-name descname"><span class="pre">_build_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/layer.html#Layer._build_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.layer.Layer._build_layer" title="Link to this definition"></a></dt>
+<dd><p>Ensemble a DT layer.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.direction">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">direction</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.direction" title="Link to this definition"></a></dt>
+<dd><p>Direction of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Direction of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.eta">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eta</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.eta" title="Link to this definition"></a></dt>
+<dd><p>Pseudorapidity of the Object acording to the gloal center coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pseudorapidity of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.global_cords_at_min">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_cords_at_min</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.global_cords_at_min" title="Link to this definition"></a></dt>
+<dd><p>Global cords at the minimum coordinates of the Object. It means the lower left corner of the object.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This property is not implemented yet.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Global cords at minimum coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.height">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.height" title="Link to this definition"></a></dt>
+<dd><p>Height of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Height of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.length">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.length" title="Link to this definition"></a></dt>
+<dd><p>Length of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Length of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.local_cords_at_min">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_cords_at_min</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.local_cords_at_min" title="Link to this definition"></a></dt>
+<dd><p>Local cords at the minimum coordinates of the Object. It means the lower left corner of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Local cords at minimum coordinates (x, y, z).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.theta">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theta</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.theta" title="Link to this definition"></a></dt>
+<dd><p>Angle theta of the Object according to the global center coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Angle theta of the object in radians.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer.width">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><a class="headerlink" href="#mpldts.geometry.layer.Layer.width" title="Link to this definition"></a></dt>
+<dd><p>Width of the Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Width of the object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mpldts.geometry.layer.Layer._setup_tranformer">
+<span class="sig-name descname"><span class="pre">_setup_tranformer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mpldts/geometry/layer.html#Layer._setup_tranformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mpldts.geometry.layer.Layer._setup_tranformer" title="Link to this definition"></a></dt>
+<dd><p>Set up the transformer for the layer. It defines the transformation from the local frame to the global frame.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layer</span> <span class="o">=</span> <span class="n">Layer</span><span class="p">(</span><span class="mi">574923776</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">_first_cell_id</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="rubric">Output</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>id: 574923776 number: 1 local_center: (-1.6, 0.0, 13.7) global_center: (417.475, 37.52, -533.35) direction: None bounds: (205.929993, 1.14999998, 239.800003)
+    id: 1 number: 1 local_center: (-102.4, 0.0, 13.7) global_center: (417.475, -63.28, -533.35) direction: None bounds: (4.19999981, 1.29999995, 234.800003)
+    id: 48 number: 48 local_center: (95.0, 0.0, 13.7) global_center: (417.475, 134.12, -533.35) direction: None bounds: (4.19999981, 1.29999995, 234.800003)
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="super_layer.html" class="btn btn-neutral float-left" title="SuperLayer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="drift_cell.html" class="btn btn-neutral float-right" title="DriftCell" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025, Daniel Estrada, Universidad de Oviedo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+<script src="_static/versions.js"></script>
+</body>
+</html>

@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events and per-event data &mdash; mplDTs 3.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08bfcbec"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/versions.js?v=32142bc5"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Work with a CMS chamber" href="../howto/cms.html" />
+    <link rel="prev" title="Volume names" href="naming.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mplDTs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html">1. From a CMS chamber to a plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#the-source-hands-out-specs">The source hands out specs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#nodes-one-pose-per-object">Nodes: one pose per object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#views-the-objects-the-plotting-patches-consume">Views: the objects the plotting patches consume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#frames-moving-a-point-between-reference-frames">Frames: moving a point between reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#what-changed-against-2-x">What changed against 2.x</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/02-event-data.html">2. Per-event data: the geometry is never touched</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#more-than-one-column-change-vmap">More than one column: <code class="docutils literal notranslate"><span class="pre">change_vmap</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#a-dataframe-from-a-root-ntuple-or-a-csv">A DataFrame from a ROOT ntuple or a CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#the-rules-in-short">The rules, in short</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/03-own-detector.html">3. Describe your own detector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#from-a-station-to-a-detector">From a station to a detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#keep-it-as-a-json-document">Keep it as a JSON document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#export-it-for-geant4">Export it for Geant4</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="model.html">Specs, nodes and views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.html#specs">Specs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#nodes">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#views-and-export">Views and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#short-constructors-versus-the-dataclass-form">Short constructors versus the dataclass form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#what-validate-rejects">What <code class="docutils literal notranslate"><span class="pre">validate()</span></code> rejects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frames.html">Frames and transforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#frame-ids-are-paths">Frame ids are paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#framegraph">FrameGraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#frameview-and-the-transform-call">FrameView and the transform call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#composed-world-pose">Composed world_pose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#x-to-3-0">2.x to 3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frames.html#rules">Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="naming.html">Volume names</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="naming.html#the-scheme">The scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naming.html#the-sanitiser">The sanitiser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naming.html#why-the-sign-is-load-bearing">Why the sign is load-bearing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naming.html#what-is-configurable">What is configurable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naming.html#do-not">Do not</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Events and per-event data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-rule">The rule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-table">The table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vmap"><code class="docutils literal notranslate"><span class="pre">vmap</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#two-events-on-one-station">Two events on one station</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-overlay-that-is-gone">The overlay that is gone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-patches">Other patches</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howto/cms.html">Work with a CMS chamber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#list-the-chambers">List the chambers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#get-a-spec-and-validate-it">Get a spec and validate it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#build-the-view">Build the view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#plot-both-faces">Plot both faces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#save-and-load-the-spec-as-json">Save and load the spec as JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#transform-a-cell-centre-to-cms">Transform a cell centre to CMS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/custom_detector.html">Describe your own detector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#build-the-station">Build the station</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#the-detector-and-its-structural-solid">The detector and its structural solid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#build-the-tree-and-plot-the-stations">Build the tree and plot the stations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#export-the-tg">Export the .tg</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/geant4.html">Get the geometry into Geant4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#what-the-file-holds">What the file holds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#write-one-chamber">Write one chamber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#who-reads-it">Who reads it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#the-names-are-a-contract">The names are a contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#gdml-is-not-written-yet">GDML is not written yet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/downstream.html">Use mplDTs from another package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#the-per-event-contract">The per-event contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#what-is-stable">What is stable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#what-is-internal">What is internal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#the-pin">The pin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/agents.html">For an AI agent or a new contributor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/geometry/main.html">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-command-line">The command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#per-event-data">Per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#what-3-0-removed">What 3.0 removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/station.html">Station</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.super_layer"><code class="docutils literal notranslate"><span class="pre">Station.super_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/super_layer.html">SuperLayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer"><code class="docutils literal notranslate"><span class="pre">SuperLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.id"><code class="docutils literal notranslate"><span class="pre">SuperLayer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.parent"><code class="docutils literal notranslate"><span class="pre">SuperLayer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.bounds"><code class="docutils literal notranslate"><span class="pre">SuperLayer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.height"><code class="docutils literal notranslate"><span class="pre">SuperLayer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.length"><code class="docutils literal notranslate"><span class="pre">SuperLayer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.theta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.width"><code class="docutils literal notranslate"><span class="pre">SuperLayer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/layer.html">Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer"><code class="docutils literal notranslate"><span class="pre">Layer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.__init__"><code class="docutils literal notranslate"><span class="pre">Layer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.id"><code class="docutils literal notranslate"><span class="pre">Layer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.parent"><code class="docutils literal notranslate"><span class="pre">Layer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.local_center"><code class="docutils literal notranslate"><span class="pre">Layer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.global_center"><code class="docutils literal notranslate"><span class="pre">Layer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.bounds"><code class="docutils literal notranslate"><span class="pre">Layer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.height"><code class="docutils literal notranslate"><span class="pre">Layer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.length"><code class="docutils literal notranslate"><span class="pre">Layer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.theta"><code class="docutils literal notranslate"><span class="pre">Layer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.width"><code class="docutils literal notranslate"><span class="pre">Layer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/drift_cell.html">DriftCell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell"><code class="docutils literal notranslate"><span class="pre">DriftCell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.__init__"><code class="docutils literal notranslate"><span class="pre">DriftCell.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.parent"><code class="docutils literal notranslate"><span class="pre">DriftCell.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.id"><code class="docutils literal notranslate"><span class="pre">DriftCell.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.theta"><code class="docutils literal notranslate"><span class="pre">DriftCell.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.width"><code class="docutils literal notranslate"><span class="pre">DriftCell.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/specs.html">Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.LayerSpec"><code class="docutils literal notranslate"><span class="pre">LayerSpec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.LayerSpec.__init__"><code class="docutils literal notranslate"><span class="pre">LayerSpec.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.SuperLayerSpec"><code class="docutils literal notranslate"><span class="pre">SuperLayerSpec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.SuperLayerSpec.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayerSpec.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/frames.html">Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/serialize.html">Serialize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/constructors.html">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/sources.html">Sources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.__init__"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.chamber_keys"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.chamber_keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.station"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.record"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.record()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.chamber_of"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.chamber_of()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.detector"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.cell_centres"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.cell_centres()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/export.html">Export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.TgSink.__init__"><code class="docutils literal notranslate"><span class="pre">TgSink.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.VolumePlacement.__init__"><code class="docutils literal notranslate"><span class="pre">VolumePlacement.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/main.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/main.html#dtframe">DTFrame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.DTFrame"><code class="docutils literal notranslate"><span class="pre">DTFrame</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/main.html#other-utils">Other utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/main.html#transforms">Transforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.TransformManager"><code class="docutils literal notranslate"><span class="pre">TransformManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.compute_eta"><code class="docutils literal notranslate"><span class="pre">compute_eta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.compute_theta"><code class="docutils literal notranslate"><span class="pre">compute_theta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/patches/main.html">patches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/dt_patch_base.html">DTRelatedPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._add_collections_to_axes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._draw_collections"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._draw_collections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/dt_station_patch.html">DTStationPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch"><code class="docutils literal notranslate"><span class="pre">DTStationPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._create_frame"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._create_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_bounds"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_bounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_cells"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_cells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.change_vmap"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.change_vmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_station_patch.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/objects_patch.html">DTObjectsPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-3-0-1">Version 3.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-3-0-0">Version 3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-9-1">Version 2.9.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-9-0">Version 2.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-8-0">Version 2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-7-0">Version 2.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-6-0">Version 2.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-5-1">Version 2.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-5-0">Version 2.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-4-0">Version 2.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-3-0">Version 2.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-2-0">Version 2.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-2-0-beta">Version 2.2.0-beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-1-1-beta">Version 2.1.1-beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-1-0">Version 2.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-2-0-0">Version 2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-1-1-0">Version 1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/changelog.html#version-1-0-0">Version 1.0.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/decisions.html">Decisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-001-declarative-specs-sources-and-a-builder">ADR-001 — Declarative specs, sources and a builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-002-one-pose-per-node-child-to-parent-centimetres">ADR-002 — One pose per node, child to parent, centimetres</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-003-one-frame-graph-a-scoped-view-per-object">ADR-003 — One frame graph, a scoped view per object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-004-the-cms-xml-is-a-source-and-a-preset-not-the-core">ADR-004 — The CMS XML is a source and a preset, not the core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-005-the-xml-wire-is-the-cell-there-is-no-wire-object">ADR-005 — The XML <code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code> is the cell; there is no wire object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-006-primitive-shapes-in-the-core-csg-out-of-scope">ADR-006 — Primitive shapes in the core; CSG out of scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-007-geometry-is-immutable-event-data-is-a-table-never-a-mutation">ADR-007 — Geometry is immutable; event data is a table, never a mutation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-008-one-exporter-seam-tg-first-pyg4ometry-optional-and-later">ADR-008 — One exporter seam, <code class="docutils literal notranslate"><span class="pre">.tg</span></code> first, pyg4ometry optional and later</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-009-the-cms-xml-globals-are-the-oracle">ADR-009 — The CMS XML globals are the oracle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-010-physical-volume-policy">ADR-010 — Physical volume policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-011-honeycomb-and-yoke-are-data-csg-stays-in-a-backend">ADR-011 — Honeycomb and yoke are data; CSG stays in a backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-012-order-the-work-specs-first-no-speculative-modules">ADR-012 — Order the work specs first; no speculative modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-013-the-detector-is-the-root-of-the-same-node-tree">ADR-013 — The detector is the root of the same node tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-014-the-phi-and-eta-views-follow-the-super-layer-orientation">ADR-014 — The phi and eta views follow the super layer orientation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-015-releases-are-tagged-on-the-integration-branch-main-moves-on-approval">ADR-015 — Releases are tagged on the integration branch; main moves on approval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-016-a-document-is-the-spec-an-export-is-placements-names-are-not-geometry">ADR-016 — A document is the spec, an export is placements, names are not geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-017-the-downstream-packages-are-part-of-the-release-gate">ADR-017 — The downstream packages are part of the release gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-018-3-0-removes-compatibility-not-the-view-layer">ADR-018 — 3.0 removes compatibility, not the view layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-019-a-station-may-be-a-passive-solid">ADR-019 — A station may be a passive solid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-020-history-rewrite-and-only-agent-created-branches-d1-d2">ADR-020 — History rewrite, and only agent-created branches (D1, D2)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-021-rewritten-commits-carry-the-agent-identity-d3">ADR-021 — Rewritten commits carry the agent identity (D3)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-022-the-agent-workspace-is-removed-the-record-moves-to-the-docs-d4">ADR-022 — The agent workspace is removed; the record moves to the docs (D4)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-023-the-beta-tags-stay-marked-as-prereleases-d5">ADR-023 — The beta tags stay, marked as prereleases (D5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-024-tutorial-notebooks-use-myst-nb-with-execution-off-d6">ADR-024 — Tutorial notebooks use MyST-NB with execution off (D6)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/decisions.html#adr-025-agents-md-is-the-short-entry-point-d7">ADR-025 — <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> is the short entry point (D7)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/roadmap.html">Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/roadmap.html#gdml-through-pyg4ometry">GDML through pyg4ometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/roadmap.html#volume-renaming">Volume renaming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/roadmap.html#considered-and-rejected">Considered and rejected</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#working-copy">Working copy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#tests">Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#code-layout">Code layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#continuous-integration">Continuous integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/contributing.html#release-steps">Release steps</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mplDTs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Events and per-event data</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/INTREPID-hep/mplDTs" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="events-and-per-event-data">
+<h1>Events and per-event data<a class="headerlink" href="#events-and-per-event-data" title="Link to this heading"></a></h1>
+<p>The geometry is built once; an event is a table. A <code class="docutils literal notranslate"><span class="pre">Station</span></code> is the same
+object for every event: its spec is frozen, its nodes hold poses and shapes,
+and its views read that tree. None of them gains a value when an event
+arrives, so two events can never disagree about the chamber.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Station</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry.sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">CMSXMLSource</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">DTStationPatch</span>
+
+<span class="n">station</span> <span class="o">=</span> <span class="n">Station</span><span class="o">.</span><span class="n">from_spec</span><span class="p">(</span><span class="n">CMSXMLSource</span><span class="p">()</span><span class="o">.</span><span class="n">station</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">figure</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">station</span><span class="o">.</span><span class="n">super_layers</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">sl</span><span class="o">.</span><span class="n">layers</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>W-2_S1_MB2 704
+</pre></div>
+</div>
+<section id="the-rule">
+<h2>The rule<a class="headerlink" href="#the-rule" title="Link to this heading"></a></h2>
+<p>A per-event value belongs to the table handed to the patch, not to the
+geometry. Do not copy the station per event and do not write on a spec, a node
+or a view: that side channel is what used to leak one event into the next.
+<code class="docutils literal notranslate"><span class="pre">DTStationPatch(station,</span> <span class="pre">axis,</span> <span class="pre">data=rows,</span> <span class="pre">vmap=&quot;time&quot;)</span></code> draws the station
+as it is and colours only the cells that have a row.</p>
+</section>
+<section id="the-table">
+<h2>The table<a class="headerlink" href="#the-table" title="Link to this heading"></a></h2>
+<p>A row is keyed by <code class="docutils literal notranslate"><span class="pre">sl</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> and <code class="docutils literal notranslate"><span class="pre">w</span></code> (super layer, layer, wire) and may
+carry any number of value columns. The same rows arrive as a
+<code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, as one <code class="docutils literal notranslate"><span class="pre">dict</span></code> or as a list of dicts. The ids are cast
+to <code class="docutils literal notranslate"><span class="pre">int</span></code> when the patch reads them: a column read from a ROOT branch is a
+<code class="docutils literal notranslate"><span class="pre">float</span></code>, and <code class="docutils literal notranslate"><span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">60.0)</span></code> would never match a cell.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="n">row</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">410</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">DataFrame</span><span class="p">([</span><span class="n">row</span><span class="p">])):</span>
+    <span class="n">patch</span> <span class="o">=</span> <span class="n">DTStationPatch</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">table</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">values</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">)])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>410
+410
+410
+</pre></div>
+</div>
+<p>A cell with no row, or with no <code class="docutils literal notranslate"><span class="pre">vmap</span></code> column, is drawn at 0. Here one row
+lights one cell and the other 475 stay at 0; the cell that has no row reads
+as 0.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">350</span><span class="p">}]</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">DTStationPatch</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"cells"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()),</span>
+      <span class="s2">"with data"</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"missing"</span><span class="p">,</span> <span class="n">patch</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cells 476 with data 1
+missing 0
+</pre></div>
+</div>
+</section>
+<section id="vmap">
+<h2><code class="docutils literal notranslate"><span class="pre">vmap</span></code><a class="headerlink" href="#vmap" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">vmap</span></code> names the column that colours the cells; it defaults to <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code>.
+Pass another name at construction, or call <code class="docutils literal notranslate"><span class="pre">patch.change_vmap(&quot;width&quot;)</span></code> to
+re-colour from the rows the patch already holds. Only the value array is
+recomputed; the rectangles are not rebuilt.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mf">4.2</span><span class="p">}]</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">DTStationPatch</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">vmap</span><span class="p">,</span> <span class="n">patch</span><span class="o">.</span><span class="n">values</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">)],</span> <span class="nb">len</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()))</span>
+<span class="n">patch</span><span class="o">.</span><span class="n">change_vmap</span><span class="p">(</span><span class="s2">"width"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">vmap</span><span class="p">,</span> <span class="n">patch</span><span class="o">.</span><span class="n">values</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">)],</span> <span class="nb">len</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>time 410 476
+width 4.2 476
+</pre></div>
+</div>
+</section>
+<section id="two-events-on-one-station">
+<h2>Two events on one station<a class="headerlink" href="#two-events-on-one-station" title="Link to this heading"></a></h2>
+<p>One station, one geometry, two tables. The consumer in
+<code class="docutils literal notranslate"><span class="pre">DTPatternRecognition</span></code> builds a DataFrame from the event particles, checks
+<code class="docutils literal notranslate"><span class="pre">sl</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> and <code class="docutils literal notranslate"><span class="pre">w</span></code>, slices the value column it wants, and passes the
+result as <code class="docutils literal notranslate"><span class="pre">data=</span></code> to one patch per view. The counts below are the drawn
+cells, the cells with a row, and the sum of <code class="docutils literal notranslate"><span class="pre">time</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">events</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"event 1"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">350</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">410</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">500</span><span class="p">}],</span>
+    <span class="s2">"event 2"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">300</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">"sl"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mi">450</span><span class="p">}],</span>
+<span class="p">}</span>
+<span class="n">figure</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">events</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="n">patch</span> <span class="o">=</span> <span class="n">DTStationPatch</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">,</span> <span class="n">vmap</span><span class="o">=</span><span class="s2">"time"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"drawn"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">cells_collection</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()),</span>
+          <span class="s2">"with data"</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="n">values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span> <span class="s2">"time"</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event 1 drawn 476 with data 3 time 1260
+event 2 drawn 476 with data 2 time 750
+</pre></div>
+</div>
+</section>
+<section id="the-overlay-that-is-gone">
+<h2>The overlay that is gone<a class="headerlink" href="#the-overlay-that-is-gone" title="Link to this heading"></a></h2>
+<p>2.x had a stateful overlay: <code class="docutils literal notranslate"><span class="pre">StationsCache.get(...,</span> <span class="pre">dt_info=...)</span></code> returned
+a per-event overlay of the station, <code class="docutils literal notranslate"><span class="pre">station.overlay(dt_info)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">station.set_cell_attrs(...)</span></code> wrote the values on its cells, and the patch
+read <code class="docutils literal notranslate"><span class="pre">dt_info</span></code> back from them. That is how one event leaked into the next.
+The API was removed in 3.0; write this instead:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 48.0%" />
+<col style="width: 52.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>2.x</p></th>
+<th class="head"><p>3.0.1</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StationsCache.get(dt_info=rows)</span></code>, <code class="docutils literal notranslate"><span class="pre">station.overlay(rows)</span></code>, <code class="docutils literal notranslate"><span class="pre">cell.attrs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DTStationPatch(...,</span> <span class="pre">data=rows,</span> <span class="pre">vmap=&quot;time&quot;)</span></code>; the geometry is untouched</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">station.set_cell_attrs(rows)</span></code>, then read <code class="docutils literal notranslate"><span class="pre">cell.attrs</span></code> / <code class="docutils literal notranslate"><span class="pre">dt_info</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">patch.values[(sl,</span> <span class="pre">l,</span> <span class="pre">w)]</span></code>; <code class="docutils literal notranslate"><span class="pre">patch.change_vmap(&quot;other&quot;)</span></code> to re-colour</p></td>
+</tr>
+</tbody>
+</table>
+<p>The replacement is the table itself. There is no station copy, no per-event
+attribute on a spec, node or view, and no cache to invalidate.</p>
+</section>
+<section id="other-patches">
+<h2>Other patches<a class="headerlink" href="#other-patches" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code> draws points and polylines (hits, tracks, showers) in any
+frame the station graph resolves. One point is a marker, two or more are a
+polyline; the coordinates are projected exactly like the cells.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">DTObjectsPatch</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span><span class="o">.</span><span class="n">local_center</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">super_layer</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">local_center</span>
+<span class="n">objects</span> <span class="o">=</span> <span class="n">DTObjectsPatch</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">([</span><span class="n">start</span><span class="p">],</span> <span class="p">{</span><span class="s2">"linestyle"</span><span class="p">:</span> <span class="s2">"None"</span><span class="p">,</span> <span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"tab:red"</span><span class="p">}),</span>
+    <span class="p">([</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">],</span> <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"tab:blue"</span><span class="p">}),</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">lines</span><span class="p">),</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">get_xdata</span><span class="p">())</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">lines</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>2 [1, 2]
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DTSegmentsPatch</span></code> draws the AM trigger segments of one station. A segment
+row carries <code class="docutils literal notranslate"><span class="pre">sl</span></code>, <code class="docutils literal notranslate"><span class="pre">angle</span></code> and <code class="docutils literal notranslate"><span class="pre">position</span></code> plus value columns such as
+<code class="docutils literal notranslate"><span class="pre">quality</span></code>; <code class="docutils literal notranslate"><span class="pre">AMDTSegments</span></code> turns the rows into per-event segments. Phi
+draws <code class="docutils literal notranslate"><span class="pre">sl</span> <span class="pre">!=</span> <span class="pre">2</span></code>, eta draws <code class="docutils literal notranslate"><span class="pre">sl</span> <span class="pre">==</span> <span class="pre">2</span></code>. <code class="docutils literal notranslate"><span class="pre">MultiDTSegmentsPatch</span></code> groups
+the same rows by <code class="docutils literal notranslate"><span class="pre">(wh,</span> <span class="pre">sc,</span> <span class="pre">st)</span></code> and makes one patch per parent station.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">AMDTSegments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpldts.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">DTSegmentsPatch</span><span class="p">,</span> <span class="n">MultiDTSegmentsPatch</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"parent"</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span> <span class="s2">"sl"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"angle"</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s2">"position"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"quality"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"parent"</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span> <span class="s2">"sl"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"angle"</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span> <span class="s2">"position"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"quality"</span><span class="p">:</span> <span class="mi">9</span><span class="p">}]</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="n">AMDTSegments</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">reference_frame</span><span class="o">=</span><span class="s2">"Station"</span><span class="p">)</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">DTSegmentsPatch</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="n">DTSegmentsPatch</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"eta"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">segments_collection</span><span class="o">.</span><span class="n">get_array</span><span class="p">(),</span> <span class="n">eta</span><span class="o">.</span><span class="n">segments_collection</span><span class="o">.</span><span class="n">get_array</span><span class="p">())</span>
+
+<span class="n">other</span> <span class="o">=</span> <span class="n">Station</span><span class="o">.</span><span class="n">from_spec</span><span class="p">(</span><span class="n">CMSXMLSource</span><span class="p">()</span><span class="o">.</span><span class="n">station</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"parent"</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span> <span class="s2">"sl"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"angle"</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s2">"position"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"quality"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"parent"</span><span class="p">:</span> <span class="n">other</span><span class="p">,</span> <span class="s2">"sl"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"angle"</span><span class="p">:</span> <span class="mf">20.0</span><span class="p">,</span> <span class="s2">"position"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"quality"</span><span class="p">:</span> <span class="mi">9</span><span class="p">}]</span>
+<span class="n">multi</span> <span class="o">=</span> <span class="n">MultiDTSegmentsPatch</span><span class="p">(</span><span class="n">AMDTSegments</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">reference_frame</span><span class="o">=</span><span class="s2">"Station"</span><span class="p">),</span>
+                             <span class="n">axis</span><span class="p">,</span> <span class="n">faceview</span><span class="o">=</span><span class="s2">"phi"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">patches</span><span class="p">),</span>
+      <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">segments_collection</span><span class="o">.</span><span class="n">get_paths</span><span class="p">())</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">multi</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[7] [9]
+[(-2, 1, 2), (-2, 1, 3)] {(-2, 1, 2): 1, (-2, 1, 3): 1}
+</pre></div>
+</div>
+<p>The contract is the same: the station is built once, the rows are the event,
+and nothing is written on the station or its cells.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="naming.html" class="btn btn-neutral float-left" title="Volume names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../howto/cms.html" class="btn btn-neutral float-right" title="Work with a CMS chamber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2026, Daniel Estrada, Universidad de Oviedo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

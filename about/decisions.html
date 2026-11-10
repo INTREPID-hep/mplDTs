@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decisions &mdash; mplDTs 3.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08bfcbec"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/versions.js?v=32142bc5"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Roadmap" href="roadmap.html" />
+    <link rel="prev" title="Changelog" href="changelog.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mplDTs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html">1. From a CMS chamber to a plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#the-source-hands-out-specs">The source hands out specs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#nodes-one-pose-per-object">Nodes: one pose per object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#views-the-objects-the-plotting-patches-consume">Views: the objects the plotting patches consume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#frames-moving-a-point-between-reference-frames">Frames: moving a point between reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/01-geometry-quickstart.html#what-changed-against-2-x">What changed against 2.x</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/02-event-data.html">2. Per-event data: the geometry is never touched</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#more-than-one-column-change-vmap">More than one column: <code class="docutils literal notranslate"><span class="pre">change_vmap</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#a-dataframe-from-a-root-ntuple-or-a-csv">A DataFrame from a ROOT ntuple or a CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/02-event-data.html#the-rules-in-short">The rules, in short</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/03-own-detector.html">3. Describe your own detector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#from-a-station-to-a-detector">From a station to a detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#keep-it-as-a-json-document">Keep it as a JSON document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/03-own-detector.html#export-it-for-geant4">Export it for Geant4</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/model.html">Specs, nodes and views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/model.html#specs">Specs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/model.html#nodes">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/model.html#views-and-export">Views and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/model.html#short-constructors-versus-the-dataclass-form">Short constructors versus the dataclass form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/model.html#what-validate-rejects">What <code class="docutils literal notranslate"><span class="pre">validate()</span></code> rejects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/frames.html">Frames and transforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#frame-ids-are-paths">Frame ids are paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#framegraph">FrameGraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#frameview-and-the-transform-call">FrameView and the transform call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#composed-world-pose">Composed world_pose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#x-to-3-0">2.x to 3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/frames.html#rules">Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/naming.html">Volume names</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/naming.html#the-scheme">The scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/naming.html#the-sanitiser">The sanitiser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/naming.html#why-the-sign-is-load-bearing">Why the sign is load-bearing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/naming.html#what-is-configurable">What is configurable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/naming.html#do-not">Do not</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/events.html">Events and per-event data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#the-rule">The rule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#the-table">The table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#vmap"><code class="docutils literal notranslate"><span class="pre">vmap</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#two-events-on-one-station">Two events on one station</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#the-overlay-that-is-gone">The overlay that is gone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/events.html#other-patches">Other patches</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howto/cms.html">Work with a CMS chamber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#list-the-chambers">List the chambers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#get-a-spec-and-validate-it">Get a spec and validate it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#build-the-view">Build the view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#plot-both-faces">Plot both faces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#save-and-load-the-spec-as-json">Save and load the spec as JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/cms.html#transform-a-cell-centre-to-cms">Transform a cell centre to CMS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/custom_detector.html">Describe your own detector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#build-the-station">Build the station</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#the-detector-and-its-structural-solid">The detector and its structural solid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#build-the-tree-and-plot-the-stations">Build the tree and plot the stations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/custom_detector.html#export-the-tg">Export the .tg</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/geant4.html">Get the geometry into Geant4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#what-the-file-holds">What the file holds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#write-one-chamber">Write one chamber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#who-reads-it">Who reads it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#the-names-are-a-contract">The names are a contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/geant4.html#gdml-is-not-written-yet">GDML is not written yet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/downstream.html">Use mplDTs from another package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#the-per-event-contract">The per-event contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#what-is-stable">What is stable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#what-is-internal">What is internal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howto/downstream.html#the-pin">The pin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/agents.html">For an AI agent or a new contributor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/geometry/main.html">geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/runtime.html">Runtime model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#poses-and-units">Poses and units</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Pose"><code class="docutils literal notranslate"><span class="pre">Pose</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#specs">Specs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.Tube"><code class="docutils literal notranslate"><span class="pre">Tube</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.CellGrid"><code class="docutils literal notranslate"><span class="pre">CellGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.StationSpec"><code class="docutils literal notranslate"><span class="pre">StationSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.AttachmentSpec"><code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.DetectorSpec"><code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.specs.StructureSpec"><code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#building-the-node-tree">Building the node tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.build_station"><code class="docutils literal notranslate"><span class="pre">build_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#assemblies-and-custom-stations">Assemblies and custom stations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.model.build_detector"><code class="docutils literal notranslate"><span class="pre">build_detector()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#authoring-short-constructors-and-json">Authoring: short constructors and JSON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_layer"><code class="docutils literal notranslate"><span class="pre">make_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_superlayer"><code class="docutils literal notranslate"><span class="pre">make_superlayer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_station"><code class="docutils literal notranslate"><span class="pre">make_station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.constructors.make_detector"><code class="docutils literal notranslate"><span class="pre">make_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.serialize.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#exporting-to-geant4-tg">Exporting to Geant4 (.tg)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.VolumeSink"><code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.base.RecordingSink"><code class="docutils literal notranslate"><span class="pre">RecordingSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.tg.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.export.tg.TgFormatError"><code class="docutils literal notranslate"><span class="pre">TgFormatError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-command-line">The command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-cms-source">The CMS source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.sources.cms_xml.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#frames">Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.frames.FrameGraph"><code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/runtime.html#mpldts.geometry.frames.FrameView"><code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#per-event-data">Per-event data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#the-downstream-contract">The downstream contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#what-3-0-removed">What 3.0 removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/runtime.html#migrating-from-2-2">Migrating from 2.2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/station.html">Station</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station"><code class="docutils literal notranslate"><span class="pre">Station</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.from_spec"><code class="docutils literal notranslate"><span class="pre">Station.from_spec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.wheel"><code class="docutils literal notranslate"><span class="pre">Station.wheel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.sector"><code class="docutils literal notranslate"><span class="pre">Station.sector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.name"><code class="docutils literal notranslate"><span class="pre">Station.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.super_layers"><code class="docutils literal notranslate"><span class="pre">Station.super_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.super_layer"><code class="docutils literal notranslate"><span class="pre">Station.super_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.__init__"><code class="docutils literal notranslate"><span class="pre">Station.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.bounds"><code class="docutils literal notranslate"><span class="pre">Station.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.direction"><code class="docutils literal notranslate"><span class="pre">Station.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.eta"><code class="docutils literal notranslate"><span class="pre">Station.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.global_center"><code class="docutils literal notranslate"><span class="pre">Station.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.height"><code class="docutils literal notranslate"><span class="pre">Station.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.id"><code class="docutils literal notranslate"><span class="pre">Station.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.length"><code class="docutils literal notranslate"><span class="pre">Station.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.local_center"><code class="docutils literal notranslate"><span class="pre">Station.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Station.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.number"><code class="docutils literal notranslate"><span class="pre">Station.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.parent"><code class="docutils literal notranslate"><span class="pre">Station.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.theta"><code class="docutils literal notranslate"><span class="pre">Station.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/station.html#mpldts.geometry.station.Station.width"><code class="docutils literal notranslate"><span class="pre">Station.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/super_layer.html">SuperLayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer"><code class="docutils literal notranslate"><span class="pre">SuperLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.id"><code class="docutils literal notranslate"><span class="pre">SuperLayer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.parent"><code class="docutils literal notranslate"><span class="pre">SuperLayer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_center"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.bounds"><code class="docutils literal notranslate"><span class="pre">SuperLayer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layers"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.number"><code class="docutils literal notranslate"><span class="pre">SuperLayer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.layer"><code class="docutils literal notranslate"><span class="pre">SuperLayer.layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.direction"><code class="docutils literal notranslate"><span class="pre">SuperLayer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.eta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.height"><code class="docutils literal notranslate"><span class="pre">SuperLayer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.length"><code class="docutils literal notranslate"><span class="pre">SuperLayer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">SuperLayer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.theta"><code class="docutils literal notranslate"><span class="pre">SuperLayer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/super_layer.html#mpldts.geometry.super_layer.SuperLayer.width"><code class="docutils literal notranslate"><span class="pre">SuperLayer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/layer.html">Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer"><code class="docutils literal notranslate"><span class="pre">Layer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.__init__"><code class="docutils literal notranslate"><span class="pre">Layer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.id"><code class="docutils literal notranslate"><span class="pre">Layer.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.parent"><code class="docutils literal notranslate"><span class="pre">Layer.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.local_center"><code class="docutils literal notranslate"><span class="pre">Layer.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.global_center"><code class="docutils literal notranslate"><span class="pre">Layer.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.bounds"><code class="docutils literal notranslate"><span class="pre">Layer.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.cells"><code class="docutils literal notranslate"><span class="pre">Layer.cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.number"><code class="docutils literal notranslate"><span class="pre">Layer.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.cell"><code class="docutils literal notranslate"><span class="pre">Layer.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.direction"><code class="docutils literal notranslate"><span class="pre">Layer.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.eta"><code class="docutils literal notranslate"><span class="pre">Layer.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.height"><code class="docutils literal notranslate"><span class="pre">Layer.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.length"><code class="docutils literal notranslate"><span class="pre">Layer.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">Layer.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.theta"><code class="docutils literal notranslate"><span class="pre">Layer.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/layer.html#mpldts.geometry.layer.Layer.width"><code class="docutils literal notranslate"><span class="pre">Layer.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/drift_cell.html">DriftCell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell"><code class="docutils literal notranslate"><span class="pre">DriftCell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.__init__"><code class="docutils literal notranslate"><span class="pre">DriftCell.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.parent"><code class="docutils literal notranslate"><span class="pre">DriftCell.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.id"><code class="docutils literal notranslate"><span class="pre">DriftCell.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.number"><code class="docutils literal notranslate"><span class="pre">DriftCell.number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.bounds"><code class="docutils literal notranslate"><span class="pre">DriftCell.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_center"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_center</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.direction"><code class="docutils literal notranslate"><span class="pre">DriftCell.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.eta"><code class="docutils literal notranslate"><span class="pre">DriftCell.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.global_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.global_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.height"><code class="docutils literal notranslate"><span class="pre">DriftCell.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.length"><code class="docutils literal notranslate"><span class="pre">DriftCell.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.local_cords_at_min"><code class="docutils literal notranslate"><span class="pre">DriftCell.local_cords_at_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.theta"><code class="docutils literal notranslate"><span class="pre">DriftCell.theta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/drift_cell.html#mpldts.geometry.drift_cell.DriftCell.width"><code class="docutils literal notranslate"><span class="pre">DriftCell.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/specs.html">Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.LayerSpec"><code class="docutils literal notranslate"><span class="pre">LayerSpec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.LayerSpec.__init__"><code class="docutils literal notranslate"><span class="pre">LayerSpec.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.SuperLayerSpec"><code class="docutils literal notranslate"><span class="pre">SuperLayerSpec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.SuperLayerSpec.__init__"><code class="docutils literal notranslate"><span class="pre">SuperLayerSpec.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/specs.html#mpldts.geometry.specs.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/frames.html">Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/serialize.html">Serialize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/constructors.html">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/sources.html">Sources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.__init__"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.chamber_keys"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.chamber_keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.station"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.station()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.record"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.record()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.chamber_of"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.chamber_of()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.detector"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/sources.html#mpldts.geometry.sources.CMSXMLSource.cell_centres"><code class="docutils literal notranslate"><span class="pre">CMSXMLSource.cell_centres()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/export.html">Export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.TgSink"><code class="docutils literal notranslate"><span class="pre">TgSink</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.TgSink.__init__"><code class="docutils literal notranslate"><span class="pre">TgSink.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.export_volumes"><code class="docutils literal notranslate"><span class="pre">export_volumes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.iter_volume_placements"><code class="docutils literal notranslate"><span class="pre">iter_volume_placements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.VolumePlacement"><code class="docutils literal notranslate"><span class="pre">VolumePlacement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/export.html#mpldts.export.VolumePlacement.__init__"><code class="docutils literal notranslate"><span class="pre">VolumePlacement.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/main.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/main.html#dtframe">DTFrame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.DTFrame"><code class="docutils literal notranslate"><span class="pre">DTFrame</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/geometry/main.html#other-utils">Other utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/geometry/main.html#transforms">Transforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.TransformManager"><code class="docutils literal notranslate"><span class="pre">TransformManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.compute_eta"><code class="docutils literal notranslate"><span class="pre">compute_eta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/geometry/main.html#mpldts.geometry.transforms.compute_theta"><code class="docutils literal notranslate"><span class="pre">compute_theta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/patches/main.html">patches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/dt_patch_base.html">DTRelatedPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._add_collections_to_axes"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._add_collections_to_axes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch._draw_collections"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch._draw_collections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_patch_base.html#mpldts.patches.dt_patch_base.DTRelatedPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTRelatedPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/dt_station_patch.html">DTStationPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch"><code class="docutils literal notranslate"><span class="pre">DTStationPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._create_frame"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._create_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_bounds"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_bounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch._draw_cells"><code class="docutils literal notranslate"><span class="pre">DTStationPatch._draw_cells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.change_vmap"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.change_vmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.invert_view"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.invert_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/dt_station_patch.html#mpldts.patches.dt_station_patch.DTStationPatch.move_to_global"><code class="docutils literal notranslate"><span class="pre">DTStationPatch.move_to_global()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/dt_station_patch.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/patches/objects_patch.html">DTObjectsPatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch.__init__"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/patches/objects_patch.html#mpldts.patches.objects_patch.DTObjectsPatch._to_face"><code class="docutils literal notranslate"><span class="pre">DTObjectsPatch._to_face()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-0-1">Version 3.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-0-0">Version 3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-9-1">Version 2.9.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-9-0">Version 2.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-8-0">Version 2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-7-0">Version 2.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-6-0">Version 2.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-5-1">Version 2.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-5-0">Version 2.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-4-0">Version 2.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-3-0">Version 2.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-2-0">Version 2.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-2-0-beta">Version 2.2.0-beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-1-1-beta">Version 2.1.1-beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-1-0">Version 2.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-0-0">Version 2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-1-0">Version 1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-0-0">Version 1.0.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Decisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adr-001-declarative-specs-sources-and-a-builder">ADR-001 — Declarative specs, sources and a builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-002-one-pose-per-node-child-to-parent-centimetres">ADR-002 — One pose per node, child to parent, centimetres</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-003-one-frame-graph-a-scoped-view-per-object">ADR-003 — One frame graph, a scoped view per object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-004-the-cms-xml-is-a-source-and-a-preset-not-the-core">ADR-004 — The CMS XML is a source and a preset, not the core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-005-the-xml-wire-is-the-cell-there-is-no-wire-object">ADR-005 — The XML <code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code> is the cell; there is no wire object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-006-primitive-shapes-in-the-core-csg-out-of-scope">ADR-006 — Primitive shapes in the core; CSG out of scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-007-geometry-is-immutable-event-data-is-a-table-never-a-mutation">ADR-007 — Geometry is immutable; event data is a table, never a mutation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-008-one-exporter-seam-tg-first-pyg4ometry-optional-and-later">ADR-008 — One exporter seam, <code class="docutils literal notranslate"><span class="pre">.tg</span></code> first, pyg4ometry optional and later</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-009-the-cms-xml-globals-are-the-oracle">ADR-009 — The CMS XML globals are the oracle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-010-physical-volume-policy">ADR-010 — Physical volume policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-011-honeycomb-and-yoke-are-data-csg-stays-in-a-backend">ADR-011 — Honeycomb and yoke are data; CSG stays in a backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-012-order-the-work-specs-first-no-speculative-modules">ADR-012 — Order the work specs first; no speculative modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-013-the-detector-is-the-root-of-the-same-node-tree">ADR-013 — The detector is the root of the same node tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-014-the-phi-and-eta-views-follow-the-super-layer-orientation">ADR-014 — The phi and eta views follow the super layer orientation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-015-releases-are-tagged-on-the-integration-branch-main-moves-on-approval">ADR-015 — Releases are tagged on the integration branch; main moves on approval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-016-a-document-is-the-spec-an-export-is-placements-names-are-not-geometry">ADR-016 — A document is the spec, an export is placements, names are not geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-017-the-downstream-packages-are-part-of-the-release-gate">ADR-017 — The downstream packages are part of the release gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-018-3-0-removes-compatibility-not-the-view-layer">ADR-018 — 3.0 removes compatibility, not the view layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-019-a-station-may-be-a-passive-solid">ADR-019 — A station may be a passive solid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-020-history-rewrite-and-only-agent-created-branches-d1-d2">ADR-020 — History rewrite, and only agent-created branches (D1, D2)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-021-rewritten-commits-carry-the-agent-identity-d3">ADR-021 — Rewritten commits carry the agent identity (D3)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-022-the-agent-workspace-is-removed-the-record-moves-to-the-docs-d4">ADR-022 — The agent workspace is removed; the record moves to the docs (D4)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-023-the-beta-tags-stay-marked-as-prereleases-d5">ADR-023 — The beta tags stay, marked as prereleases (D5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-024-tutorial-notebooks-use-myst-nb-with-execution-off-d6">ADR-024 — Tutorial notebooks use MyST-NB with execution off (D6)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adr-025-agents-md-is-the-short-entry-point-d7">ADR-025 — <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> is the short entry point (D7)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#gdml-through-pyg4ometry">GDML through pyg4ometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#volume-renaming">Volume renaming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#considered-and-rejected">Considered and rejected</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#working-copy">Working copy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#tests">Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-layout">Code layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#continuous-integration">Continuous integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#release-steps">Release steps</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mplDTs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Decisions</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/INTREPID-hep/mplDTs" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="decisions">
+<h1>Decisions<a class="headerlink" href="#decisions" title="Link to this heading"></a></h1>
+<p>This is the durable record of the architecture decisions behind mplDTs. The
+entries were consolidated in 3.0.1 from the design notes that lived in the
+repository’s agent workspace until that release; the numbers below are the
+durable ones, not the numbering those notes happened to use. Dates are the
+dates the decision was taken.</p>
+<p>An accepted decision is not reopened silently. To change one, write a new ADR
+that supersedes it and says why.</p>
+<section id="adr-001-declarative-specs-sources-and-a-builder">
+<h2>ADR-001 — Declarative specs, sources and a builder<a class="headerlink" href="#adr-001-declarative-specs-sources-and-a-builder" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Every geometry class read the CMS XML singleton directly, so a
+detector that was not CMS was impossible without editing the XML, and any
+change to the model was entangled with parsing.</p>
+<p><strong>Decision.</strong> Geometry is described by immutable specs (<code class="docutils literal notranslate"><span class="pre">StationSpec</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DetectorSpec</span></code> and their parts), produced by a source (<code class="docutils literal notranslate"><span class="pre">CMSXMLSource</span></code> for
+CMS, JSON or Python for anything else) and turned into runtime objects by one
+builder. The model classes consume specs and never perform I/O. The resulting stack has four layers: the specs, the node tree built from them, the frame graph, and the views and exporters that read the graph.</p>
+<p><strong>Consequences.</strong> One extra layer, but the XML becomes replaceable and the spec
+is the single source of truth for plotting, export and validation. The
+pre-refactor constructors became compatibility wrappers until 3.0.</p>
+</section>
+<section id="adr-002-one-pose-per-node-child-to-parent-centimetres">
+<h2>ADR-002 — One pose per node, child to parent, centimetres<a class="headerlink" href="#adr-002-one-pose-per-node-child-to-parent-centimetres" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The old code mixed station-frame and super-layer-frame
+coordinates, which produced a super layer 2 transform off by 2.47 cm, and the
+meaning of <code class="docutils literal notranslate"><span class="pre">local_center</span></code> depended on the class.</p>
+<p><strong>Decision.</strong> Every node stores exactly one pose relative to its parent,
+<code class="docutils literal notranslate"><span class="pre">p_parent</span> <span class="pre">=</span> <span class="pre">R</span> <span class="pre">·</span> <span class="pre">p_child</span> <span class="pre">+</span> <span class="pre">t</span></code>. Global poses are composed top-down and cached
+on the node; nothing else writes a transform. Lengths are cm. Local axes are
+x = pitch, y = cell length, z = drift, and sizes are full extents, not
+half-lengths.</p>
+<p><strong>Consequences.</strong> The whole class of frame-mixing bugs disappears, and an
+exporter is a pose walk. The XML globals stay outside the model as an oracle
+only.</p>
+</section>
+<section id="adr-003-one-frame-graph-a-scoped-view-per-object">
+<h2>ADR-003 — One frame graph, a scoped view per object<a class="headerlink" href="#adr-003-one-frame-graph-a-scoped-view-per-object" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Each object built its own transform manager and copied sub-chains,
+so a copy could go stale and frame names were ambiguous across objects.</p>
+<p><strong>Decision.</strong> One <code class="docutils literal notranslate"><span class="pre">FrameGraph</span></code> per detector, with unique path frame ids. Each
+object exposes a <code class="docutils literal notranslate"><span class="pre">FrameView</span></code> with scoped aliases (<code class="docutils literal notranslate"><span class="pre">Station</span></code>, <code class="docutils literal notranslate"><span class="pre">SL2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">L1</span></code>, <code class="docutils literal notranslate"><span class="pre">Cell</span></code>, <code class="docutils literal notranslate"><span class="pre">CMS</span></code>…). Virtual frames are graph edges.
+<code class="docutils literal notranslate"><span class="pre">get_transformation</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code>, <code class="docutils literal notranslate"><span class="pre">available_frames</span></code> and <code class="docutils literal notranslate"><span class="pre">add</span></code>/<code class="docutils literal notranslate"><span class="pre">remove</span></code>
+keep working.</p>
+<p><strong>Consequences.</strong> Backward-compatible queries without stale copies; one edge
+per node. Global poses are still composed by the builder, not by a graph
+search.</p>
+</section>
+<section id="adr-004-the-cms-xml-is-a-source-and-a-preset-not-the-core">
+<h2>ADR-004 — The CMS XML is a source and a preset, not the core<a class="headerlink" href="#adr-004-the-cms-xml-is-a-source-and-a-preset-not-the-core" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Wheel and sector ranges, face orientation, sector-phi arithmetic,
+the MB4 13/14 correction, the SL13 frame and the super layer 2 rotation were
+baked into the core classes.</p>
+<p><strong>Decision.</strong> CMS semantics live in the CMS source and the CMS preset; the core
+knows only nodes, shapes, poses and frames. CMS behaviour is preserved by the
+preset and pinned by the oracle.</p>
+<p><strong>Consequences.</strong> A custom detector does not inherit CMS conventions, and the
+core stays small. Plotting must choose the phi and eta views from the geometry
+(the orientation decision below), not from a chamber number.</p>
+</section>
+<section id="adr-005-the-xml-wire-is-the-cell-there-is-no-wire-object">
+<h2>ADR-005 — The XML <code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code> is the cell; there is no wire object<a class="headerlink" href="#adr-005-the-xml-wire-is-the-cell-there-is-no-wire-object" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The XML <code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code> elements were treated as wires, and a separate
+wire entity was invented with a radius and a material. The element is the cell
+entry: a number and a position.</p>
+<p><strong>Decision.</strong> Model a <code class="docutils literal notranslate"><span class="pre">Cell</span></code> (the gas volume and its centre) and a
+<code class="docutils literal notranslate"><span class="pre">CellGrid</span></code> (pitch, count, stagger, first id). The CMS source maps
+<code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code> to the cell once. No wire solid is ever exported; analysis code that
+needs the anode line uses the cell centre.</p>
+<p><strong>Consequences.</strong> One object instead of three, simpler JSON and no duplicate
+concept. The XML vocabulary (<code class="docutils literal notranslate"><span class="pre">&lt;Wire&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">WiresSize</span></code>, <code class="docutils literal notranslate"><span class="pre">wireNumber</span></code>) survives
+only inside the CMS source.</p>
+</section>
+<section id="adr-006-primitive-shapes-in-the-core-csg-out-of-scope">
+<h2>ADR-006 — Primitive shapes in the core; CSG out of scope<a class="headerlink" href="#adr-006-primitive-shapes-in-the-core-csg-out-of-scope" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The design first assumed boxes; tube cells, with a circular face,
+are real in CMS, and other primitives may follow.</p>
+<p><strong>Decision.</strong> A <code class="docutils literal notranslate"><span class="pre">Shape</span></code> protocol with <code class="docutils literal notranslate"><span class="pre">aabb()</span></code>, <code class="docutils literal notranslate"><span class="pre">volume()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">symmetry_axis()</span></code>; implement <code class="docutils literal notranslate"><span class="pre">Box</span></code> and <code class="docutils literal notranslate"><span class="pre">Tube</span></code> and add primitives when a
+detector needs one. Do not implement boolean solids. A backend may accept a
+pre-built solid, but the core never grows a CAD kernel.</p>
+<p><strong>Consequences.</strong> No CSG dependency, tubes work, and exotic solids are a
+backend concern.</p>
+</section>
+<section id="adr-007-geometry-is-immutable-event-data-is-a-table-never-a-mutation">
+<h2>ADR-007 — Geometry is immutable; event data is a table, never a mutation<a class="headerlink" href="#adr-007-geometry-is-immutable-event-data-is-a-table-never-a-mutation" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted (revised 2026-11-08)</p>
+<p><strong>Context.</strong> A station cache returned a shared mutable station and
+<code class="docutils literal notranslate"><span class="pre">set_cell_attrs</span></code> wrote on shared cells, so one event’s data leaked into the
+next. A first design put per-event values in an overlay attached to a clone.</p>
+<p><strong>Decision.</strong> Geometry is immutable after build. Per-event values are a table
+keyed by <code class="docutils literal notranslate"><span class="pre">(sl,</span> <span class="pre">l,</span> <span class="pre">w)</span></code> handed to the patch
+(<code class="docutils literal notranslate"><span class="pre">DTStationPatch(...,</span> <span class="pre">data=rows,</span> <span class="pre">vmap=&quot;time&quot;)</span></code>); the geometry is never copied
+or written per event. mplDTs does not own an event model: <code class="docutils literal notranslate"><span class="pre">Track</span></code>, <code class="docutils literal notranslate"><span class="pre">Jet</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Cone</span></code> and collections belong to the downstream pattern-recognition package,
+and the contract between the two is data, not classes. <code class="docutils literal notranslate"><span class="pre">AMDTSegments</span></code> stays
+as a thin view over that data.</p>
+<p><strong>Consequences.</strong> One station draws many events, and two events never disagree
+because the cache changed under them. The overlay API of 2.x was deleted in
+3.0, and the downstream package evolves its event model without an mplDTs
+release.</p>
+</section>
+<section id="adr-008-one-exporter-seam-tg-first-pyg4ometry-optional-and-later">
+<h2>ADR-008 — One exporter seam, <code class="docutils literal notranslate"><span class="pre">.tg</span></code> first, pyg4ometry optional and later<a class="headerlink" href="#adr-008-one-exporter-seam-tg-first-pyg4ometry-optional-and-later" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> pyg4ometry is the natural Geant4 backend, but making it a
+dependency would drag VTK and CGAL into the critical path, while the simulator
+already reads the ASCII <code class="docutils literal notranslate"><span class="pre">.tg</span></code> format.</p>
+<p><strong>Decision.</strong> The backend seam is <code class="docutils literal notranslate"><span class="pre">VolumeSink</span></code>: <code class="docutils literal notranslate"><span class="pre">begin</span></code>, <code class="docutils literal notranslate"><span class="pre">place</span></code> and
+<code class="docutils literal notranslate"><span class="pre">end</span></code>, fed by a walk that folds every grouping node into the pose of the next
+placement. <code class="docutils literal notranslate"><span class="pre">TgSink</span></code> is the first backend. A future pyg4ometry backend is a
+new module implementing the same three methods, behind an optional extra
+(<code class="docutils literal notranslate"><span class="pre">mplDTs[g4]</span></code>), lazily imported; <code class="docutils literal notranslate"><span class="pre">mpldts.geometry</span></code> never imports it and the
+core exposes only a 4×4 <code class="docutils literal notranslate"><span class="pre">Pose.matrix</span></code> and a backend-neutral shape.</p>
+<p><strong>Consequences.</strong> No dependency now, and the <code class="docutils literal notranslate"><span class="pre">.tg</span></code> output matches the CMS
+generator. GDML is additive when it comes; the open questions are on the
+roadmap page.</p>
+</section>
+<section id="adr-009-the-cms-xml-globals-are-the-oracle">
+<h2>ADR-009 — The CMS XML globals are the oracle<a class="headerlink" href="#adr-009-the-cms-xml-globals-are-the-oracle" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The model has to reproduce CMS, and the XML carries an
+independent <code class="docutils literal notranslate"><span class="pre">GlobalPosition</span></code> for every cell.</p>
+<p><strong>Decision.</strong> For every chamber, rebuild the cell centres from the specs and
+assert <code class="docutils literal notranslate"><span class="pre">|computed</span> <span class="pre">−</span> <span class="pre">XML|</span> <span class="pre">&lt;</span> <span class="pre">1e-3</span> <span class="pre">cm</span></code>, for all 250 chambers (the <code class="docutils literal notranslate"><span class="pre">slow</span></code>
+marker, plus a representative subset in the normal suite). Keep the XML values
+in <code class="docutils literal notranslate"><span class="pre">metadata[&quot;reference&quot;]</span></code>; never read them in the model.</p>
+<p><strong>Consequences.</strong> A pose regression fails the suite instead of a plot. When the
+oracle fails, the source is fixed, not the tolerance.</p>
+</section>
+<section id="adr-010-physical-volume-policy">
+<h2>ADR-010 — Physical volume policy<a class="headerlink" href="#adr-010-physical-volume-policy" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The maintainer confirmed which objects exist physically in the
+simulation and which are logical grouping.</p>
+<p><strong>Decision.</strong> Physical: the station (air), the drift cells (gas), the honeycomb
+(aluminium) and the yoke (iron). Non-physical: super layers and layers, which
+are grouping frames. There is no separate wire object. The core carries the
+data; the exporter decides how to build it.</p>
+<p><strong>Consequences.</strong> A shallow Geant4 hierarchy (station, cells, attachments), and
+a super layer never becomes a volume unless a future detector gives it a shape.</p>
+</section>
+<section id="adr-011-honeycomb-and-yoke-are-data-csg-stays-in-a-backend">
+<h2>ADR-011 — Honeycomb and yoke are data; CSG stays in a backend<a class="headerlink" href="#adr-011-honeycomb-and-yoke-are-data-csg-stays-in-a-backend" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-05 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Honeycomb is a passive box bolted to the station; the yoke is iron
+with station-shaped holes. Building the yoke in mplDTs would turn the library
+into a CAD kernel.</p>
+<p><strong>Decision.</strong> Honeycomb is a station attachment (<code class="docutils literal notranslate"><span class="pre">AttachmentSpec</span></code> with shape,
+pose and material), derived by the CMS source from the super layer records and
+emitted as a node beside the geometry children, so an exporter places it after
+the cells. The yoke is a <code class="docutils literal notranslate"><span class="pre">StructureSpec</span></code> (shape, subtractions, material) at
+detector level and stays data: no node is built and no exporter sees it until a
+backend can do booleans. A backend without CSG rejects the structure
+explicitly.</p>
+<p><strong>Consequences.</strong> The data model is ready for GDML without a dependency now,
+and the yoke keeps working through the simulator’s own path in the meantime.
+Attachments are invisible to plotting and frame queries.</p>
+</section>
+<section id="adr-012-order-the-work-specs-first-no-speculative-modules">
+<h2>ADR-012 — Order the work specs first; no speculative modules<a class="headerlink" href="#adr-012-order-the-work-specs-first-no-speculative-modules" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-06 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The first delivery plan half-refactored the classes before the
+specs existed, duplicated the CMS work across phases, built the exporter seam
+before any exporter, and planned a YAML-driven CLI nobody had asked for.</p>
+<p><strong>Decision.</strong> Delivery order: specs and the CMS source, then the runtime model
+and compatibility, then assemblies and authoring in parallel. The exporter seam
+arrives with its first backend, not before. JSON documents and Python
+constructors are the authoring surface; a configuration format and a plugin
+system are out of scope. Event annotations are optional and off the critical
+path.</p>
+<p><strong>Consequences.</strong> One model rewrite instead of two, and the oracle validates a
+layer before the next depends on it. A small argparse CLI was added later as a
+wrapper over existing calls, not as a framework.</p>
+</section>
+<section id="adr-013-the-detector-is-the-root-of-the-same-node-tree">
+<h2>ADR-013 — The detector is the root of the same node tree<a class="headerlink" href="#adr-013-the-detector-is-the-root-of-the-same-node-tree" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-07 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Assemblies must place chambers arbitrarily (a one-super-layer or a
+five-super-layer station, two stations at an angle) without changing a single
+CMS result.</p>
+<p><strong>Decision.</strong> <code class="docutils literal notranslate"><span class="pre">build_detector</span></code> makes the detector the root of the same node
+tree; stations hang under it at their own poses. CMS-specific frames exist only
+in a preset applied to CMS geometries. A custom station is a <code class="docutils literal notranslate"><span class="pre">StationSpec</span></code>
+plus a view and never sees CMS conventions.</p>
+<p><strong>Consequences.</strong> One builder for CMS and custom geometry, and plotting can
+choose the views from the geometry instead of the chamber number. The CMS
+signature and its oracle are untouched.</p>
+</section>
+<section id="adr-014-the-phi-and-eta-views-follow-the-super-layer-orientation">
+<h2>ADR-014 — The phi and eta views follow the super layer orientation<a class="headerlink" href="#adr-014-the-phi-and-eta-views-follow-the-super-layer-orientation" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-08 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The station patch picked the two views by the CMS convention that
+super layer 2 is the turned one. That is a layout fact of CMS chambers, not
+geometry: a spec-built chamber drew its middle super layer in the wrong place.</p>
+<p><strong>Decision.</strong> A patch asks the super layer whether it is turned (its x axis runs
+along the station length) and draws it in the view where <code class="docutils literal notranslate"><span class="pre">faceview</span></code> does not
+match. <code class="docutils literal notranslate"><span class="pre">faceview</span></code> stays accepted. The segment convention (a segment with
+<code class="docutils literal notranslate"><span class="pre">sl</span> <span class="pre">==</span> <span class="pre">2</span></code>) stays a rule of the segments, not of the station.</p>
+<p><strong>Consequences.</strong> Identical rectangles for all 250 CMS chambers, pinned by a
+test and by the slow sweep, and custom geometry plots correctly. No API change
+for callers.</p>
+</section>
+<section id="adr-015-releases-are-tagged-on-the-integration-branch-main-moves-on-approval">
+<h2>ADR-015 — Releases are tagged on the integration branch; main moves on approval<a class="headerlink" href="#adr-015-releases-are-tagged-on-the-integration-branch-main-moves-on-approval" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-08 · <strong>Status:</strong> accepted (2.x process)</p>
+<p><strong>Context.</strong> The refactor was reviewed on an integration branch and <code class="docutils literal notranslate"><span class="pre">main</span></code>
+had to stay put until the maintainer approved it, but downstream packages
+needed an addressable release to pin.</p>
+<p><strong>Decision.</strong> Tag the integration branch when its version metadata and tests
+are green. Merging into <code class="docutils literal notranslate"><span class="pre">main</span></code> stays a maintainer action; the tag is then an
+ancestor of the same commit, so nothing is rewritten.</p>
+<p><strong>Consequences.</strong> Downstream pins a tag while <code class="docutils literal notranslate"><span class="pre">main</span></code> is unchanged, and no
+merge has to be forced. Since 3.0.1 the releases are tagged on <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
+</section>
+<section id="adr-016-a-document-is-the-spec-an-export-is-placements-names-are-not-geometry">
+<h2>ADR-016 — A document is the spec, an export is placements, names are not geometry<a class="headerlink" href="#adr-016-a-document-is-the-spec-an-export-is-placements-names-are-not-geometry" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-08 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> Writing a detector down (JSON) and out (<code class="docutils literal notranslate"><span class="pre">.tg</span></code>) tempts a
+serializer to store derived values and an exporter to inherit the CMS
+generator’s conventions: the <code class="docutils literal notranslate"><span class="pre">Station_W0_Sec1_St1</span></code> names, the layer-encoding
+suffix and a hardcoded gas.</p>
+<p><strong>Decision.</strong></p>
+<ol class="arabic simple">
+<li><p>A JSON document holds poses, shapes and names only; centres and world poses
+are rebuilt from it. The reader is strict, because a typo in a detector
+description is a detector that is silently wrong.</p></li>
+<li><p>An exporter sees placements, not the tree: <code class="docutils literal notranslate"><span class="pre">VolumeSink.begin/place/end</span></code>
+over a walk that folds the grouping frames. The backend owns its names.
+<code class="docutils literal notranslate"><span class="pre">TgSink</span></code> qualifies names by the exported root, writes no world volume and
+no identity rotation, and refuses a solid node without a material instead of
+defaulting to air.</p></li>
+<li><p>Names are not part of the geometry contract: parity with the CMS generator
+is judged on placements (solid, material, dimensions, rotation, position),
+not on identifiers.</p></li>
+</ol>
+<p><strong>Consequences.</strong> A file cannot disagree with the model, and a new backend is a
+new module with three methods. The naming contract is the exception, below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Volume names are a live contract with the Geant4 reader, not an
+implementation detail. <code class="docutils literal notranslate"><span class="pre">TgSink.name_of(node)</span></code> lets a consumer keep its own
+scheme, and the CMS simulator uses it to emit
+<code class="docutils literal notranslate"><span class="pre">Station_W&lt;w&gt;_Sec&lt;s&gt;_St&lt;n&gt;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DriftCell_..._SL&lt;n&gt;_&lt;encoding&gt;</span></code>, because its C++ sensitive detectors
+decode the wheel, super layer, layer and wire from those names. The sign of
+a negative wheel is part of the name: StationSD reads <code class="docutils literal notranslate"><span class="pre">W-1</span></code>, and a
+sanitiser that dropped the dash broke every negative chamber once. The
+geometry never stores a volume name.</p>
+</div>
+</section>
+<section id="adr-017-the-downstream-packages-are-part-of-the-release-gate">
+<h2>ADR-017 — The downstream packages are part of the release gate<a class="headerlink" href="#adr-017-the-downstream-packages-are-part-of-the-release-gate" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-08 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> The pattern-recognition package and the Geant4 simulator import a
+small, specific surface of mplDTs, and nothing on either side tested it, so a
+rename broke them silently.</p>
+<p><strong>Decision.</strong> <code class="docutils literal notranslate"><span class="pre">test/downstream</span></code> imports exactly that surface and exercises it
+without ROOT or Qt: the spec constructor, the cell-data table, one station patch
+per view, the segment views, <code class="docutils literal notranslate"><span class="pre">super_layer().layer().cell()</span></code> and the layer id
+bounds. <code class="docutils literal notranslate"><span class="pre">FrameView.available_frames</span></code> carries the legacy alias names as well.
+Each downstream package pins a tag, never a branch, and runs its own suite
+against that tag.</p>
+<p><strong>Consequences.</strong> One small test in the normal suite, a patch release (2.5.1)
+to restore the aliases, and a release does not ship until both consumers are
+green on the candidate tag.</p>
+</section>
+<section id="adr-018-3-0-removes-compatibility-not-the-view-layer">
+<h2>ADR-018 — 3.0 removes compatibility, not the view layer<a class="headerlink" href="#adr-018-3-0-removes-compatibility-not-the-view-layer" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-08 · <strong>Status:</strong> accepted (completed 2026-11-09)</p>
+<p><strong>Context.</strong> 2.x kept the pre-refactor API alive so the downstream packages
+could migrate one step at a time. The shims were cheap but they were a second
+way to build a station, so “3.0 someday” needed a written content or it would
+become permanent.</p>
+<p><strong>Decision.</strong> Two releases. 2.9.0 warns on every legacy entry point and names
+its replacement; 3.0.0 deletes the XML-backed constructor, <code class="docutils literal notranslate"><span class="pre">DTGeometry</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DTGEOMETRY</span></code>, <code class="docutils literal notranslate"><span class="pre">StationsCache</span></code>, <code class="docutils literal notranslate"><span class="pre">overlay</span></code>/<code class="docutils literal notranslate"><span class="pre">set_cell_attrs</span></code>/<code class="docutils literal notranslate"><span class="pre">dt_info</span></code>,
+the standalone child constructors, the <code class="docutils literal notranslate"><span class="pre">&quot;SuperLayer&quot;</span></code> alias and the CMS
+preset. It keeps <code class="docutils literal notranslate"><span class="pre">dt_frame.py</span></code>, <code class="docutils literal notranslate"><span class="pre">super_layer.py</span></code>, <code class="docutils literal notranslate"><span class="pre">layer.py</span></code> and
+<code class="docutils literal notranslate"><span class="pre">drift_cell.py</span></code>: they are the surface the patches draw through, not
+compatibility. Per-event data is the patch’s <code class="docutils literal notranslate"><span class="pre">(sl,</span> <span class="pre">l,</span> <span class="pre">w)</span></code> table. Volume names
+and <code class="docutils literal notranslate"><span class="pre">TgSink.name_of</span></code> stay, because they are the live C++ contract, so 3.0
+needed no Geant4 change.</p>
+<p><strong>Consequences.</strong> The release is a deletion with no simulator change and
+identical <code class="docutils literal notranslate"><span class="pre">.tg</span></code> files. Every removal had a replacement, both downstream
+packages were green on the tag, and a future backend that reads the node tree
+directly may retire the views, but not this release.</p>
+</section>
+<section id="adr-019-a-station-may-be-a-passive-solid">
+<h2>ADR-019 — A station may be a passive solid<a class="headerlink" href="#adr-019-a-station-may-be-a-passive-solid" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-09 · <strong>Status:</strong> accepted (3.0.1)</p>
+<p><strong>Context.</strong> A prototype detector needs volumes that are not chambers: a lead
+wall between two pairs of super layers, a support panel. <code class="docutils literal notranslate"><span class="pre">StationSpec</span></code>
+already carried a shape and the builder already handled a station with no super
+layers; only the validator rejected it.</p>
+<p><strong>Decision.</strong> A station with a shape and no super layers is valid. A station
+with neither a shape nor super layers is still rejected.</p>
+<p><strong>Consequences.</strong> The view and the <code class="docutils literal notranslate"><span class="pre">.tg</span></code> exporter read it as one volume with
+a pose: no cells, nothing sensitive. The relaxed rule cannot
+produce an empty volume.</p>
+</section>
+<section id="adr-020-history-rewrite-and-only-agent-created-branches-d1-d2">
+<h2>ADR-020 — History rewrite, and only agent-created branches (D1, D2)<a class="headerlink" href="#adr-020-history-rewrite-and-only-agent-created-branches-d1-d2" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Context.</strong> <code class="docutils literal notranslate"><span class="pre">main</span></code> carried 88 commits, half of them bookkeeping for a
+working directory that was about to be deleted, plus ticket ids that mean
+nothing outside it. Some branches were the maintainer’s originals.</p>
+<p><strong>Decision.</strong> Force-push <code class="docutils literal notranslate"><span class="pre">main</span></code> with a lease, delete and recreate the tags,
+and merge the curated branches with <code class="docutils literal notranslate"><span class="pre">--no-ff</span></code>. Touch only the branches the
+agent created; every other branch, local or remote, is left exactly as it is.
+Keep a local <code class="docutils literal notranslate"><span class="pre">archive/pre-rewrite</span></code> branch and a bundle as the safety net.</p>
+<p><strong>Consequences.</strong> About 45 meaningful commits with no ticket ids, and the
+original branches remain available. Rewriting never happens without the archive.</p>
+</section>
+<section id="adr-021-rewritten-commits-carry-the-agent-identity-d3">
+<h2>ADR-021 — Rewritten commits carry the agent identity (D3)<a class="headerlink" href="#adr-021-rewritten-commits-carry-the-agent-identity-d3" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Decision.</strong> Commits created by the rewrite are authored and committed by
+<code class="docutils literal notranslate"><span class="pre">DeepSeek</span> <span class="pre">Agent</span> <span class="pre">&lt;agent&#64;deepseek.local&gt;</span></code>, never by Daniel Estrada.</p>
+<p><strong>Consequences.</strong> Provenance is honest: the maintainer is not credited with
+commits an agent wrote.</p>
+</section>
+<section id="adr-022-the-agent-workspace-is-removed-the-record-moves-to-the-docs-d4">
+<h2>ADR-022 — The agent workspace is removed; the record moves to the docs (D4)<a class="headerlink" href="#adr-022-the-agent-workspace-is-removed-the-record-moves-to-the-docs-d4" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Decision.</strong> Delete <code class="docutils literal notranslate"><span class="pre">.agents/</span></code>. The decision record becomes this page, and
+the pyg4ometry plan survives as a GitHub issue plus the roadmap page.</p>
+<p><strong>Consequences.</strong> One source of truth, in the documentation, instead of a second
+copy in a working directory that only agents read.</p>
+</section>
+<section id="adr-023-the-beta-tags-stay-marked-as-prereleases-d5">
+<h2>ADR-023 — The beta tags stay, marked as prereleases (D5)<a class="headerlink" href="#adr-023-the-beta-tags-stay-marked-as-prereleases-d5" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Decision.</strong> Keep the two <code class="docutils literal notranslate"><span class="pre">-beta</span></code> tags and publish them as prereleases on
+GitHub.</p>
+<p><strong>Consequences.</strong> The history of what downstream packages pinned is preserved,
+and a reader is warned that those tags are not supported releases.</p>
+</section>
+<section id="adr-024-tutorial-notebooks-use-myst-nb-with-execution-off-d6">
+<h2>ADR-024 — Tutorial notebooks use MyST-NB with execution off (D6)<a class="headerlink" href="#adr-024-tutorial-notebooks-use-myst-nb-with-execution-off-d6" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Decision.</strong> Tutorial notebooks are MyST-NB documents with
+<code class="docutils literal notranslate"><span class="pre">nb_execution_mode</span> <span class="pre">=</span> <span class="pre">&quot;off&quot;</span></code>: outputs are committed by hand, CI does not
+execute them and there is no pandoc dependency.</p>
+<p><strong>Consequences.</strong> The docs build stays fast and deterministic, but a stale
+output has to be regenerated and committed when the code changes.</p>
+</section>
+<section id="adr-025-agents-md-is-the-short-entry-point-d7">
+<h2>ADR-025 — <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> is the short entry point (D7)<a class="headerlink" href="#adr-025-agents-md-is-the-short-entry-point-d7" title="Link to this heading"></a></h2>
+<p><strong>Date:</strong> 2026-11-10 · <strong>Status:</strong> accepted</p>
+<p><strong>Decision.</strong> One root <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>, short, where every section points at the
+code or the documentation page that holds the detail.</p>
+<p><strong>Consequences.</strong> Agent instructions cannot silently diverge from the docs, and
+the detail lives in one place.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="changelog.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="roadmap.html" class="btn btn-neutral float-right" title="Roadmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2026, Daniel Estrada, Universidad de Oviedo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
