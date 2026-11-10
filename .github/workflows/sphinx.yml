@@ -1,8 +1,10 @@
 name: "Sphinx: Render docs"
 
-# One push to main publishes two things: the site root always holds the latest
-# build, and a copy of it is kept under v<version>/ forever, so a link to an old
-# version keeps working. old versions are never rebuilt.
+# The site root always holds the latest build; every release also keeps its own
+# copy under v<version>/ forever, so a link to old documentation keeps working.
+# The versioned copies live on the gh-pages branch (that is the store), and the
+# deployment itself goes through GitHub Pages' Actions pipeline: no Jekyll, and
+# no rebuild of the old versions.
 on:
   push:
     branches:
@@ -13,15 +15,25 @@ on:
       - 'pyproject.toml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
       with:
-        persist-credentials: false
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -32,18 +44,25 @@ jobs:
     - name: Build docs
       run: |
         cd $GITHUB_WORKSPACE/docs && make html
+    - name: Take the published site from gh-pages
+      run: |
+        # the old versions live on gh-pages; take the tree, not the history
+        git worktree add --detach "$RUNNER_TEMP/site" origin/gh-pages
+        rm -rf "$RUNNER_TEMP/site/.git"
     - name: Stage the latest build and the versioned copy
       run: |
         VERSION="v$(python -c 'import mpldts; print(mpldts.__version__)')"
         SITE="$RUNNER_TEMP/site"
+        rm -rf "$SITE/$VERSION"
         mkdir -p "$SITE/$VERSION"
-        cp -r docs/_build/html/. "$SITE/"
         cp -r docs/_build/html/. "$SITE/$VERSION/"
+        cp -r docs/_build/html/. "$SITE/"
         cp docs/versions.json "$SITE/versions.json"
-        echo "staged $VERSION" && ls "$SITE"
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v4
+        echo "published $VERSION" && ls "$SITE"
+    - uses: actions/configure-pages@v5
+    - uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{ runner.temp }}/site
-        keep_files: true
+        path: ${{ runner.temp }}/site
+    - name: Deploy
+      id: deploy
+      uses: actions/deploy-pages@v4
