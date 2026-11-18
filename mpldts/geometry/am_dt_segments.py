@@ -52,10 +52,14 @@ class AMDTSegment(Segment):
         _dz = np.cos(np.radians(angle))  # Calculate the z component of the direction vector
 
         is_sl2 = self.sl == 2
-        _center = [0, -position, 0] if is_sl2 else [position, 0, 0]
+        _center = [position, 0, 0]
         _direction = (
-            np.array([0, -_dx, _dz]) if is_sl2 else np.array([_dx, 0, _dz])
+            np.array([_dx, 0, _dz])
         )  # direction vector in local cords
+        # _center = [0, -position, 0] if is_sl2 else [position, 0, 0]
+        # _direction = (
+        #     np.array([0, -_dx, _dz]) if is_sl2 else np.array([_dx, 0, _dz])
+        # )  # direction vector in local cords
 
         # check if user specified a reference frame
         # if no reference frame is specified, we assume the provided position and angle are already in the station frame
@@ -78,7 +82,7 @@ class AMDTSegment(Segment):
             _local_direction = _direction
 
         if (
-            self.sl != 0
+            self.sl != 0 # SI HACE FALTA ESTO? REVISAR
         ):  # If the segment belongs to SL1, SL2 or SL3, we transform from  vertical cord to SuperLayer frame to center it in SL
             try:
                 _local_center[2] = self.parent.super_layer(self.sl).transformer.transform(
